@@ -20,9 +20,9 @@ const NewRugular = () => {
     <div>
       <p>This is the content of the sidebar1.</p>
       <p>This is the content of the sidebar2.</p>
-      <p>This is the content of the sidebar.</p>
-      <p>This is the content of the sidebar.</p>
-      <p>This is the content of the sidebar.</p>
+      <p>This is the content of the sidebar3.</p>
+      <p>This is the content of the sidebar4.</p>
+      <p>This is the content of the sidebar5.</p>
       <ImageDropZone />
     </div>
   );

@@ -1,11 +1,12 @@
 // assets
-import { IconKey, IconTruckDelivery } from '@tabler/icons';
+import { IconKey, IconTruckDelivery, IconShoppingCart } from '@tabler/icons';
 
 
 // constant
 const icons = {
   IconKey,
-  IconTruckDelivery
+  IconTruckDelivery,
+  IconShoppingCart
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
@@ -35,12 +36,34 @@ const pages = {
           type: 'item',
           url: '/orders/laundry',
           target: false
+        }
+      ]
+    },
+    {
+      id: 'shopping',
+      title: 'Shopping',
+      type: 'collapse',
+      icon: icons.IconShoppingCart,
+      children: [
+        {
+          id: 'categories',
+          title: 'Categories',
+          type: 'item',
+          url: '/shopping/categories',
+          target: false
         },
         {
-          id: 'shopping',
-          title: 'Shopping',
+          id: 'items',
+          title: 'Items',
           type: 'item',
-          url: '/orders/shopping',
+          url: '/shopping/items',
+          target: false
+        },
+        {
+          id: 'subscriptions',
+          title: 'Subscriptions',
+          type: 'item',
+          url: '/shopping/subscriptions',
           target: false
         }
       ]
@@ -62,7 +85,7 @@ const pages = {
           id: 'corporate',
           title: 'Corporate',
           type: 'item',
-          url: '/clients/corporate', 
+          url: '/clients/corporate',
           target: false
         }
       ]
