@@ -9,34 +9,23 @@ import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
 // import toast from 'react-hot-toast';
 
-export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async (configs, thunkAPI) => {
+export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async (_, thunkAPI) => {
   try {
-    // Reference to a Firestore collection
     const ordersCollection = collection(db, 'prod_orders');
-
     const response = await getDocs(ordersCollection);
 
-    const orders = []
+    const orders = [];
 
-    response.docs.forEach(item => {
-        orders.push({ id:item.id, ...item.data()})
-    })
+    for (const item of response.docs) {
+      const docRef = doc(db, 'prod_orders_regular', item.id);
+      const itemDetail = await getDoc(docRef);
+      console.log(itemDetail.data());
 
-    console.log(orders)
+      const combinedData = { id: item.id, ...item.data(), ...itemDetail.data() };
+      orders.push(combinedData);
+    }
 
     return orders;
-
-
-    // const { page } = configs;
-    // delete configs['page'];
-    // let url = `/api/v1/users?page=${page}`;
-    // Object.keys(configs).forEach((key) => {
-    //   if (configs[key] != null || configs[key] !== '') {
-    //     url += `&${key}=${configs[key]}`;
-    //   }
-    // });
-    // const response = await client.get(url);
-    // return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
