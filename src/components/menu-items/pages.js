@@ -65,6 +65,13 @@ const pages = {
           type: 'item',
           url: '/shopping/subscriptions',
           target: false
+        },
+        {
+          id: 'orders',
+          title: 'Orders',
+          type: 'item',
+          url: '/shopping/orders',
+          target: false
         }
       ]
     },

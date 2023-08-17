@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 // third-party

@@ -1,5 +1,6 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/no-unescaped-entities */
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 const thumbsContainer = {
@@ -34,8 +35,8 @@ const img = {
 };
 
 // eslint-disable-next-line no-unused-vars
-function ImageDropZone(props) {
-  const [files, setFiles] = useState([]);
+function ImageDropZone({ files , setFiles }) {
+  // const [files, setFiles] = useState([]);
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       'image/*': []

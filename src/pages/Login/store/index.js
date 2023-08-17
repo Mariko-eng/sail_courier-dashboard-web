@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import authReducer, { loginUser } from "./reducer";
+import { loginUser, logOutUser } from "./extra_reducers";
 import toast from "react-hot-toast";
 
 const initialUser = () => {
@@ -16,7 +16,6 @@ const initialAccessToken = () => {
 
 const authSlice = createSlice({
   name: "auth",
-
   initialState: {
     isLoading: false,
     user: initialUser(),
@@ -24,38 +23,51 @@ const authSlice = createSlice({
   },
 
   reducers: {
-    authReducer,
+    logout: (state) => {
+      state.user = {}
+      state.accessToken = null
+    }
   },
 
   extraReducers: (builder) => {
-    // Add reducers for additional action types here, and handle loading state as needed
+    // eslint-disable-next-line no-unused-vars
     builder.addCase(loginUser.pending, (state, action) => {
-      // Add user to the state array
-      // console.log(state);
-      console.log(action);
       state.isLoading = true;
-      //   state.entities.push(action.payload);
     });
+
     builder.addCase(loginUser.fulfilled, (state, action) => {
-      // Add user to the state array
-      // console.log(state);
-      // console.log(action);
       state.isLoading = false;
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
-      toast.error("Logged in Successfully", {
-              position: "top-right",
-            });
-
+      toast.error('Logged in Successfully', {
+        position: 'top-right'
+      });
     });
+
+    // eslint-disable-next-line no-unused-vars
     builder.addCase(loginUser.rejected, (state, action) => {
-      // Add user to the state array
-      // console.log(state);
-      console.log(action);
       state.isLoading = false;
       state.user = {};
-      
-      toast.error("Could not Login Successfully", { position: "bottom-right",});
+      state.accessToken = null;
+      toast.error('Could not Login Successfully', { position: 'bottom-right' });
+    });
+
+    // eslint-disable-next-line no-unused-vars
+    builder.addCase(logOutUser.pending, (state, action) => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(logOutUser.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = {};
+      state.accessToken = null;
+      toast.error(action.payload.message, {position: 'top-right'});
+    });
+
+    // eslint-disable-next-line no-unused-vars
+    builder.addCase(logOutUser.rejected, (state, action) => {
+      state.isLoading = false;
+      toast.error('Could not Logout Successfully', { position: 'bottom-right' });
     });
   },
 });

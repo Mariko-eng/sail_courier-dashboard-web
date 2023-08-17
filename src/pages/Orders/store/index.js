@@ -19,7 +19,7 @@ export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async 
     for (const item of response.docs) {
       const docRef = doc(db, 'prod_orders_regular', item.id);
       const itemDetail = await getDoc(docRef);
-      console.log(itemDetail.data());
+      // console.log(itemDetail.data());
 
       const combinedData = { id: item.id, ...item.data(), ...itemDetail.data() };
       orders.push(combinedData);

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import "./index.css";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "./store/reducer";
+import { loginUser } from "./store/extra_reducers";
 import { useNavigate } from "react-router-dom";
 import { getHomeRoute } from '../../utils/getHomeRoute';
 
