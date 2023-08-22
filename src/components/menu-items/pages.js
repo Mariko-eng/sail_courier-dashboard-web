@@ -12,91 +12,77 @@ const icons = {
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
 const pages = {
-  id: 'pages',
-  title: 'Pages',
-  caption: 'Pages Caption',
+  id: 'orders',
+  title: 'Orders',
+  caption: 'Regular/Laundry/Shopping',
   type: 'group',
   children: [
     {
-      id: 'orders',
-      title: 'Orders',
+      id: 'regular',
+      title: 'Regular',
       type: 'collapse',
       icon: icons.IconTruckDelivery,
       children: [
         {
-          id: 'regular',
-          title: 'Regular',
+          id: 'regular_list',
+          title: 'List',
           type: 'item',
           url: '/orders/regular',
           target: false
         },
         {
-          id: 'laundry',
-          title: 'Laundry',
+          id: 'regular_add',
+          title: 'Add',
+          type: 'item',
+          url: '/orders/regular/new',
+          target: false
+        }
+      ]
+    },
+    {
+      id: 'Laundry',
+      title: 'Laundry',
+      type: 'collapse',
+      icon: icons.IconTruckDelivery,
+      children: [
+        {
+          id: 'Laundry_list',
+          title: 'List',
           type: 'item',
           url: '/orders/laundry',
           target: false
+        },
+        {
+          id: 'Laundry_add',
+          title: 'Add Laundry Orders',
+          type: 'item',
+          url: '/orders/laundry/new',
+          target: false
         }
       ]
     },
     {
-      id: 'shopping',
+      id: 'Shopping',
       title: 'Shopping',
       type: 'collapse',
-      icon: icons.IconShoppingCart,
+      icon: icons.IconTruckDelivery,
       children: [
         {
-          id: 'categories',
-          title: 'Categories',
+          id: 'Shopping_list',
+          title: 'List',
           type: 'item',
-          url: '/shopping/categories',
+          url: '/orders/shopping',
           target: false
         },
         {
-          id: 'items',
-          title: 'Items',
+          id: 'Shopping_add',
+          title: 'Add',
           type: 'item',
-          url: '/shopping/items',
-          target: false
-        },
-        {
-          id: 'subscriptions',
-          title: 'Subscriptions',
-          type: 'item',
-          url: '/shopping/subscriptions',
-          target: false
-        },
-        {
-          id: 'orders',
-          title: 'Orders',
-          type: 'item',
-          url: '/shopping/orders',
+          url: '/orders/shopping/new',
           target: false
         }
       ]
     },
-    {
-      id: 'clients',
-      title: 'Clients',
-      type: 'collapse',
-      icon: icons.IconKey,
-      children: [
-        {
-          id: 'regular',
-          title: 'Regular',
-          type: 'item',
-          url: '/clients/regular',
-          target: false
-        },
-        {
-          id: 'corporate',
-          title: 'Corporate',
-          type: 'item',
-          url: '/clients/corporate',
-          target: false
-        }
-      ]
-    }
   ]
 };
 

@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import authReducer from "../pages/Login/store";
+import authReducer from "../pages/auth/Login/store";
 import customizationReducer from "./app/customizationReducer";
 import ordersReducer from './../pages/Orders/store';
 import shoppingCategoriesReducer from './../pages/Shopping/Categories/store';

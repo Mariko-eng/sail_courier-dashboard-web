@@ -1,13 +1,13 @@
-import Login from "../pages/Login";
-import BlankLayout from "../components/layout/blank/BlankLayout";
-import { Navigate, useRoutes } from "react-router-dom";
-import getRoutes from './routes/index'
+import BlankLayout from '../components/layout/blank/BlankLayout';
+import { Navigate, useRoutes } from 'react-router-dom';
+import Login from '../pages/auth/Login';
+import PageNotFound from '../pages/auth/NotFound';
+import GetRoutes from './routes';
 import { getHomeRoute } from '../utils/getHomeRoute';
-import PageNotFound from "../pages/NotFound.jsx";
-
 
 const Router = () => {
-  const HomeRoutes = getRoutes
+  // console.log(GetRoutes());
+  const HomeRoutes = GetRoutes();
 
   const routes = useRoutes([
     {

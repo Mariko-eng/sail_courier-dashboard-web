@@ -14,9 +14,7 @@ const ShoppingItems = Loadable(lazy(() => import('../../pages/Shopping/Items')))
 const ShoppingSubscriptions = Loadable(lazy(() => import('../../pages/Shopping/Subscriptions')));
 const ShoppingOrders = Loadable(lazy(() => import('../../pages/Shopping/Orders')));
 
-
-
-const HomeRoutes = [
+export const AppRoutes = [
   {
     path: 'home',
     meta: { isPrivate: true },
@@ -63,5 +61,3 @@ const HomeRoutes = [
     element: <ShoppingOrders />
   }
 ];
-
-export default HomeRoutes;

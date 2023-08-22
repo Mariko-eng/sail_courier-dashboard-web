@@ -1,13 +1,14 @@
 import VerticalLayout from "../../components/layout/vertical/VerticalLayout";
 import PrivateRoute from "../access_control/PrivateRoute";
 import PublicRoute from "../access_control/PublicRoute";
-import HomeRoutes from "./HomeRoutes";
+import { AppRoutes } from './appRoutes';
 
-const getRoutes = () => {
+const GetRoutes = () => {
+  // const appRoutes = [];
     const allRoutes = [];
     const processedRoutes = [];
 
-    HomeRoutes.filter((route) => {
+    AppRoutes.filter((route) => {
       let RouteTag = PrivateRoute;
 
       // console.log(route)
@@ -30,4 +31,4 @@ const getRoutes = () => {
     return allRoutes;
 }
 
-export default getRoutes();
+export default GetRoutes;

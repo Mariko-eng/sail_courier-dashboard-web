@@ -1,20 +1,19 @@
 import { useState, useEffect } from 'react';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Box, Button, Card, IconButton } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { capitalize } from '../../../utils/app-functions';
-import MainCard from '../../../ui-component/cards/MainCard';
 import SideNav from '../../../components/sidenav/SideNav';
-import ShoppingCategoriesNew from './new';
+import MainCard from '../../../ui-component/cards/MainCard';
+import LaundryCategoriesNew from './new';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchShoppingCategories, deleteShoppingCategory } from './store';
-import RegularOrderNew from '../../Orders/Regular/new';
+import { fetchLaundryCategories, deleteLaundryCategory } from './store';
 
 // import { useDispatch, useSelector } from 'react-redux';
 
-const ShoppingCategories = () => {
+const LaundryCategories = () => {
   const [showSidebar, setShowSidebar] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
@@ -26,9 +25,9 @@ const ShoppingCategories = () => {
     setShowSidebar(false);
   };
 
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  const store = useSelector((store) => store.shoppingCategories);
+    const store = useSelector((store) => store.LaundryCategories);
 
   // const dispatch = useDispatch();
   // const store = useSelector((state) => state.orders);
@@ -37,7 +36,7 @@ const ShoppingCategories = () => {
 
 
   useEffect(() => {
-    dispatch(fetchShoppingCategories());
+    dispatch(fetchLaundryCategories());
   }, [dispatch]);
 
   // const orders = store.orders;
@@ -47,9 +46,9 @@ const ShoppingCategories = () => {
   return (
     <>
       <MainCard
-        title="Shopping Categories"
+        title="Laundry Categories"
         secondary={
-          <Button variant="outlined" startIcon={<AddCircle />} onClick={openSidebar}>
+          <Button variant="outlined" component={Link} to="" onClick={openSidebar} startIcon={<AddCircle />}>
             New
           </Button>
         }
@@ -63,7 +62,7 @@ const ShoppingCategories = () => {
                   <Box>{capitalize(item.name)}</Box>
                 </Box>
                 <Box>
-                  <IconButton onClick={() => dispatch(deleteShoppingCategory(item.id))}>
+                  <IconButton onClick={() => dispatch(deleteLaundryCategory(item.id))}>
                     <CancelIcon />
                   </IconButton>
                 </Box>
@@ -74,11 +73,10 @@ const ShoppingCategories = () => {
       </MainCard>
 
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-        {/* <ShoppingCategoriesNew /> */}
-        {<RegularOrderNew />}
+        <LaundryCategoriesNew />
       </SideNav>
     </>
   );
 };
 
-export default ShoppingCategories;
+export default LaundryCategories;

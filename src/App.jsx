@@ -4,7 +4,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, StyledEngineProvider } from '@mui/material';
 
 // routing
-import Router from './router/Router';
+import Router from './Router';
 
 // defaultTheme
 import themes from './themes';
@@ -12,24 +12,29 @@ import themes from './themes';
 // project imports
 import NavigationScroll from './layout/NavigationScroll';
 
+import { LoadScript } from '@react-google-maps/api';
+
+const apiKey = 'AIzaSyB9j-AnmMNOwRK6OHLTzKmhvz4p5xMWLpw'; // Replace with your API key
+const libraries = ['places'];
+
 function App() {
-    const customization = useSelector((state) => state.customization);
-  
+  const customization = useSelector((state) => state.customization);
+
   return (
     <>
-      {/* <Suspense fallback={null}> */}
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={themes(customization)}>
           <CssBaseline />
           <NavigationScroll>
-            <Router />
+            <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
+              <Router />
+            </LoadScript>
           </NavigationScroll>
         </ThemeProvider>
       </StyledEngineProvider>
-      {/* </Suspense> */}
     </>
   );
-  }
+}
   
   export default App
   

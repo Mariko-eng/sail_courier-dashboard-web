@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { AddCircle } from '@mui/icons-material';
 import SideNav from '../../../components/sidenav/SideNav';
-import ShoppingItemsNew from './new';
+import LaundryItemsNew from './new';
 import {Grid, Button, Card, CardMedia, CardContent, CardActions, Typography } from '@mui/material';
 // import { IconButton } from '@mui/material';
 import MainCard from '../../../ui-component/cards/MainCard';
 import { capitalize } from '../../../utils/app-functions';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchShoppingItems } from './store';
-// import { deleteShoppingItem } from './store';
+import { fetchLaundryItems } from './store';
+// import { deleteLaundryItem } from './store';
 
-const ShoppingItems = () => {
+const LaundryItems = () => {
   const [showSidebar, setShowSidebar] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
@@ -24,7 +25,7 @@ const ShoppingItems = () => {
 
   const dispatch = useDispatch();
 
-  const store = useSelector((store) => store.shoppingItems);
+  const store = useSelector((store) => store.LaundryItems);
 
   // const dispatch = useDispatch();
   // const store = useSelector((state) => state.orders);
@@ -32,7 +33,7 @@ const ShoppingItems = () => {
   // console.log(store);
 
   useEffect(() => {
-    dispatch(fetchShoppingItems());
+    dispatch(fetchLaundryItems());
   }, [dispatch]);
 
   // const orders = store.orders;
@@ -42,9 +43,9 @@ const ShoppingItems = () => {
   return (
     <>
       <MainCard
-        title="Shopping Items"
+        title="Laundry Items"
         secondary={
-          <Button variant="outlined" startIcon={<AddCircle />} onClick={openSidebar}>
+          <Button variant="outlined" component={Link} to="" onClick={openSidebar} startIcon={<AddCircle />}>
             New
           </Button>
         }
@@ -78,10 +79,10 @@ const ShoppingItems = () => {
       </MainCard>
 
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-        <ShoppingItemsNew />
+        <LaundryItemsNew />
       </SideNav>
     </>
   );
 };
 
-export default ShoppingItems;
+export default LaundryItems;

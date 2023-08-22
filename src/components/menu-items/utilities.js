@@ -16,6 +16,64 @@ const utilities = {
   title: 'Utilities',
   type: 'group',
   children: [
+        {
+      id: 'shopping',
+      title: 'Shopping',
+      type: 'collapse',
+      icon: icons.IconShoppingCart,
+      children: [
+        {
+          id: 'categories',
+          title: 'Categories',
+          type: 'item',
+          url: '/shopping/categories',
+          target: false
+        },
+        {
+          id: 'items',
+          title: 'Items',
+          type: 'item',
+          url: '/shopping/items',
+          target: false
+        },
+        {
+          id: 'subscriptions',
+          title: 'Subscriptions',
+          type: 'item',
+          url: '/shopping/subscriptions',
+          target: false
+        },
+        {
+          id: 'orders',
+          title: 'Orders',
+          type: 'item',
+          url: '/shopping/orders',
+          target: false
+        }
+      ]
+    },
+    {
+      id: 'clients',
+      title: 'Clients',
+      type: 'collapse',
+      icon: icons.IconKey,
+      children: [
+        {
+          id: 'regular',
+          title: 'Regular',
+          type: 'item',
+          url: '/clients/regular',
+          target: false
+        },
+        {
+          id: 'corporate',
+          title: 'Corporate',
+          type: 'item',
+          url: '/clients/corporate',
+          target: false
+        }
+      ]
+    },
     {
       id: 'util-typography',
       title: 'Typography',

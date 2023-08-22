@@ -8,8 +8,8 @@ const PrivateRoute = ({ children, route }) => {
   // ** Hooks & Vars
  const user = JSON.parse(localStorage.getItem("user"));
 
-  console.log(route);
-  console.log(route.meta);
+  // console.log(route);
+  // console.log(route.meta);
 
   if (route) {
     if (!user) {
