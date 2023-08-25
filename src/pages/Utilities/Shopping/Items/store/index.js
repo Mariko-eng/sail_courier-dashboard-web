@@ -1,27 +1,16 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { db } from '../../../../../firebase/config';
-import { collection, getDocs, doc, addDoc, deleteDoc } from 'firebase/firestore';
-
-// ** Axios Imports
-// import client from '../../../../axios';
-// import { generateError } from '@utils';
+import axios from 'axios';
 
 // import toast from 'react-hot-toast';
 
 export const fetchShoppingItems = createAsyncThunk('item/fetchAll', async (_, thunkAPI) => {
   try {
-    const collectionRef = collection(db, 'shopping_items');
-    const response = await getDocs(collectionRef);
+    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/shopping-items/';
+    const response = await axios.get(url);
 
-    const items = [];
-
-    for (const item of response.docs) {
-      const combinedData = { id: item.id, ...item.data() };
-      items.push(combinedData);
-    }
-
-    return items;
+    const items = response.data;
+    return items; 
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -29,8 +18,9 @@ export const fetchShoppingItems = createAsyncThunk('item/fetchAll', async (_, th
 
 export const addShoppingItem = createAsyncThunk('item/addItem', async (data, thunkAPI) => {
   try {
-    const collectionRef = collection(db, 'shopping_items');
-    const response = await addDoc(collectionRef, data);
+    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/shopping-items/new';
+
+    const response = await axios.post(url, data);
 
     return {
       id: response.id,
@@ -43,12 +33,9 @@ export const addShoppingItem = createAsyncThunk('item/addItem', async (data, thu
 
 export const deleteShoppingItem = createAsyncThunk('item/deleteItem', async (id, thunkAPI) => {
   try {
-    const docRef = doc(db, 'shopping_items', id);
-    await deleteDoc(docRef);
-    return {
-      success: true,
-      messagee: 'Deleted Successfully!'
-    };
+    const url = `https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/shopping-items/delete/${id}`;
+    const response = await axios.delete(url);
+    return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }

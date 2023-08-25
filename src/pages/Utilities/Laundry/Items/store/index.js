@@ -1,26 +1,15 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { db } from '../../../../firebase/config';
-import { collection, getDocs, doc, addDoc, deleteDoc } from 'firebase/firestore';
-
-// ** Axios Imports
-// import client from '../../../../axios';
-// import { generateError } from '@utils';
+import axios from 'axios';
 
 // import toast from 'react-hot-toast';
 
 export const fetchLaundryItems = createAsyncThunk('item/fetchAll', async (_, thunkAPI) => {
   try {
-    const collectionRef = collection(db, 'laundry_items');
-    const response = await getDocs(collectionRef);
+    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-items/';
+    const response = await axios.get(url);
 
-    const items = [];
-
-    for (const item of response.docs) {
-      const combinedData = { id: item.id, ...item.data() };
-      items.push(combinedData);
-    }
-
+    const items = response.data;
     return items;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
@@ -29,8 +18,9 @@ export const fetchLaundryItems = createAsyncThunk('item/fetchAll', async (_, thu
 
 export const addLaundryItem = createAsyncThunk('item/addItem', async (data, thunkAPI) => {
   try {
-    const collectionRef = collection(db, 'laundry_items');
-    const response = await addDoc(collectionRef, data);
+    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-items/new';
+
+    const response = await axios.post(url, data);
 
     return {
       id: response.id,
@@ -43,12 +33,9 @@ export const addLaundryItem = createAsyncThunk('item/addItem', async (data, thun
 
 export const deleteLaundryItem = createAsyncThunk('item/deleteItem', async (id, thunkAPI) => {
   try {
-    const docRef = doc(db, 'laundry_items', id);
-    await deleteDoc(docRef);
-    return {
-      success: true,
-      messagee: 'Deleted Successfully!'
-    };
+    const url = `https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-items/delete/${id}`;
+    const response = await axios.delete(url);
+    return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }

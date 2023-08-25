@@ -1,26 +1,15 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { db } from '../../../../../firebase/config';
-import { collection, getDocs, doc, deleteDoc, addDoc } from 'firebase/firestore';
-
-// ** Axios Imports
-// import client from '../../../../axios';
-// import { generateError } from '@utils';
+import axios from 'axios';
 
 // import toast from 'react-hot-toast';
 
 export const fetchLaundryCategories = createAsyncThunk('category/fetchAll', async (_, thunkAPI) => {
   try {
-    const collectionRef = collection(db, 'laundry_categories');
-    const response = await getDocs(collectionRef);
+    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-categories/';
+    const response = await axios.get(url);
 
-    const categories = [];
-
-    for (const item of response.docs) {
-      const combinedData = { id: item.id, ...item.data() };
-      categories.push(combinedData);
-    }
-
+    const categories = response.data;
     return categories;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
@@ -29,16 +18,17 @@ export const fetchLaundryCategories = createAsyncThunk('category/fetchAll', asyn
 
 export const addLaundryCategory = createAsyncThunk('category/addCategory', async (data, thunkAPI) => {
   try {
-    const collectionRef = collection(db, 'laundry_categories');
+    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-categories/new';
+
     const newCategory = {
       name: data.name
     };
 
-    const response = await addDoc(collectionRef, newCategory);
+    const response = await axios.post(url, newCategory);
 
     return {
       id: response.id,
-      name: data.name
+      ...newCategory
     };
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
@@ -47,12 +37,9 @@ export const addLaundryCategory = createAsyncThunk('category/addCategory', async
 
 export const deleteLaundryCategory = createAsyncThunk('category/deleteCategory', async (id, thunkAPI) => {
   try {
-    const docRef = doc(db, 'laundry_categories', id);
-    await deleteDoc(docRef);
-    return {
-      success: true,
-      messagee: 'Deleted Successfully!'
-    };
+    const url = `https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-categories/delete/${id}`;
+    const response = await axios.delete(url);
+    return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
