@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "./store/extra_reducers";
 import { useNavigate } from "react-router-dom";
 import { getHomeRoute } from '../../../utils/getHomeRoute';
+import logo  from '../../../assets/images/logo.jpg'
 
 
 const Login = () => {
@@ -25,19 +26,19 @@ const Login = () => {
 
   const submitData = (event) =>{
     event.preventDefault();
-    alert("it works!");
+    // alert("it works!");
 
-    console.log(email);
-    console.log(password);
+    // console.log(email);
+    // console.log(password);
 
     dispatch(loginUser({ email: email, password: password }));
   }
 
   useEffect(() => {
     if (Object.keys(store.user).length === 0) {
-      console.log("The user object is empty.");
+      // console.log("The user object is empty.");
     } else {
-      console.log("The user object has data.");
+      // console.log("The user object has data.");
       navigate(getHomeRoute());
     }
 
@@ -50,7 +51,7 @@ const Login = () => {
         <form onSubmit={submitData}>
           <img
             className="mb-4"
-            src="../assets/brand/bootstrap-logo.svg"
+            src={logo}
             alt=""
             width="72"
             height="57"

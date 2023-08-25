@@ -1,7 +1,7 @@
 import BlankLayout from '../components/layout/blank/BlankLayout';
 import { Navigate, useRoutes } from 'react-router-dom';
-import Login from '../pages/auth/Login';
-import PageNotFound from '../pages/auth/NotFound';
+import Login from '../pages/Auth/Login';
+import PageNotFound from '../pages/Auth/NotFound';
 import GetRoutes from './routes';
 import { getHomeRoute } from '../utils/getHomeRoute';
 

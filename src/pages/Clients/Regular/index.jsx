@@ -1,9 +1,14 @@
-// import React from 'react'
+import { Card } from 'react-bootstrap';
+import MainCard from '../../../ui-component/cards/MainCard';
 
 const RegularClients = () => {
   return (
-    <div>RegularClients</div>
-  )
-}
+    <>
+      <MainCard title="Clients - Regular">
+        <Card sx={{ overflow: 'hidden' }}></Card>
+      </MainCard>
+    </>
+  );
+};
 
 export default RegularClients;

@@ -3,9 +3,9 @@ import MainCard from '../../../ui-component/cards/MainCard';
 import { Button, Card } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import SideNav from '../../../components/sidenav/SideNav';
-import CorporateNew from './new';
+import AgentsNew from './new';
 
-const CorporateClients = () => {
+const Agents = () => {
   const [showSidebar, setShowSidebar] = useState(false);
 
   const openSidebar = () => {
@@ -15,11 +15,10 @@ const CorporateClients = () => {
   const closeSidebar = () => {
     setShowSidebar(false);
   };
-
   return (
     <>
       <MainCard
-        title="Clients - Corporate"
+        title="Staff - Admins"
         secondary={
           <Button variant="outlined" startIcon={<AddCircle />} onClick={openSidebar}>
             New
@@ -27,14 +26,13 @@ const CorporateClients = () => {
         }
       >
         <Card sx={{ overflow: 'hidden' }}></Card>
-        <Card sx={{ overflow: 'hidden' }}></Card>
       </MainCard>
 
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-        <CorporateNew />
+        <AgentsNew />
       </SideNav>
     </>
   );
 };
 
-export default CorporateClients;
+export default Agents;

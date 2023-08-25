@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyBWTE7uURYIjzOJHIbXI4O7r9TnIf8OP6U",
   authDomain: "sail-courier.firebaseapp.com",
   projectId: "sail-courier",

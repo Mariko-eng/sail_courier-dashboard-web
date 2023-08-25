@@ -45,7 +45,6 @@ export const logOutUser = createAsyncThunk(
     try {
       await signOut(auth);
       localStorage.clear();
-
       return { message : "Signed Out Successfully!"};
     } catch (error) {
       // You should handle errors here

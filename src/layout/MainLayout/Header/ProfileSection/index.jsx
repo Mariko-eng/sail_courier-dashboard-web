@@ -1,15 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
   Avatar,
   Box,
-  Card,
-  CardContent,
+  // Card,
+  // CardContent,
   Chip,
   ClickAwayListener,
   Divider,
@@ -23,7 +22,7 @@ import {
   Paper,
   Popper,
   Stack,
-  Switch,
+  // Switch,
   Typography
 } from '@mui/material';
 
@@ -35,31 +34,40 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import MainCard from "../../../../ui-component/cards/MainCard";
 // import Transitions from 'ui-component/extended/Transitions';
 import Transitions from "../../../../ui-component/extended/Transitions";
-import UpgradePlanCard from './UpgradePlanCard';
+// import UpgradePlanCard from './UpgradePlanCard';
 // import User1 from 'assets/images/users/user-round.svg';
 import User1 from "../../../../assets/images/users/user-round.svg";
 
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
 
+import { useSelector, useDispatch } from 'react-redux';
+
+import { logOutUser } from '../../../../pages/Auth/Login/store/extra_reducers';
+
+
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
 
-  const [sdm, setSdm] = useState(true);
+  // const [sdm, setSdm] = useState(true);
   const [value, setValue] = useState('');
-  const [notification, setNotification] = useState(false);
+  // const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef(null);
+
   const handleLogout = async () => {
     console.log('Logout');
+    handleToggle();
+    dispatch(logOutUser());
   };
 
   const handleClose = (event) => {
@@ -182,14 +190,14 @@ const ProfileSection = () => {
                       inputProps={{
                         'aria-label': 'weight'
                       }}
-                    />
+                    /> 
                     <Divider />
                   </Box>
                   <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                     <Box sx={{ p: 2 }}>
-                      <UpgradePlanCard />
-                      <Divider />
-                      <Card
+                      {/* <UpgradePlanCard />
+                      <Divider /> */}
+                      {/* <Card
                         sx={{
                           bgcolor: theme.palette.primary.light,
                           my: 2
@@ -230,8 +238,8 @@ const ProfileSection = () => {
                             </Grid>
                           </Grid>
                         </CardContent>
-                      </Card>
-                      <Divider />
+                      </Card> */}
+                      {/* <Divider /> */}
                       <List
                         component="nav"
                         sx={{
