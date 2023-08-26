@@ -23,7 +23,7 @@ export const addShoppingItem = createAsyncThunk('item/addItem', async (data, thu
     const response = await axios.post(url, data);
 
     return {
-      id: response.id,
+      id: response.data.id,
       ...data
     };
   } catch (error) {

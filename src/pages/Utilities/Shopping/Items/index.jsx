@@ -54,7 +54,13 @@ const ShoppingItems = () => {
             {store.data.map((obj) => (
               <Grid key={obj.id} item xs={4}>
                 <Card variant="outlined" sx={{ maxWidth: 345 }}>
-                  <CardMedia component="img" alt="green iguana" height="140" image={'data:image/png;base64,' + obj.imageBase64} />
+                  <CardMedia
+                    component="img"
+                    alt="green iguana"
+                    height="140"
+                    image={obj.imageFormat + ',' + obj.imageBase64}
+                    // image={'data:image/png;base64,' + obj.imageBase64}
+                  />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                       {capitalize(obj.name)}

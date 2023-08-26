@@ -31,7 +31,7 @@ export const addShoppingCategory = createAsyncThunk('category/addCategory', asyn
     const response = await axios.post(url, newCategory);
 
     return {
-      id: response.id,
+      id: response.data.id,
       ...newCategory
     };
   } catch (error) {

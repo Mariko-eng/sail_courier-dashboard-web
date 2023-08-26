@@ -26,11 +26,15 @@ export const addLaundryCategory = createAsyncThunk('category/addCategory', async
 
     const response = await axios.post(url, newCategory);
 
+    // console.log(response)
+    // console.log(response.data);
+
     return {
-      id: response.id,
+      id: response.data.id,
       ...newCategory
     };
   } catch (error) {
+    console.log(error)
     return thunkAPI.rejectWithValue(error);
   }
 });

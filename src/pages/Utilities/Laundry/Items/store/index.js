@@ -9,6 +9,7 @@ export const fetchLaundryItems = createAsyncThunk('item/fetchAll', async (_, thu
     const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-items/';
     const response = await axios.get(url);
 
+    // console.log(response);
     const items = response.data;
     return items;
   } catch (error) {
@@ -23,7 +24,7 @@ export const addLaundryItem = createAsyncThunk('item/addItem', async (data, thun
     const response = await axios.post(url, data);
 
     return {
-      id: response.id,
+      id: response.data.id,
       ...data
     };
   } catch (error) {

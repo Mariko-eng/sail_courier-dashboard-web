@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useScriptRef from '../../../hooks/useScriptRef';
+import useScriptRef from '../../../../hooks/useScriptRef';
 
 import { fetchLaundryCategories } from '../Categories/store';
 import { addLaundryItem } from './store';
@@ -14,8 +14,8 @@ import { useTheme } from '@mui/material/styles';
 import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import AnimateButton from '../../../ui-component/extended/AnimateButton';
-import ImageDropZone from '../../../components/input/ImageDropZone';
+import AnimateButton from '../../../../ui-component/extended/AnimateButton';
+import ImageDropZone from '../../../../components/input/ImageDropZone';
 
 const LaundryItemsNew = () => {
   const [files, setFiles] = useState([]);
@@ -25,8 +25,8 @@ const LaundryItemsNew = () => {
   const scriptedRef = useScriptRef();
   const dispatch = useDispatch();
 
-  const LaundryCategoriesStore = useSelector((store) => store.LaundryCategories);
-  const LaundryItemsStore = useSelector((store) => store.LaundryItems);
+  const LaundryCategoriesStore = useSelector((store) => store.laundryCategories);
+  const LaundryItemsStore = useSelector((store) => store.laundryItems);
 
   useEffect(() => {
       dispatch(fetchLaundryCategories());
@@ -34,23 +34,21 @@ const LaundryItemsNew = () => {
 
   return (
     <div>
-      <p>Add New Item</p>
+      <p>Add Laundry New Item</p>
       {LaundryCategoriesStore.data.length >= 1 ? (
         <Formik
           initialValues={{
             name: '',
             category: '',
-            manufacturer: '',
-            capacity: '',
-            price: 0,
+            priceWash: 5000,
+            priceDry: 4000,
             submit: null
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().max(25).required('Name is required'),
             category: Yup.string().max(25).required('Category is required'),
-            manufacturer: Yup.string().max(25).required('Manufacturer is required'),
-            capacity: Yup.string().max(25).required('Capacity is required'),
-            price: Yup.number().min(5000).required('Price Should Be Greater Than 5000')
+            priceWash: Yup.number().min(5000).required('Wash And Iron Price Should Be Greater Than 5000'),
+            priceDry: Yup.number().min(4000).required('Dry Cleaning Price Should Be Greater Than 4000')
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
             try {
@@ -72,9 +70,8 @@ const LaundryItemsNew = () => {
                       const data = {
                         name: values.name,
                         category: category_obj,
-                        manufacturer: values.manufacturer,
-                        capacity: values.capacity,
-                        price: values.price,
+                        priceWash: values.priceWash,
+                        priceDry: values.priceDry,
                         imageFormat: list[0],
                         imageBase64: list[1]
                       };
@@ -84,8 +81,8 @@ const LaundryItemsNew = () => {
                       setSubmitting(false);
                       setFiles([]);
                       resetForm();
-                    }else{
-                      console.log("fileBase64 Empty");
+                    } else {
+                      console.log('fileBase64 Empty');
                     }
                   };
                 }
@@ -146,62 +143,43 @@ const LaundryItemsNew = () => {
 
               <Box mt={2} py={2} border={'1px solid grey'} borderRadius={'5px'}>
                 <ImageDropZone files={files} setFiles={setFiles} />
-                { fileError !== "" && <p style={{color: "red"}} >Select An Image Of The Item</p>}
+                {fileError !== '' && <p style={{ color: 'red' }}>Select An Image Of The Item</p>}
               </Box>
 
-              <FormControl fullWidth error={Boolean(touched.manufacturer && errors.manufacturer)} sx={{ ...theme.typography.customInput }}>
-                <InputLabel htmlFor="outlined-adornment-manufacturer">Manufacturer</InputLabel>
+              <FormControl fullWidth error={Boolean(touched.priceWash && errors.priceWash)} sx={{ ...theme.typography.customInput }}>
+                <InputLabel htmlFor="outlined-adornment-priceWash">Wash & Iron Price(SHS)</InputLabel>
                 <OutlinedInput
-                  id="outlined-adornment-manufacturer"
-                  type="text"
-                  value={values.manufacturer}
-                  name="manufacturer"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  label="Item manufacturer"
-                  inputProps={{}}
-                />
-                {touched.manufacturer && errors.manufacturer && (
-                  <FormHelperText error id="standard-weight-helper-text-manufacturer-login">
-                    {errors.manufacturer}
-                  </FormHelperText>
-                )}
-              </FormControl>
-
-              <FormControl fullWidth error={Boolean(touched.capacity && errors.capacity)} sx={{ ...theme.typography.customInput }}>
-                <InputLabel htmlFor="outlined-adornment-capacity">Capacity Kgs/Ltrs/etc</InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-capacity"
-                  type="text"
-                  value={values.capacity}
-                  name="capacity"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  label="Item Name"
-                  inputProps={{}}
-                />
-                {touched.capacity && errors.capacity && (
-                  <FormHelperText error id="standard-weight-helper-text-capacity-login">
-                    {errors.capacity}
-                  </FormHelperText>
-                )}
-              </FormControl>
-
-              <FormControl fullWidth error={Boolean(touched.price && errors.price)} sx={{ ...theme.typography.customInput }}>
-                <InputLabel htmlFor="outlined-adornment-price">Item Price(SHS)</InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-price"
+                  id="outlined-adornment-priceWash"
                   type="number"
-                  value={values.price}
-                  name="price"
+                  value={values.priceWash}
+                  name="priceWash"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   label="Prcie Tag"
                   inputProps={{}}
                 />
-                {touched.price && errors.price && (
-                  <FormHelperText error id="standard-weight-helper-text-price-login">
-                    {errors.price}
+                {touched.priceWash && errors.priceWash && (
+                  <FormHelperText error id="standard-weight-helper-text-priceWash-login">
+                    {errors.priceWash}
+                  </FormHelperText>
+                )}
+              </FormControl> 
+
+              <FormControl fullWidth error={Boolean(touched.priceDry && errors.priceDry)} sx={{ ...theme.typography.customInput }}>
+                <InputLabel htmlFor="outlined-adornment-priceDry">Dry Cleaning Price(SHS)</InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-priceDry"
+                  type="number"
+                  value={values.priceDry}
+                  name="priceDry"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  label="Prcie Tag"
+                  inputProps={{}}
+                />
+                {touched.priceDry && errors.priceDry && (
+                  <FormHelperText error id="standard-weight-helper-text-priceDry-login">
+                    {errors.priceDry}
                   </FormHelperText>
                 )}
               </FormControl>

@@ -1,6 +1,6 @@
 // import React from 'react'
 
-import useScriptRef from '../../../hooks/useScriptRef';
+import useScriptRef from '../../../../hooks/useScriptRef';
 
 import { addLaundryCategory } from './store';
 import { useDispatch , useSelector } from 'react-redux';
@@ -14,7 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import AnimateButton from '../../../ui-component/extended/AnimateButton';
+import AnimateButton from '../../../../ui-component/extended/AnimateButton';
 
 const LaundryCategoriesNew = () => {
   const theme = useTheme();
@@ -22,7 +22,7 @@ const LaundryCategoriesNew = () => {
 
   const dispatch = useDispatch()
 
-  const store = useSelector((store) => store.LaundryCategories);
+  const store = useSelector((store) => store.laundryCategories);
 
   return (
     <div>

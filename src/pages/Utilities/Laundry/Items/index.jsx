@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { AddCircle } from '@mui/icons-material';
-import SideNav from '../../../components/sidenav/SideNav';
+import { Grid, Button, Card, CardMedia, CardContent, CardActions, Typography } from '@mui/material';
+import SideNav from '../../../../components/sidenav/SideNav';
+import MainCard from '../../../../ui-component/cards/MainCard';
+import { capitalize } from '../../../../utils/app-functions';
 import LaundryItemsNew from './new';
-import {Grid, Button, Card, CardMedia, CardContent, CardActions, Typography } from '@mui/material';
-// import { IconButton } from '@mui/material';
-import MainCard from '../../../ui-component/cards/MainCard';
-import { capitalize } from '../../../utils/app-functions';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLaundryItems } from './store';
 // import { deleteLaundryItem } from './store';
@@ -25,7 +23,7 @@ const LaundryItems = () => {
 
   const dispatch = useDispatch();
 
-  const store = useSelector((store) => store.LaundryItems);
+  const store = useSelector((store) => store.laundryItems);
 
   // const dispatch = useDispatch();
   // const store = useSelector((state) => state.orders);
@@ -45,7 +43,7 @@ const LaundryItems = () => {
       <MainCard
         title="Laundry Items"
         secondary={
-          <Button variant="outlined" component={Link} to="" onClick={openSidebar} startIcon={<AddCircle />}>
+          <Button variant="outlined" onClick={openSidebar} startIcon={<AddCircle />}>
             New
           </Button>
         }
@@ -55,7 +53,13 @@ const LaundryItems = () => {
             {store.data.map((obj) => (
               <Grid key={obj.id} item xs={4}>
                 <Card variant="outlined" sx={{ maxWidth: 345 }}>
-                  <CardMedia component="img" alt="green iguana" height="140" image={'data:image/png;base64,' + obj.imageBase64} />
+                  <CardMedia
+                    component="img"
+                    alt="green iguana"
+                    height="140"
+                    image={obj.imageFormat + ',' + obj.imageBase64}
+                    // image={'data:image/png;base64,' + obj.imageBase64}
+                  />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                       {capitalize(obj.name)}
@@ -64,7 +68,10 @@ const LaundryItems = () => {
                       {capitalize(obj.category.name)}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      SHS {obj.price}
+                      SHS {obj.priceWash}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      SHS {obj.priceDry}
                     </Typography>
                   </CardContent>
                   <CardActions>
