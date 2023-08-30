@@ -12,7 +12,7 @@ export const fetchCouriers = createAsyncThunk('courier/fetchAll', async (_, thun
     // console.log('response.data');
     // console.log(response.data);
 
-    const couriers = response.data;
+    const couriers = response.data; 
     return couriers;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);

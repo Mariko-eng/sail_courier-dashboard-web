@@ -14,6 +14,8 @@ import SideNav from '../../../components/sidenav/SideNav';
 import { fetchRegularOrders } from '../store';
 import { useDispatch, useSelector } from 'react-redux';
 import ImageDropZone from '../../../components/input/ImageDropZone';
+import { Card } from '@mui/material';
+import { capitalize } from '../../../utils/app-functions';
 
 const NewRugular = () => {
   return (
@@ -75,7 +77,7 @@ const Regular = () => {
       <div style={{ overflowX: 'auto' }}>
         <MaterialTable
           icons={materialTableIcons}
-          title="Orders"
+          title="Regular Orders"
           columns={columns}
           data={newLoadList}
           detailPanel={[
@@ -84,26 +86,28 @@ const Regular = () => {
               openIcon: ArrowDropUpIcon,
               render: (rowData) => {
                 return (
-                  <div>
-                    <div style={{ display: 'flex' }}>
-                      <p>From : </p> <p>{rowData.pickName}</p>{' '}
+                  <Card sx={{ paddingLeft: '20px' }}>
+                    <div style={{ marginBottom: '10px' }}>
+                      <div style={{ fontWeight: 'bold' }}>Package Items </div>
+                      <div style={{ paddingLeft: '10px' }}>
+                        {rowData.parcelItems.map((item, index) => (
+                          <div key={index}>{item}</div>
+                        ))}
+                      </div>
                     </div>
-                    <div style={{ display: 'flex' }}>
-                      <p>To : </p> <p>{rowData.dropName}</p>{' '}
+                    <div style={{ marginBottom: '10px' }}>
+                      <div style={{ fontWeight: 'bold' }}>Pickup Point - {rowData.senderOtpCode} </div>
+                      <div style={{ paddingLeft: '10px' }}>{rowData.pickName}</div>
+                      <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelSenderName)}</div>
+                      <div style={{ paddingLeft: '10px' }}>{rowData.parcelSenderPhone}</div>
                     </div>
-                    <div style={{ display: 'flex' }}>
-                      <p>Pickup OTP : </p> <p>{rowData.senderOtpCode}</p>{' '}
+                    <div style={{ marginBottom: '10px' }}>
+                      <div style={{ fontWeight: 'bold' }}>Delivery Point - {rowData.receiverOtpCode}</div>
+                      <div style={{ paddingLeft: '10px' }}>{rowData.dropName}</div>
+                      <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelReceiverName)}</div>
+                      <div style={{ paddingLeft: '10px' }}>{rowData.parcelReceiverPhone}</div>
                     </div>
-                    <div style={{ display: 'flex' }}>
-                      <p>Dropoff OTP : </p> <p>{rowData.receiverOtpCode}</p>{' '}
-                    </div>
-                    <div style={{ display: 'flex' }}>
-                      <p>Receiver Name : </p> <p>{rowData.parcelReceiverName}</p>{' '}
-                    </div>
-                    <div style={{ display: 'flex' }}>
-                      <p>Receiver Phone : </p> <p>{rowData.parcelReceiverPhone}</p>{' '}
-                    </div>
-                  </div>
+                  </Card>
                 );
               }
             }

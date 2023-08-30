@@ -54,7 +54,7 @@ const pages = {
         },
         {
           id: 'Laundry_add',
-          title: 'Add Laundry Orders',
+          title: 'Add',
           type: 'item',
           url: '/orders/laundry/new',
           target: false

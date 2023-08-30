@@ -56,7 +56,7 @@ const LaundryItems = () => {
                   <CardMedia
                     component="img"
                     alt="green iguana"
-                    height="140"
+                    height="140" 
                     image={obj.imageFormat + ',' + obj.imageBase64}
                     // image={'data:image/png;base64,' + obj.imageBase64}
                   />

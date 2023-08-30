@@ -1,31 +1,29 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { db } from '../../../firebase/config'
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import axios from 'axios';
 
 // ** Axios Imports
 // import client from '../../../../axios';
 // import { generateError } from '@utils';
-
 // import toast from 'react-hot-toast';
+
+const ordersurl = "https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/orders"
+
+export const fetchAllOrders = createAsyncThunk('courier/fetchAll', async (_, thunkAPI) => {
+  try {
+    const response = await axios.get(`${ordersurl}/?limit=1000`);
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
 
 export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async (_, thunkAPI) => {
   try {
-    const ordersCollection = collection(db, 'prod_orders');
-    const response = await getDocs(ordersCollection);
-
-    const orders = [];
-
-    for (const item of response.docs) {
-      const docRef = doc(db, 'prod_orders_regular', item.id);
-      const itemDetail = await getDoc(docRef);
-      // console.log(itemDetail.data());
-
-      const combinedData = { id: item.id, ...item.data(), ...itemDetail.data() };
-      orders.push(combinedData);
-    }
-
-    return orders;
+    const response = await axios.get(`${ordersurl}/regular/?limit=1000`);
+    // console.log(response.data);
+    return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -34,31 +32,32 @@ export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async 
 
 export const fetchLaundryOrders = createAsyncThunk('orders/fetchLaundry', async (configs, thunkAPI) => {
   try {
-    // const { page } = configs;
-    // delete configs['page'];
-    // let url = `/api/v1/users?page=${page}`;
-    // Object.keys(configs).forEach((key) => {
-    //   if (configs[key] != null || configs[key] !== '') {
-    //     url += `&${key}=${configs[key]}`;
-    //   }
-    // });
-    // const response = await client.get(url);
-    // return response.data;
+    const response = await axios.get(`${ordersurl}/laundry/?limit=1000`);
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
 });
 
+
+export const fetchShoppingOrders = createAsyncThunk('orders/fetchShopping', async (configs, thunkAPI) => {
+  try {
+    const response = await axios.get(`${ordersurl}/shopping/?limit=1000`);
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+
+
 export const getOrderDetail = createAsyncThunk('orders/getDetail', async (id, thunkAPI) => {
   try {
-    const docRef = doc(db, 'prod_orders', id);
-    const docSnap = await getDoc(docRef);
-
-    return { id: id, ...docSnap.data() };
-
-    // const url = `/api/v1/users/${id}`;
-    // const response = await client.get(url);
-    // return response.data.data;
+    const response = await axios.get(`${ordersurl}/detail/${id}`);
+    // console.log(response.data);
+    return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -108,6 +107,7 @@ export const appOrdersSlice = createSlice({
   initialState: {
     loading: false,
     submitted: null,
+    limit: 1,
     total: 1,
     orders: [],
     edit: false,
@@ -130,25 +130,52 @@ export const appOrdersSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
+      .addCase(fetchAllOrders.pending, (state) => {
+        state.loading = true;
+        state.orders = [];
+      })
+      .addCase(fetchAllOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.limit = action.payload.limit;
+        state.total = action.payload.total;
+        state.orders = action.payload.entries;
+      })
+      .addCase(fetchAllOrders.rejected, errorReducer)
+
       .addCase(fetchRegularOrders.pending, (state) => {
         state.loading = true;
+        state.orders = [];
       })
       .addCase(fetchRegularOrders.fulfilled, (state, action) => {
-        state.loading = false;
-        state.orders = action.payload;
-        state.total = action.payload.length;
+        state.limit = action.payload.limit;
+        state.total = action.payload.total;
+        state.orders = action.payload.entries;
       })
       .addCase(fetchRegularOrders.rejected, errorReducer)
 
       .addCase(fetchLaundryOrders.pending, (state) => {
         state.loading = true;
+        state.orders = [];
       })
+
       .addCase(fetchLaundryOrders.fulfilled, (state, action) => {
-        state.loading = false;
-        state.orders = action.payload;
-        state.total = action.payload.length;
+        state.limit = action.payload.limit;
+        state.total = action.payload.total;
+        state.orders = action.payload.entries;
       })
+
       .addCase(fetchLaundryOrders.rejected, errorReducer)
+
+      .addCase(fetchShoppingOrders.pending, (state) => {
+        state.loading = true;
+        state.orders = [];
+      })
+      .addCase(fetchShoppingOrders.fulfilled, (state, action) => {
+        state.limit = action.payload.limit;
+        state.total = action.payload.total;
+        state.orders = action.payload.entries;
+      })
+      .addCase(fetchShoppingOrders.rejected, errorReducer)
 
       .addCase(getOrderDetail.pending, (state) => {
         state.loading = true;
@@ -218,7 +245,7 @@ export const appOrdersSlice = createSlice({
         });
       })
 
-      .addCase(deleteOrder.rejected, errorReducer)
+      .addCase(deleteOrder.rejected, errorReducer);
 
   }
 });
