@@ -1,5 +1,7 @@
+/* eslint-disable react/prop-types */
 import { Chip } from "@mui/material";
 import { capitalize, prettyDate } from '../../../utils/app-functions';
+// import OrderActions from "./actions";
 
 export const columns = [
   {
@@ -48,7 +50,11 @@ export const columns = [
     field: 'totalCharges',
     type: 'numeric'
     // render: (rowData) => <div>{formatNumberWithCommas(rowData.totalCharges)}</div>
-  }
+  },
 
-  //   { title: 'Birth Place', field: 'birthCity', lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' } }
+  // {
+  //   title: 'Actions',
+  //   render: (rowData) => <OrderActions data={rowData} />
+  // }
 ];
+

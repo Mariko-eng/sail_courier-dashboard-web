@@ -1,37 +1,51 @@
 import { useState } from 'react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ClearIcon from '@mui/icons-material/Clear';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import MoreVertIcon from '@mui/icons-material/MoreVertOutlined';
 import MaterialTable from 'material-table';
 import { useEffect } from 'react';
 import { materialTableIcons } from '../../../utils/material-table-icons';
 import { columns } from './columns';
 import SideNav from '../../../components/sidenav/SideNav';
+// import MoreVertIcon from '@material-ui/icons/';
 
 // ** Store & Actions
 import { fetchRegularOrders } from '../store';
 import { useDispatch, useSelector } from 'react-redux';
-import ImageDropZone from '../../../components/input/ImageDropZone';
-import { Card } from '@mui/material';
+import { Card, Menu, MenuItem } from '@mui/material';
 import { capitalize } from '../../../utils/app-functions';
-
-const NewRugular = () => {
-  return (
-    <div>
-      <p>This is the content of the sidebar1.</p>
-      <p>This is the content of the sidebar2.</p>
-      <p>This is the content of the sidebar3.</p>
-      <p>This is the content of the sidebar4.</p>
-      <p>This is the content of the sidebar5.</p>
-      <ImageDropZone />
-    </div>
-  );
-};
+import { handleApproveOrder, handleCancelOrder, handleConfirmDeliveryOrder, handleConfirmPickupOrder, handleRejectOrder } from './actions';
+import AlertConfrimationDialog from '../../../components/dailog/confirmDialog';
+import SelectCourier from '../actions/SelectCourier';
 
 const Regular = () => {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [[anchorEl, selectedRow], setAnchorEl] = useState([null, undefined]);
+  const [actionType, setActionType] = useState(null);
+  const [message, setMessage] = useState('Are You Sure that you want To Continue?');
+
+  const handleOpenMenuActions = (event, rowData) => {
+    // console.log(event);
+    // console.log(rowData);
+    setAnchorEl([event.currentTarget, rowData]);
+  };
+
+  const handleCloseMenuActions = () => {
+    setAnchorEl([null, undefined]);
+  };
+
+  const handleOpenDialog = (action, desc) => {
+    setIsDialogOpen(true);
+    setActionType(action);
+    setMessage(desc);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
 
   const openSidebar = () => {
     setShowSidebar(true);
@@ -49,24 +63,6 @@ const Regular = () => {
   useEffect(() => {
     dispatch(fetchRegularOrders());
   }, [dispatch]);
-
-  // // ** Get data on mount
-  // useEffect(() => {
-  //   const schoolId = userData.school ? userData.school.id : queryParams.get('school') ? queryParams.get('school') : null;
-  //   const configs = {
-  //     page: currentPage,
-  //     size: rowsPerPage,
-  //     parents: true
-  //   };
-  //   if (schoolId) {
-  //     configs['school'] = schoolId;
-  //   }
-  //   if (searchTerm.length > 0) {
-  //     configs['name'] = searchTerm;
-  //   }
-  //   setConfigParams(configs);
-  //   dispatch(fetchUsers(configs));
-  // }, [dispatch, currentPage, searchTerm]);
 
   const orders = store.orders;
 
@@ -125,11 +121,13 @@ const Regular = () => {
                 openSidebar();
               }
             },
+
             {
-              icon: SaveAltIcon,
-              tooltip: 'Save Order',
-              onClick: (event, rowData) => alert('You saved ' + rowData.name)
+              icon: MoreVertIcon,
+              tooltip: 'More',
+              onClick: handleOpenMenuActions
             },
+
             (rowData) => ({
               icon: ClearIcon,
               tooltip: 'Delete Order',
@@ -162,8 +160,47 @@ const Regular = () => {
           }}
         />
       </div>
+      {anchorEl !== null && (
+        <Menu id="more-menu" anchorEl={anchorEl} keepMounted={true} open={Boolean(anchorEl)} onClose={handleCloseMenuActions}>
+          <MenuItem onClick={() => handleOpenDialog('approve', 'Are You sure You Want To Approve This Order')}>Approve Order</MenuItem>
+          <MenuItem onClick={() => {handleCloseMenuActions(); openSidebar();}}>Assign Courier</MenuItem>
+          <MenuItem onClick={() => handleOpenDialog('confirm_pickup', 'Are You sure You Want To Confirm Pickup Of This Order')}>
+            Confirm Pickup
+          </MenuItem>
+          <MenuItem onClick={() => handleOpenDialog('confirm_delivery', 'Are You sure You Want To Confirm Delivery Of This Order')}>
+            Confirm Delivery
+          </MenuItem>
+          <MenuItem onClick={() => handleOpenDialog('reject', 'Are You sure You Want To Reject This Order')}>Reject Order </MenuItem>
+          <MenuItem onClick={() => handleOpenDialog('cancel', 'Are You sure You Want To Cancel This Order')}>Cancel Order</MenuItem>
+        </Menu>
+      )}
+      {actionType !== null && (
+        <AlertConfrimationDialog
+          open={isDialogOpen}
+          handleClose={handleCloseDialog}
+          message={message}
+          onConfirm={() => {
+            handleCloseMenuActions();
+            if (actionType === 'approve') {
+              handleApproveOrder({ rowData: selectedRow });
+            }
+            if (actionType === 'confirm_pickup') {
+              handleConfirmPickupOrder({ rowData: selectedRow });
+            }
+            if (actionType === 'confirm_delivery') {
+              handleConfirmDeliveryOrder({ rowData: selectedRow });
+            }
+            if (actionType === 'reject') {
+              handleRejectOrder({ rowData: selectedRow });
+            }
+            if (actionType === 'cancel') {
+              handleCancelOrder({ rowData: selectedRow });
+            }
+          }}
+        />
+      )}
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-        <NewRugular />
+        <SelectCourier />
       </SideNav>
     </>
   );

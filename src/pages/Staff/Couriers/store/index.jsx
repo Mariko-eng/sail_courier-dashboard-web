@@ -11,9 +11,29 @@ export const fetchCouriers = createAsyncThunk('courier/fetchAll', async (_, thun
 
     // console.log('response.data');
     // console.log(response.data);
+    // const couriers = response.data; 
 
-    const couriers = response.data; 
-    return couriers;
+    // const data = [];
+
+    // couriers.forEach((item) =>
+    //   data.push({
+    //     id: item.id,
+    //     courierNo: item.courierNo,
+    //     phone: item.phone,
+    //     firstName: item.firstName,
+    //     surName: item.surName,
+    //     email: item.email,
+    //     isActive: item.isActive,
+    //     isOnline: item.isOnline,
+    //     createdAt: item.createdAt
+    //   })
+    // );
+
+    // console.log('data');
+    // console.log(data);
+    // console.log(structuredClone(data))
+
+    return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -128,7 +148,7 @@ export const CouriersSlice = createSlice({
       .addCase(fetchCouriers.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchCouriers.fulfilled, (state, action) => {
+      .addCase(fetchCouriers.fulfilled, (state, action) => {        
         state.loading = false;
         state.data = action.payload;
         state.total = action.payload.length;

@@ -62,13 +62,10 @@ const Shopping = () => {
                       </div>
                     </div>
                     <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontWeight: 'bold' }}>Pickup Point - {rowData.senderOtpCode} </div>
-                      <div style={{ paddingLeft: '10px' }}>{rowData.pickName}</div>
+                      <div style={{ fontWeight: 'bold' }}>Delivery Point - {rowData.receiverOtpCode}</div>
+                      <div style={{ paddingLeft: '10px' }}>{rowData.dropName}</div>
                       <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelSenderName)}</div>
                       <div style={{ paddingLeft: '10px' }}>{rowData.parcelSenderPhone}</div>
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontWeight: 'bold' }}>Delivery Point - {rowData.receiverOtpCode}</div>
                     </div>
                   </Card>
                 );

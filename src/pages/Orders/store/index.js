@@ -9,10 +9,11 @@ import axios from 'axios';
 
 const ordersurl = "https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/orders"
 
-export const fetchAllOrders = createAsyncThunk('courier/fetchAll', async (_, thunkAPI) => {
+export const fetchAllOrders = createAsyncThunk('orders/fetchAll', async (_, thunkAPI) => {
   try {
     const response = await axios.get(`${ordersurl}/?limit=1000`);
     // console.log(response.data);
+    // return structuredClone(response.data);
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
