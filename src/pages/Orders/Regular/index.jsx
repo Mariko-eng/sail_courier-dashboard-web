@@ -16,9 +16,11 @@ import { fetchRegularOrders } from '../store';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, Menu, MenuItem } from '@mui/material';
 import { capitalize } from '../../../utils/app-functions';
-import { handleApproveOrder, handleCancelOrder, handleConfirmDeliveryOrder, handleConfirmPickupOrder, handleRejectOrder } from './actions';
+import { handleCancelOrder, handleConfirmDeliveryOrder, handleConfirmPickupOrder, handleRejectOrder } from './actions';
 import AlertConfrimationDialog from '../../../components/dailog/confirmDialog';
 import SelectCourier from '../actions/SelectCourier';
+import UiLoadingOverlay from '../../../components/overlay';
+import { approveOrder } from '../store/reducers';
 
 const Regular = () => {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -67,111 +69,155 @@ const Regular = () => {
   const orders = store.orders;
 
   const newLoadList = structuredClone(orders);
+  // console.log(store.loading);
 
   return (
     <>
-      <div style={{ overflowX: 'auto' }}>
-        <MaterialTable
-          icons={materialTableIcons}
-          title="Regular Orders"
-          columns={columns}
-          data={newLoadList}
-          detailPanel={[
-            {
-              icon: ArrowDropDownIcon,
-              openIcon: ArrowDropUpIcon,
-              render: (rowData) => {
-                return (
-                  <Card sx={{ paddingLeft: '20px' }}>
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontWeight: 'bold' }}>Package Items </div>
-                      <div style={{ paddingLeft: '10px' }}>
-                        {rowData.parcelItems.map((item, index) => (
-                          <div key={index}>{item}</div>
-                        ))}
+      <UiLoadingOverlay loading={store.loading}>
+        <div style={{ overflowX: 'auto' }}>
+          <MaterialTable
+            icons={materialTableIcons}
+            title="Regular Orders"
+            columns={columns}
+            data={newLoadList}
+            detailPanel={[
+              {
+                icon: ArrowDropDownIcon,
+                openIcon: ArrowDropUpIcon,
+                render: (rowData) => {
+                  return (
+                    <Card sx={{ paddingLeft: '20px' }}>
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontWeight: 'bold' }}>Package Items </div>
+                        <div style={{ paddingLeft: '10px' }}>
+                          {rowData.parcelItems.map((item, index) => (
+                            <div key={index}>{item}</div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontWeight: 'bold' }}>Pickup Point - {rowData.senderOtpCode} </div>
-                      <div style={{ paddingLeft: '10px' }}>{rowData.pickName}</div>
-                      <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelSenderName)}</div>
-                      <div style={{ paddingLeft: '10px' }}>{rowData.parcelSenderPhone}</div>
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontWeight: 'bold' }}>Delivery Point - {rowData.receiverOtpCode}</div>
-                      <div style={{ paddingLeft: '10px' }}>{rowData.dropName}</div>
-                      <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelReceiverName)}</div>
-                      <div style={{ paddingLeft: '10px' }}>{rowData.parcelReceiverPhone}</div>
-                    </div>
-                  </Card>
-                );
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontWeight: 'bold' }}>Pickup Point - {rowData.senderOtpCode} </div>
+                        <div style={{ paddingLeft: '10px' }}>{rowData.pickName}</div>
+                        <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelSenderName)}</div>
+                        <div style={{ paddingLeft: '10px' }}>{rowData.parcelSenderPhone}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontWeight: 'bold' }}>Delivery Point - {rowData.receiverOtpCode}</div>
+                        <div style={{ paddingLeft: '10px' }}>{rowData.dropName}</div>
+                        <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelReceiverName)}</div>
+                        <div style={{ paddingLeft: '10px' }}>{rowData.parcelReceiverPhone}</div>
+                      </div>
+                    </Card>
+                  );
+                }
               }
-            }
-          ]}
-          onRowClick={(event, rowData, togglePanel) => togglePanel()}
-          actions={[
-            {
-              icon: AddCircleIcon,
-              tooltip: 'Add ',
-              isFreeAction: true,
-              // eslint-disable-next-line no-unused-vars
-              // onClick: (event) => alert('You want to add a new row')
-              onClick: (event) => {
-                console.log(event);
-                openSidebar();
-              }
-            },
+            ]}
+            onRowClick={(event, rowData, togglePanel) => togglePanel()}
+            actions={[
+              {
+                icon: AddCircleIcon,
+                tooltip: 'Add ',
+                isFreeAction: true,
+                // eslint-disable-next-line no-unused-vars
+                // onClick: (event) => alert('You want to add a new row')
+                onClick: (event) => {
+                  console.log(event);
+                  openSidebar();
+                }
+              },
 
-            {
-              icon: MoreVertIcon,
-              tooltip: 'More',
-              onClick: handleOpenMenuActions
-            },
+              {
+                icon: MoreVertIcon,
+                tooltip: 'More',
+                onClick: handleOpenMenuActions
+              },
 
-            (rowData) => ({
-              icon: ClearIcon,
-              tooltip: 'Delete Order',
-              onClick: (event, rowData) => confirm('You want to delete ' + rowData.name),
-              disabled: rowData.birthYear < 2000
-            })
-          ]}
-          options={{
-            // selection: true,
-            actionsColumnIndex: -1,
-            sorting: true,
-            search: true,
-            searchAutoFocus: true,
-            searchFieldAlignment: 'right',
-            searchFieldVariant: 'standard',
-            paging: true,
-            pageSizeOptions: [10, 20, 30, 50, 100],
-            pageSize: 10,
-            showFirstLastPageButtons: false,
-            // paginationType:"stepped",
-            // paginationPosition:"both",
-            exportAllData: true,
-            exportButton: true,
-            title: 'Orders',
-            headerStyle: {
-              backgroundColor: '#01579b',
-              color: '#FFF'
-            },
-            showSelectAllCheckbox: true
-          }}
-        />
-      </div>
+              (rowData) => ({
+                icon: ClearIcon,
+                tooltip: 'Delete Order',
+                onClick: (event, rowData) => confirm('You want to delete ' + rowData.name),
+                disabled: rowData.birthYear < 2000
+              })
+            ]}
+            options={{
+              // selection: true,
+              actionsColumnIndex: -1,
+              sorting: true,
+              search: true,
+              searchAutoFocus: true,
+              searchFieldAlignment: 'right',
+              searchFieldVariant: 'standard',
+              paging: true,
+              pageSizeOptions: [10, 20, 30, 50, 100],
+              pageSize: 10,
+              showFirstLastPageButtons: false,
+              // paginationType:"stepped",
+              // paginationPosition:"both",
+              exportAllData: true,
+              exportButton: true,
+              title: 'Orders',
+              headerStyle: {
+                backgroundColor: '#01579b',
+                color: '#FFF'
+              },
+              showSelectAllCheckbox: true
+            }}
+          />
+        </div>
+      </UiLoadingOverlay>
+
       {anchorEl !== null && (
         <Menu id="more-menu" anchorEl={anchorEl} keepMounted={true} open={Boolean(anchorEl)} onClose={handleCloseMenuActions}>
-          <MenuItem onClick={() => handleOpenDialog('approve', 'Are You sure You Want To Approve This Order')}>Approve Order</MenuItem>
-          <MenuItem onClick={() => {handleCloseMenuActions(); openSidebar();}}>Assign Courier</MenuItem>
-          <MenuItem onClick={() => handleOpenDialog('confirm_pickup', 'Are You sure You Want To Confirm Pickup Of This Order')}>
-            Confirm Pickup
-          </MenuItem>
-          <MenuItem onClick={() => handleOpenDialog('confirm_delivery', 'Are You sure You Want To Confirm Delivery Of This Order')}>
-            Confirm Delivery
-          </MenuItem>
-          <MenuItem onClick={() => handleOpenDialog('reject', 'Are You sure You Want To Reject This Order')}>Reject Order </MenuItem>
-          <MenuItem onClick={() => handleOpenDialog('cancel', 'Are You sure You Want To Cancel This Order')}>Cancel Order</MenuItem>
+          {selectedRow.status === 'cancelled' ? (
+            <div>
+              <MenuItem
+                onClick={() => {
+                  handleCloseMenuActions();
+                }}
+              >
+                Order Cancelled
+              </MenuItem>
+            </div>
+          ) : selectedRow.status === 'rejected' ? (
+            <div>
+              <MenuItem onClick={() => handleOpenDialog('re-publish', 'Are You sure You Want To Re-publish Of This Order')}>
+                Republish Order
+              </MenuItem>
+            </div>
+          ) : selectedRow.status === 'pending' ? (
+            <div>
+              <MenuItem onClick={() => handleOpenDialog('approve', 'Are You sure You Want To Approve This Order')}>Approve Order</MenuItem>
+              <MenuItem onClick={() => handleOpenDialog('reject', 'Are You sure You Want To Reject This Order')}>Reject Order </MenuItem>
+            </div>
+          ) : (
+            <div>
+              {selectedRow.status === 'approved' ? (
+                <MenuItem
+                  onClick={() => {
+                    handleCloseMenuActions();
+                    openSidebar();
+                  }}
+                >
+                  Assign Courier
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  onClick={() => {
+                    handleCloseMenuActions();
+                    openSidebar();
+                  }}
+                >
+                  Re-Assign Courier
+                </MenuItem>
+              )}
+              <MenuItem onClick={() => handleOpenDialog('confirm_pickup', 'Are You sure You Want To Confirm Pickup Of This Order')}>
+                Confirm Pickup
+              </MenuItem>
+              <MenuItem onClick={() => handleOpenDialog('confirm_delivery', 'Are You sure You Want To Confirm Delivery Of This Order')}>
+                Confirm Delivery
+              </MenuItem>
+            </div>
+          )}
         </Menu>
       )}
       {actionType !== null && (
@@ -182,7 +228,9 @@ const Regular = () => {
           onConfirm={() => {
             handleCloseMenuActions();
             if (actionType === 'approve') {
-              handleApproveOrder({ rowData: selectedRow });
+              handleCloseDialog();
+              dispatch(approveOrder({ id: selectedRow.id }));
+              // handleApproveOrder({ rowData: selectedRow });
             }
             if (actionType === 'confirm_pickup') {
               handleConfirmPickupOrder({ rowData: selectedRow });
@@ -193,7 +241,7 @@ const Regular = () => {
             if (actionType === 'reject') {
               handleRejectOrder({ rowData: selectedRow });
             }
-            if (actionType === 'cancel') {
+            if (actionType === 're-publish') {
               handleCancelOrder({ rowData: selectedRow });
             }
           }}

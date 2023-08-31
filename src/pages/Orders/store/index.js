@@ -1,13 +1,14 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { approveOrder } from './reducers';
 
 // ** Axios Imports
 // import client from '../../../../axios';
 // import { generateError } from '@utils';
 // import toast from 'react-hot-toast';
 
-const ordersurl = "https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/orders"
+const ordersurl = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/orders';
 
 export const fetchAllOrders = createAsyncThunk('orders/fetchAll', async (_, thunkAPI) => {
   try {
@@ -30,17 +31,15 @@ export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async 
   }
 });
 
-
 export const fetchLaundryOrders = createAsyncThunk('orders/fetchLaundry', async (configs, thunkAPI) => {
   try {
     const response = await axios.get(`${ordersurl}/laundry/?limit=1000`);
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
 });
-
 
 export const fetchShoppingOrders = createAsyncThunk('orders/fetchShopping', async (configs, thunkAPI) => {
   try {
@@ -52,8 +51,6 @@ export const fetchShoppingOrders = createAsyncThunk('orders/fetchShopping', asyn
   }
 });
 
-
-
 export const getOrderDetail = createAsyncThunk('orders/getDetail', async (id, thunkAPI) => {
   try {
     const response = await axios.get(`${ordersurl}/detail/${id}`);
@@ -63,7 +60,6 @@ export const getOrderDetail = createAsyncThunk('orders/getDetail', async (id, th
     return thunkAPI.rejectWithValue(error);
   }
 });
-
 
 export const addRegularorder = createAsyncThunk('orders/addRegular', async (data, thunkAPI) => {
   try {
@@ -87,7 +83,6 @@ export const addLaundryOrder = createAsyncThunk('orders/addLaundry', async (data
   }
 });
 
-
 export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (id, thunkAPI) => {
   try {
     // await client.delete(`/api/v1/users/delete/${id}`);
@@ -96,7 +91,6 @@ export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (id, thu
     return thunkAPI.rejectWithValue(error);
   }
 });
-
 
 const errorReducer = (state, { payload }) => {
   state.loading = false;
@@ -148,6 +142,7 @@ export const appOrdersSlice = createSlice({
         state.orders = [];
       })
       .addCase(fetchRegularOrders.fulfilled, (state, action) => {
+        state.loading = false;
         state.limit = action.payload.limit;
         state.total = action.payload.total;
         state.orders = action.payload.entries;
@@ -160,6 +155,7 @@ export const appOrdersSlice = createSlice({
       })
 
       .addCase(fetchLaundryOrders.fulfilled, (state, action) => {
+        state.loading = false;
         state.limit = action.payload.limit;
         state.total = action.payload.total;
         state.orders = action.payload.entries;
@@ -172,6 +168,7 @@ export const appOrdersSlice = createSlice({
         state.orders = [];
       })
       .addCase(fetchShoppingOrders.fulfilled, (state, action) => {
+        state.loading = false;
         state.limit = action.payload.limit;
         state.total = action.payload.total;
         state.orders = action.payload.entries;
@@ -246,9 +243,25 @@ export const appOrdersSlice = createSlice({
         });
       })
 
-      .addCase(deleteOrder.rejected, errorReducer);
+      .addCase(deleteOrder.rejected, errorReducer)
 
+      .addCase(approveOrder.pending, (state) => {
+        state.loading = true;
+      })
+
+      .addCase(approveOrder.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        // state.selectedOrder = action.payload;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+
+      .addCase(approveOrder.rejected, errorReducer);
   }
 });
 export const { clearError, setOrderError, setSubmitted, setEditing } = appOrdersSlice.actions;
-export default appOrdersSlice.reducer; 
+export default appOrdersSlice.reducer;

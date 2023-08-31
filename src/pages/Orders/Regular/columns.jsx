@@ -28,7 +28,13 @@ export const columns = [
     field: 'status',
     render: (rowData) => (
       <div>
-        {rowData.status === 'pending' ? <Chip label="Pending" color="primary" /> : <Chip label={rowData.status} variant="outlined" />}
+        {rowData.status === 'pending' ? (
+          <Chip label="Pending" color="primary" />
+        ) : rowData.status === 'approved' ? (
+          <Chip label="Approved" color="secondary" />
+        ) : (
+          <Chip label={capitalize(rowData.status)} variant="outlined" />
+        )}
       </div>
     )
   },
@@ -50,7 +56,7 @@ export const columns = [
     field: 'totalCharges',
     type: 'numeric'
     // render: (rowData) => <div>{formatNumberWithCommas(rowData.totalCharges)}</div>
-  },
+  }
 
   // {
   //   title: 'Actions',
