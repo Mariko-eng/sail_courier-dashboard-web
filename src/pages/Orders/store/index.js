@@ -1,7 +1,20 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { approveOrder } from './reducers';
+import {
+  approveOrder,
+  assignCourierToRegularOrder,
+  assignCourierToLaundryOrder,
+  reAssignCourierToOrder,
+  confirmRegularOrderPickUp,
+  confirmLaundryOrderPickUp,
+  confirmShoppingOrderPickUp,
+  confirmLaundryOrderServicing,
+  confirmLaundryOrderDroppingOff,
+  confirmOrderdelivery,
+  rejectOrder,
+  cancelOrder
+} from './reducers';
 
 // ** Axios Imports
 // import client from '../../../../axios';
@@ -242,16 +255,14 @@ export const appOrdersSlice = createSlice({
           }
         });
       })
-
       .addCase(deleteOrder.rejected, errorReducer)
 
+      // Status 1
       .addCase(approveOrder.pending, (state) => {
         state.loading = true;
       })
-
       .addCase(approveOrder.fulfilled, (state, { payload }) => {
         state.loading = false;
-        // state.selectedOrder = action.payload;
         state.orders = state.orders.map((order) => {
           if (order.id === payload.id) {
             return { ...order, ...payload };
@@ -259,8 +270,172 @@ export const appOrdersSlice = createSlice({
           return order;
         });
       })
+      .addCase(approveOrder.rejected, errorReducer)
 
-      .addCase(approveOrder.rejected, errorReducer);
+      // Status 2
+      .addCase(assignCourierToRegularOrder.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(assignCourierToRegularOrder.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(assignCourierToRegularOrder.rejected, errorReducer)
+
+      // Status 3
+      .addCase(assignCourierToLaundryOrder.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(assignCourierToLaundryOrder.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(assignCourierToLaundryOrder.rejected, errorReducer)
+
+      // Status 4
+      .addCase(reAssignCourierToOrder.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(reAssignCourierToOrder.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(reAssignCourierToOrder.rejected, errorReducer)
+
+      // Status 5
+      .addCase(confirmRegularOrderPickUp.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(confirmRegularOrderPickUp.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(confirmRegularOrderPickUp.rejected, errorReducer)
+
+      // Status 6
+      .addCase(confirmLaundryOrderPickUp.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(confirmLaundryOrderPickUp.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(confirmLaundryOrderPickUp.rejected, errorReducer)
+
+      // Status 7
+      .addCase(confirmShoppingOrderPickUp.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(confirmShoppingOrderPickUp.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(confirmShoppingOrderPickUp.rejected, errorReducer)
+
+      // Status 8
+      .addCase(confirmLaundryOrderServicing.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(confirmLaundryOrderServicing.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(confirmLaundryOrderServicing.rejected, errorReducer)
+
+      // Status 9
+      .addCase(confirmLaundryOrderDroppingOff.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(confirmLaundryOrderDroppingOff.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(confirmLaundryOrderDroppingOff.rejected, errorReducer)
+
+      // Status 10
+      .addCase(confirmOrderdelivery.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(confirmOrderdelivery.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(confirmOrderdelivery.rejected, errorReducer)
+
+      // Status 10
+      .addCase(rejectOrder.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(rejectOrder.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(rejectOrder.rejected, errorReducer)
+
+      // Status 10
+      .addCase(cancelOrder.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(cancelOrder.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(cancelOrder.rejected, errorReducer);
   }
 });
 export const { clearError, setOrderError, setSubmitted, setEditing } = appOrdersSlice.actions;

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Chip } from "@mui/material";
+import { Chip } from '@mui/material';
 import { capitalize, prettyDate } from '../../../utils/app-functions';
 // import OrderActions from "./actions";
 
@@ -29,9 +29,17 @@ export const columns = [
     render: (rowData) => (
       <div>
         {rowData.status === 'pending' ? (
-          <Chip label="Pending" color="primary" />
+          <Chip label="Pending" color="primary" variant="outlined" />
         ) : rowData.status === 'approved' ? (
-          <Chip label="Approved" color="secondary" />
+          <Chip label="Approved" color="primary" variant="contained" />
+        ) : rowData.status === 'assigned' ? (
+          <Chip label="Assigned" color="secondary" variant="outlined" />
+        ) : rowData.status === 'pickedUp' ? (
+          <Chip label="PickedUp" color="secondary" variant="contained" />
+        ) : rowData.status === 'delivered' ? (
+          <Chip label="Delivered" color="success" variant="contained" />
+        ) : rowData.status === 'cancelled' || rowData.status === 'rejected' ? (
+          <Chip label={capitalize(rowData.status)} color="error" variant="contained" />
         ) : (
           <Chip label={capitalize(rowData.status)} variant="outlined" />
         )}
@@ -63,4 +71,3 @@ export const columns = [
   //   render: (rowData) => <OrderActions data={rowData} />
   // }
 ];
-

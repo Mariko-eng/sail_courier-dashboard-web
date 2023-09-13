@@ -4,7 +4,6 @@ import customizationReducer from "./app/customizationReducer";
 import ordersReducer from './../pages/Orders/store';
 import shoppingCategoriesReducer from './../pages/Utilities/Shopping/Categories/store';
 import shoppingItemsReducer from './../pages/Utilities/Shopping/Items/store';
-import shoppingSubscriptionsReducer from './../pages/Utilities/Shopping/Subscriptions/store';
 import laundryCategoriesReducer from './../pages/Utilities/Laundry/Categories/store';
 import laundryItemsReducer from './../pages/Utilities/Laundry/Items/store';
 import couriersReducer from './../pages/Staff/Couriers/store';
@@ -17,7 +16,6 @@ export const rootReducer = combineReducers({
   orders: ordersReducer,
   shoppingCategories: shoppingCategoriesReducer,
   shoppingItems: shoppingItemsReducer,
-  shoppingSubscriptions: shoppingSubscriptionsReducer,
   laundryCategories: laundryCategoriesReducer,
   laundryItems: laundryItemsReducer,
   couriers: couriersReducer,

@@ -22,7 +22,6 @@ const LaundryItems = Loadable(lazy(() => import('../../pages/Utilities/Laundry/I
 // Utilities - Shopping
 const ShoppingCategories = Loadable(lazy(() => import('../../pages/Utilities/Shopping/Categories')));
 const ShoppingItems = Loadable(lazy(() => import('../../pages/Utilities/Shopping/Items')));
-const ShoppingSubscriptions = Loadable(lazy(() => import('../../pages/Utilities/Shopping/Subscriptions')));
 
 // Staff
 const StaffAdmins = Loadable(lazy(() => import('../../pages/Staff/Admins')));
@@ -62,7 +61,7 @@ export const AppRoutes = [
     element: <LaundryItems />
   },
   // Utilities - Shopping
-  { 
+  {
     path: 'shopping/categories',
     meta: { isPrivate: true },
     element: <ShoppingCategories />
@@ -75,7 +74,7 @@ export const AppRoutes = [
   {
     path: 'shopping/subscriptions',
     meta: { isPrivate: true },
-    element: <ShoppingSubscriptions />
+    element: <ShoppingItems />
   },
   // Clients
   {
