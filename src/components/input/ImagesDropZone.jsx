@@ -35,8 +35,7 @@ const img = {
 };
 
 // eslint-disable-next-line no-unused-vars
-function ImageDropZone({ files , setFiles }) {
-  // const [files, setFiles] = useState([]);
+function ImagesDropZone({ files, setFiles }) {
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       'image/*': []
@@ -70,7 +69,7 @@ function ImageDropZone({ files , setFiles }) {
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, []);
+  }, [files]);
 
   return (
     <section className="container">
@@ -83,4 +82,4 @@ function ImageDropZone({ files , setFiles }) {
   );
 }
 
-export default ImageDropZone;
+export default ImagesDropZone;

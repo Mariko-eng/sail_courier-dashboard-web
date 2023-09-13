@@ -15,11 +15,11 @@ import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, Me
 import LoadingButton from '@mui/lab/LoadingButton';
 
 import AnimateButton from '../../../../ui-component/extended/AnimateButton';
-import ImageDropZone from '../../../../components/input/ImageDropZone';
+import ImageDropZoneBase64 from '../../../../components/input/ImageDropZoneBase64';
 
 const ShoppingItemsNew = () => {
-  const [files, setFiles] = useState([]);
-  const [fileError, setFileError] = useState("");
+  const [fileBase64, setFileBase64] = useState('');
+  const [fileError, setFileError] = useState('');
 
   const theme = useTheme();
   const scriptedRef = useScriptRef();
@@ -29,7 +29,7 @@ const ShoppingItemsNew = () => {
   const shoppingItemsStore = useSelector((store) => store.shoppingItems);
 
   useEffect(() => {
-      dispatch(fetchShoppingCategories());
+    dispatch(fetchShoppingCategories());
   }, [dispatch]);
 
   return (
@@ -55,39 +55,31 @@ const ShoppingItemsNew = () => {
           onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
             try {
               if (scriptedRef.current) {
-                if (files.length < 1) {
+                if (fileBase64 === '') {
                   setFileError('Select Item Image!');
                   return;
                 } else {
-                  setFileError('');
-                  const reader = new FileReader();
-                  reader.readAsDataURL(files[0]);
-                  reader.onload = (e) => {
-                    const result = e.target.result;
-                    const list = result.split(',');
-                    if (list.length >= 2) {
-                      // console.log('0 ', list[0]);
-                      // console.log('1 ', list[1]);
-                      const category_obj = shoppingCategoriesStore.data.find((itm) => itm.id == values.category);
-                      const data = {
-                        name: values.name,
-                        category: category_obj,
-                        manufacturer: values.manufacturer,
-                        capacity: values.capacity,
-                        price: values.price,
-                        imageFormat: list[0],
-                        imageBase64: list[1]
-                      };
-                      // console.log(data);
-                      dispatch(addShoppingItem(data));
-                      setStatus({ success: true });
-                      setSubmitting(false);
-                      setFiles([]);
-                      resetForm();
-                    }else{
-                      console.log("fileBase64 Empty");
-                    }
-                  };
+                  const list = fileBase64.split(',');
+                  if (list.length >= 2) {
+                    // console.log('0 ', list[0]);
+                    // console.log('1 ', list[1]);
+                    const category_obj = shoppingCategoriesStore.data.find((itm) => itm.id == values.category);
+                    const data = {
+                      name: values.name,
+                      category: category_obj,
+                      manufacturer: values.manufacturer,
+                      capacity: values.capacity,
+                      price: values.price,
+                      imageFormat: list[0],
+                      imageBase64: list[1]
+                    };
+                    // console.log(data);
+                    dispatch(addShoppingItem(data));
+                    setStatus({ success: true });
+                    setSubmitting(false);
+                    setFileBase64('');
+                    resetForm();
+                  }
                 }
               }
             } catch (err) {
@@ -145,8 +137,8 @@ const ShoppingItemsNew = () => {
               </FormControl>
 
               <Box mt={2} py={2} border={'1px solid grey'} borderRadius={'5px'}>
-                <ImageDropZone files={files} setFiles={setFiles} />
-                { fileError !== "" && <p style={{color: "red"}} >Select An Image Of The Item</p>}
+                <ImageDropZoneBase64 fileBase64={fileBase64} setFileBase64={setFileBase64} />
+                {fileError !== '' && <p style={{ color: 'red' }}>Select An Image Of The Item</p>}
               </Box>
 
               <FormControl fullWidth error={Boolean(touched.manufacturer && errors.manufacturer)} sx={{ ...theme.typography.customInput }}>

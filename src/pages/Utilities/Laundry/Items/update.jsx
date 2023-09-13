@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable react/prop-types */
+import { useEffect, useMemo, useState } from 'react';
 import useScriptRef from '../../../../hooks/useScriptRef';
 
 import { fetchLaundryCategories } from '../Categories/store';
@@ -17,7 +18,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import AnimateButton from '../../../../ui-component/extended/AnimateButton';
 import ImageDropZoneBase64 from '../../../../components/input/ImageDropZoneBase64';
 
-const LaundryItemsNew = () => {
+const LaundryItemUpdate = () => {
   const [fileBase64, setFileBase64] = useState('');
   const [fileError, setFileError] = useState('');
 
@@ -28,20 +29,30 @@ const LaundryItemsNew = () => {
   const LaundryCategoriesStore = useSelector((store) => store.laundryCategories);
   const LaundryItemsStore = useSelector((store) => store.laundryItems);
 
+  const laundryItem = useMemo(() => {
+    return LaundryItemsStore.selectedData;
+  }, [LaundryItemsStore]);
+
+console.log(laundryItem)
+
   useEffect(() => {
     dispatch(fetchLaundryCategories());
   }, [dispatch]);
 
+  useEffect(() => {
+    setFileBase64(laundryItem.imageFormat + ',' + laundryItem.imageBase64);
+  }, [laundryItem]);
+
   return (
     <div>
-      <p>Add Laundry New Item</p>
+      <p>Update Laundry Item</p>
       {LaundryCategoriesStore.data.length >= 1 ? (
         <Formik
           initialValues={{
-            name: '',
-            category: '',
-            priceWash: 5000,
-            priceDry: 4000,
+            name: laundryItem.name,
+            category: laundryItem.category.id,
+            priceWash: laundryItem.priceWash,
+            priceDry: laundryItem.priceDry,
             submit: null
           }}
           validationSchema={Yup.object().shape({
@@ -208,4 +219,4 @@ const LaundryItemsNew = () => {
   );
 };
 
-export default LaundryItemsNew;
+export default LaundryItemUpdate;

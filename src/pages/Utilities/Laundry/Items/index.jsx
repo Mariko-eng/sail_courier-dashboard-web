@@ -6,14 +6,17 @@ import MainCard from '../../../../ui-component/cards/MainCard';
 import { capitalize } from '../../../../utils/app-functions';
 import LaundryItemsNew from './new';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLaundryItems } from './store';
+import { fetchLaundryItems, setSelectedData } from './store';
+import LaundryItemUpdate from './update';
 // import { deleteLaundryItem } from './store';
 
 const LaundryItems = () => {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [isShowSidebarNew, setIsShowSidebarNew] = useState(true);
 
   // eslint-disable-next-line no-unused-vars
-  const openSidebar = () => {
+  const openSidebar = (isNew) => {
+    setIsShowSidebarNew(isNew);
     setShowSidebar(true);
   };
 
@@ -43,7 +46,7 @@ const LaundryItems = () => {
       <MainCard
         title="Laundry Items"
         secondary={
-          <Button variant="outlined" onClick={openSidebar} startIcon={<AddCircle />}>
+          <Button variant="outlined" onClick={() => openSidebar(true)} startIcon={<AddCircle />}>
             New
           </Button>
         }
@@ -56,7 +59,7 @@ const LaundryItems = () => {
                   <CardMedia
                     component="img"
                     alt="green iguana"
-                    height="140" 
+                    height="140"
                     image={obj.imageFormat + ',' + obj.imageBase64}
                     // image={'data:image/png;base64,' + obj.imageBase64}
                   />
@@ -75,7 +78,11 @@ const LaundryItems = () => {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Edit</Button>
+                    <Button size="small" onClick={() => {
+                      dispatch(setSelectedData(obj));
+                      openSidebar(false)}}>
+                      Update
+                    </Button>
                     <Button size="small">Delete</Button>
                   </CardActions>
                 </Card>
@@ -86,7 +93,7 @@ const LaundryItems = () => {
       </MainCard>
 
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-        <LaundryItemsNew />
+        {isShowSidebarNew ? <LaundryItemsNew /> : <LaundryItemUpdate />}
       </SideNav>
     </>
   );

@@ -11,14 +11,14 @@ import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, Me
 import LoadingButton from '@mui/lab/LoadingButton';
 
 import AnimateButton from '../../../ui-component/extended/AnimateButton';
-import ImageDropZone from '../../../components/input/ImageDropZone';
+import ImageDropZoneBase64 from '../../../components/input/ImageDropZoneBase64';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { addCourier } from './store';
 
 
 const CouriersNew = () => {
-    const [files, setFiles] = useState([]);
+  const [fileBase64, setFileBase64] = useState('');
 
     const theme = useTheme();
     const scriptedRef = useScriptRef();
@@ -64,7 +64,7 @@ const CouriersNew = () => {
             if (scriptedRef.current) {
               let imageFormat;
               let imageBase64;
-              if (files.length < 1) {
+              if (fileBase64 === "") {
                 imageFormat = '';
                 imageBase64 = '';
 
@@ -77,15 +77,10 @@ const CouriersNew = () => {
                 dispatch(addCourier(data));
                 setStatus({ success: true });
                 setSubmitting(false);
-                setFiles([]);
+                setFileBase64("");
                 resetForm();
               } else {
-                console.log(files[0]);
-                const reader = new FileReader();
-                reader.readAsDataURL(files[0]);
-                reader.onload = (e) => {
-                  const result = e.target.result;
-                  const list = result.split(',');
+                  const list = fileBase64.split(',');
                   if (list.length >= 2) {
                     imageFormat = list[0];
                     imageBase64 = list[1];
@@ -99,11 +94,10 @@ const CouriersNew = () => {
                     dispatch(addCourier(data));
                     setStatus({ success: true });
                     setSubmitting(false);
-                    setFiles([]);
+                    setFileBase64("");
                     resetForm();
                   }
-                };
-              }
+                }
             }
           } catch (err) {
             console.error(err);
@@ -304,7 +298,7 @@ const CouriersNew = () => {
             <Box mt={2}>
               <Box> Select Courier Passport Photo </Box>
               <Box py={2} border={'1px solid grey'} borderRadius={'5px'}>
-                <ImageDropZone files={files} setFiles={setFiles} />
+                <ImageDropZoneBase64 fileBase64={fileBase64} setFileBase64={setFileBase64} />
               </Box>
             </Box>
 

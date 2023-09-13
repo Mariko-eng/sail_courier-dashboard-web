@@ -69,6 +69,9 @@ export const laundryItemsSlice = createSlice({
     setEditing: (state, { payload }) => {
       state.edit = payload;
     },
+    setSelectedData: (state, { payload }) => {
+      state.selectedData = payload;
+    },
     setDataError: errorReducer
   },
 
@@ -122,5 +125,5 @@ export const laundryItemsSlice = createSlice({
       .addCase(deleteLaundryItem.rejected, errorReducer);
   }
 });
-export const { clearError, setDataError, setSubmitted, setEditing } = laundryItemsSlice.actions;
+export const { clearError, setDataError, setSubmitted, setEditing, setSelectedData } = laundryItemsSlice.actions;
 export default laundryItemsSlice.reducer;
