@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { auth } from '../../../firebase/config';
+import { baseUrl } from '../../../config/axios';
 
-
-const ordersurl = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/orders';
+const ordersurl = `${baseUrl}/main/orders`;
 
 export const approveOrder = createAsyncThunk('orders/approveOrder', async (data, thunkAPI) => {
   try {
@@ -231,6 +231,15 @@ export const cancelOrder = createAsyncThunk('orders/cancelOrder', async (data, t
       status: 'cancelled',
       ...orderData
     };
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (id, thunkAPI) => {
+  try {
+    await axios.delete(`${ordersurl}/delete/${id}`);
+    return id;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }

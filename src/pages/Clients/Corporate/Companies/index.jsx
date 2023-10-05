@@ -1,22 +1,21 @@
 import { useEffect, useState } from 'react';
-import MainCard from '../../../ui-component/cards/MainCard';
 import { Button, Card } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
-import SideNav from '../../../components/sidenav/SideNav';
-import CorporateNew from './new';
+import CorporateCompaniesNew from './new';
+import SideNav from '../../../../components/sidenav/SideNav';
+import UiLoadingOverlay from '../../../../components/overlay';
+import MainCard from '../../../../ui-component/cards/MainCard';
 import Edit from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
-
-import { materialTableIcons } from '../../../utils/material-table-icons';
+import MaterialTable from 'material-table';
+import { materialTableIcons } from '../../../../utils/material-table-icons';
 import { columns } from './columns';
 
-// ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchClientsCorporate, deleteClient } from './../store/extra_reducers';
-import MaterialTable from 'material-table';
-import UiLoadingOverlay from '../../../components/overlay';
+import { fetchCorporateCompanies, deleteCorporateCompany } from './../../store/extra_reducers';
 
-const ClientsCorporate = () => {
+
+const CorporateCompanies = () => {
   const [showSidebar, setShowSidebar] = useState(false);
 
   const openSidebar = () => {
@@ -27,24 +26,24 @@ const ClientsCorporate = () => {
     setShowSidebar(false);
   };
 
-    const dispatch = useDispatch();
-    const store = useSelector((state) => state.clients);
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.clients);
 
-    const data = store.data;
+    const data = store.dataCompanies;
 
     const newLoadList = structuredClone(data);
 
     // console.log(newLoadList);
 
     useEffect(() => {
-      dispatch(fetchClientsCorporate());
+      dispatch(fetchCorporateCompanies());
     }, [dispatch]);
 
   return (
     <>
       <UiLoadingOverlay loading={store.loading}>
         <MainCard
-          title="Clients - Corporate"
+          title="Corporate Companies"
           secondary={
             <Button variant="outlined" startIcon={<AddCircle />} onClick={openSidebar}>
               New
@@ -72,9 +71,9 @@ const ClientsCorporate = () => {
                     icon: ClearIcon,
                     tooltip: 'Delete Order',
                     onClick: (event, rowData) => {
-                      var result = confirm('You want to delete this client? ' + rowData.username);
+                      var result = confirm('You want to delete this company? ' + rowData.companyName);
                       if (result === true) {
-                        dispatch(deleteClient(rowData.id));
+                        dispatch(deleteCorporateCompany(rowData.id));
                       }
                     }
                   })
@@ -109,10 +108,10 @@ const ClientsCorporate = () => {
       </UiLoadingOverlay>
 
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-        <CorporateNew />
+        <CorporateCompaniesNew />
       </SideNav>
     </>
   );
 };
 
-export default ClientsCorporate;
+export default CorporateCompanies;

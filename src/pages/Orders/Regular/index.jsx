@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ClearIcon from '@mui/icons-material/Clear';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -19,8 +18,9 @@ import { capitalize } from '../../../utils/app-functions';
 import AlertConfrimationDialog from '../../../components/dailog/confirmDialog';
 import SelectCourier from '../actions/SelectCourier';
 import UiLoadingOverlay from '../../../components/overlay';
-import { approveOrder ,assignCourierToRegularOrder } from '../store/reducers';
-import { confirmRegularOrderPickUp, confirmOrderdelivery, rejectOrder } from '../store/reducers';
+import { approveOrder ,assignCourierToRegularOrder, deleteOrder } from '../store/reducers';
+import { confirmRegularOrderPickUp, confirmOrderdelivery } from '../store/reducers';
+import { rejectOrder, cancelOrder } from '../store/reducers';
 import OrderHistory from '../history';
 
 const Regular = () => {
@@ -67,8 +67,6 @@ const Regular = () => {
 
   const dispatch = useDispatch();
   const store = useSelector((state) => state.orders);
-
-  // console.log(store);
 
   useEffect(() => {
     dispatch(fetchRegularOrders());
@@ -123,18 +121,6 @@ const Regular = () => {
             onRowClick={(event, rowData, togglePanel) => togglePanel()}
             actions={[
               {
-                icon: AddCircleIcon,
-                tooltip: 'Add ',
-                isFreeAction: true,
-                // eslint-disable-next-line no-unused-vars
-                // onClick: (event) => alert('You want to add a new row')
-                onClick: (event) => {
-                  console.log(event);
-                  openSidebar();
-                }
-              },
-
-              {
                 icon: MoreVertIcon,
                 tooltip: 'More',
                 onClick: handleOpenMenuActions
@@ -143,8 +129,13 @@ const Regular = () => {
               (rowData) => ({
                 icon: ClearIcon,
                 tooltip: 'Delete Order',
-                onClick: (event, rowData) => confirm('You want to delete ' + rowData.name),
-                disabled: rowData.birthYear < 2000
+                onClick: (event, rowData) => {
+                  var result = confirm('You want to delete order ' + rowData.orderTrackerNo);
+                  if (result === true) {
+                    dispatch(deleteOrder(rowData.id));
+                  }
+                },
+                disabled: rowData.status !== 'cancelled' && rowData.status !== 'rejected'
               })
             ]}
             options={{
@@ -241,6 +232,7 @@ const Regular = () => {
               <MenuItem onClick={() => handleOpenDialog('confirm_delivery', 'Are You sure You Want To Confirm Delivery Of This Order')}>
                 Confirm Delivery
               </MenuItem>
+              <MenuItem onClick={() => handleOpenDialog('cancel', 'Are You sure You Want To Cancel This Order')}>Cancel Order </MenuItem>
               <MenuItem
                 onClick={() => {
                   handleCloseMenuActionsSideBar();
@@ -282,15 +274,19 @@ const Regular = () => {
             }
             if (actionType === 'confirm_delivery') {
               handleCloseDialog();
-              dispatch(confirmOrderdelivery({ id: selectedRow.id }));            
+              dispatch(confirmOrderdelivery({ id: selectedRow.id }));
             }
             if (actionType === 'reject') {
               handleCloseDialog();
-              dispatch(rejectOrder({ id: selectedRow.id }));            
+              dispatch(rejectOrder({ id: selectedRow.id }));
+            }
+            if (actionType === 'cancel') {
+              handleCloseDialog();
+              dispatch(cancelOrder({ id: selectedRow.id }));
             }
             if (actionType === 're-publish') {
               handleCloseDialog();
-              // dispatch(approveOrder1({ id: selectedRow.id }));            
+              // dispatch(approveOrder1({ id: selectedRow.id }));
             }
           }}
         />
@@ -298,8 +294,8 @@ const Regular = () => {
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
         {sidebarType === 'courier' ? (
           <SelectCourier
-            selectedCourier = {selectedCourier}
-            setSelectedCourier = {setSelectedCourier}
+            selectedCourier={selectedCourier}
+            setSelectedCourier={setSelectedCourier}
             onSelect={() => {
               handleOpenDialog('assign_courier', 'Are You sure You Want To Confirm Assign This Courier To This Order');
             }}

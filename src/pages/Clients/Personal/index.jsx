@@ -1,56 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { Card } from 'react-bootstrap';
 import MainCard from '../../../ui-component/cards/MainCard';
-import { Button, Card } from '@mui/material';
-import { AddCircle } from '@mui/icons-material';
-import SideNav from '../../../components/sidenav/SideNav';
-import CorporateNew from './new';
+import { materialTableIcons } from '../../../utils/material-table-icons';
+import { columns } from './columns';
 import Edit from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
 
-import { materialTableIcons } from '../../../utils/material-table-icons';
-import { columns } from './columns';
-
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchClientsCorporate, deleteClient } from './../store/extra_reducers';
+import { fetchClientsPersonal, deleteClient } from './../store/extra_reducers'
 import MaterialTable from 'material-table';
 import UiLoadingOverlay from '../../../components/overlay';
 
-const ClientsCorporate = () => {
-  const [showSidebar, setShowSidebar] = useState(false);
 
-  const openSidebar = () => {
-    setShowSidebar(true);
-  };
+const ClientsPersonal = () => {
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.clients);
 
-  const closeSidebar = () => {
-    setShowSidebar(false);
-  };
+  const data = store.data;
 
-    const dispatch = useDispatch();
-    const store = useSelector((state) => state.clients);
+  const newLoadList = structuredClone(data);
 
-    const data = store.data;
+  // console.log(newLoadList);
 
-    const newLoadList = structuredClone(data);
-
-    // console.log(newLoadList);
-
-    useEffect(() => {
-      dispatch(fetchClientsCorporate());
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchClientsPersonal());
+  }, [dispatch]);
 
   return (
     <>
       <UiLoadingOverlay loading={store.loading}>
-        <MainCard
-          title="Clients - Corporate"
-          secondary={
-            <Button variant="outlined" startIcon={<AddCircle />} onClick={openSidebar}>
-              New
-            </Button>
-          }
-        >
+        <MainCard title="Clients - Personal">
           <Card sx={{ overflow: 'hidden' }}>
             <div style={{ overflowX: 'auto' }}>
               <MaterialTable
@@ -107,12 +87,8 @@ const ClientsCorporate = () => {
           </Card>
         </MainCard>
       </UiLoadingOverlay>
-
-      <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-        <CorporateNew />
-      </SideNav>
     </>
   );
 };
 
-export default ClientsCorporate;
+export default ClientsPersonal;

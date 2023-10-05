@@ -1,12 +1,12 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { baseUrl } from '../../../../../config/axios';
 
-// import toast from 'react-hot-toast';
 
 export const fetchLaundryItems = createAsyncThunk('item/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-items/';
+    const url = `${baseUrl}/main/laundry-items/`;
     const response = await axios.get(url);
 
     // console.log(response);
@@ -19,7 +19,7 @@ export const fetchLaundryItems = createAsyncThunk('item/fetchAll', async (_, thu
 
 export const addLaundryItem = createAsyncThunk('item/addItem', async (data, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-items/new';
+    const url = `${baseUrl}/main/laundry-items/new`;
 
     const response = await axios.post(url, data);
 
@@ -34,7 +34,7 @@ export const addLaundryItem = createAsyncThunk('item/addItem', async (data, thun
 
 export const deleteLaundryItem = createAsyncThunk('item/deleteItem', async (id, thunkAPI) => {
   try {
-    const url = `https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/laundry-items/delete/${id}`;
+    const url = `${baseUrl}/main/laundry-items/delete/${id}`;
     const response = await axios.delete(url);
     return response.data;
   } catch (error) {

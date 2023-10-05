@@ -13,15 +13,17 @@ import {
   confirmLaundryOrderDroppingOff,
   confirmOrderdelivery,
   rejectOrder,
-  cancelOrder
+  cancelOrder,
+  deleteOrder
 } from './reducers';
+import { baseUrl } from '../../../config/axios';
 
 // ** Axios Imports
 // import client from '../../../../axios';
 // import { generateError } from '@utils';
 // import toast from 'react-hot-toast';
 
-const ordersurl = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/orders';
+const ordersurl = `${baseUrl}/main/orders`;
 
 export const fetchAllOrders = createAsyncThunk('orders/fetchAll', async (_, thunkAPI) => {
   try {
@@ -37,6 +39,7 @@ export const fetchAllOrders = createAsyncThunk('orders/fetchAll', async (_, thun
 export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async (_, thunkAPI) => {
   try {
     const response = await axios.get(`${ordersurl}/regular/?limit=1000`);
+    
     // console.log(response.data);
     return response.data;
   } catch (error) {
@@ -91,15 +94,6 @@ export const addLaundryOrder = createAsyncThunk('orders/addLaundry', async (data
     // const msg = data.id ? `User info updated successfully` : `New user registered`;
     // toast.success(msg, { duration: 8000, position: 'top-center' });
     // return response.data.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (id, thunkAPI) => {
-  try {
-    // await client.delete(`/api/v1/users/delete/${id}`);
-    return id;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }

@@ -2,11 +2,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { auth } from '../../../../firebase/config';
+import { baseUrl } from '../../../../config/axios';
 import toast from 'react-hot-toast';
 
 export const fetchAgents = createAsyncThunk('agent/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/users/agents/';
+    const url = `${baseUrl}/users/agents/`;
     const response = await axios.get(url);
 
     // console.log('response.data');
@@ -21,7 +22,7 @@ export const fetchAgents = createAsyncThunk('agent/fetchAll', async (_, thunkAPI
 
 export const addAgent = createAsyncThunk('agent/addNew', async (data, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/users/agents/new';
+    const url = `${baseUrl}/users/agents/new`;
     const timestamp = Date.now().toString();
     const uniqueNo = timestamp.substring(4, 12);
     const uniqueNumber = 'SA' + uniqueNo;
@@ -69,9 +70,9 @@ export const addAgent = createAsyncThunk('agent/addNew', async (data, thunkAPI) 
 
 export const deleteAgent = createAsyncThunk('agent/delete', async (id, thunkAPI) => {
   try {
-    const url = `https://us-central1-sail-courier.cloudfunctions.net/courierApi/users/agents/delete/${id}`;
-    const response = await axios.delete(url);
-    return response.data;
+    const url = `${baseUrl}/users/agents/delete/${id}`;
+    await axios.delete(url);
+    return id;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }

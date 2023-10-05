@@ -1,12 +1,12 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { baseUrl } from '../../../../../config/axios';
 
-// import toast from 'react-hot-toast';
 
 export const fetchShoppingItems = createAsyncThunk('item/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/shopping-items/';
+    const url = `${baseUrl}/main/shopping-items/`;
     const response = await axios.get(url);
 
     const items = response.data;
@@ -18,7 +18,7 @@ export const fetchShoppingItems = createAsyncThunk('item/fetchAll', async (_, th
 
 export const addShoppingItem = createAsyncThunk('item/addItem', async (data, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/shopping-items/new';
+    const url = `${baseUrl}/main/shopping-items/new`;
 
     const response = await axios.post(url, data);
 
@@ -33,7 +33,7 @@ export const addShoppingItem = createAsyncThunk('item/addItem', async (data, thu
 
 export const deleteShoppingItem = createAsyncThunk('item/deleteItem', async (id, thunkAPI) => {
   try {
-    const url = `https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/shopping-items/delete/${id}`;
+    const url = `${baseUrl}/main/shopping-items/delete/${id}`;
     const response = await axios.delete(url);
     return response.data;
   } catch (error) {

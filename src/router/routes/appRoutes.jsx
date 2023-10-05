@@ -8,12 +8,16 @@ const DashboardDefault = Loadable(lazy(() => import('../../pages/dashboard/Defau
 
 // Orders
 const RegularOrders = Loadable(lazy(() => import('../../pages/Orders/Regular')));
+const RegularOrdersNew = Loadable(lazy(() => import('../../pages/Orders/Regular/new')));
 const LaundryOrders = Loadable(lazy(() => import('../../pages/Orders/Laundry')));
 const ShoppingOrders = Loadable(lazy(() => import('../../pages/Orders/Shopping')));
 
-// Clients
-const RegularClients = Loadable(lazy(() => import('../../pages/Clients/Regular')));
-const CorporateClients = Loadable(lazy(() => import('../../pages/Clients/Corporate')));
+// Clients - Corporate Accounts
+const CorporateCompanies = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies')));
+const ClientsCorporate = Loadable(lazy(() => import('../../pages/Clients/Corporate')));
+
+// Clients - Personal Accounts
+const ClientsPersonal = Loadable(lazy(() => import('../../pages/Clients/Personal')));
 
 // Utilities - Laundry
 const LaundryCategories = Loadable(lazy(() => import('../../pages/Utilities/Laundry/Categories')));
@@ -38,6 +42,11 @@ export const AppRoutes = [
     path: 'orders/regular',
     meta: { isPrivate: true },
     element: <RegularOrders />
+  },
+  {
+    path: 'orders/regular/new',
+    meta: { isPrivate: true },
+    element: <RegularOrdersNew />
   },
   {
     path: 'orders/laundry',
@@ -76,16 +85,22 @@ export const AppRoutes = [
     meta: { isPrivate: true },
     element: <ShoppingItems />
   },
-  // Clients
-  {
-    path: 'clients/regular',
-    meta: { isPrivate: true },
-    element: <RegularClients />
-  },
+  // Clients - Corporate
   {
     path: 'clients/corporate',
     meta: { isPrivate: true },
-    element: <CorporateClients />
+    element: <ClientsCorporate />
+  },
+  {
+    path: 'clients/corporate/companies',
+    meta: { isPrivate: true },
+    element: <CorporateCompanies />
+  },
+  // Clients - Personal
+  {
+    path: 'clients/personal',
+    meta: { isPrivate: true },
+    element: <ClientsPersonal />
   },
   // Staff
   {

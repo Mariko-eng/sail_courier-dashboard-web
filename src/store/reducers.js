@@ -9,6 +9,7 @@ import laundryItemsReducer from './../pages/Utilities/Laundry/Items/store';
 import couriersReducer from './../pages/Staff/Couriers/store';
 import agentsReducer from './../pages/Staff/Agents/store';
 import adminsReducer from './../pages/Staff/Admins/store';
+import clientsReducer from './../pages/Clients/store';
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -20,5 +21,6 @@ export const rootReducer = combineReducers({
   laundryItems: laundryItemsReducer,
   couriers: couriersReducer,
   agents: agentsReducer,
-  admins: adminsReducer
+  admins: adminsReducer,
+  clients: clientsReducer
 });

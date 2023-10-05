@@ -11,33 +11,11 @@ const icons = {
 
 // ==============================|| USER MENU ITEMS ||============================== //
 
-const users = {
+const staff = {
   id: 'users',
   title: 'Users',
   type: 'group',
   children: [
-    {
-      id: 'clients',
-      title: 'Clients',
-      type: 'collapse',
-      icon: icons.IconKey,
-      children: [
-        {
-          id: 'regular',
-          title: 'Regular',
-          type: 'item',
-          url: '/clients/regular',
-          target: false
-        },
-        {
-          id: 'corporate',
-          title: 'Corporate',
-          type: 'item',
-          url: '/clients/corporate',
-          target: false
-        }
-      ]
-    },
     {
       id: 'couriers',
       title: 'Couriers',
@@ -65,4 +43,4 @@ const users = {
   ]
 };
 
-export default users;
+export default staff;

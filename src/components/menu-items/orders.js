@@ -9,9 +9,9 @@ const icons = {
   IconShoppingCart
 };
 
-// ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
+// ==============================|| EXTRA ORDERS MENU ITEMS ||============================== //
 
-const pages = {
+const orders = {
   id: 'orders',
   title: 'Orders',
   caption: 'Regular/Laundry/Shopping',
@@ -52,13 +52,13 @@ const pages = {
           url: '/orders/laundry',
           target: false
         },
-        {
-          id: 'Laundry_add',
-          title: 'Add',
-          type: 'item',
-          url: '/orders/laundry/new',
-          target: false
-        }
+        // {
+        //   id: 'Laundry_add',
+        //   title: 'Add',
+        //   type: 'item',
+        //   url: '/orders/laundry/new',
+        //   target: false
+        // }
       ]
     },
     {
@@ -74,16 +74,16 @@ const pages = {
           url: '/orders/shopping',
           target: false
         },
-        {
-          id: 'Shopping_add',
-          title: 'Add',
-          type: 'item',
-          url: '/orders/shopping/new',
-          target: false
-        }
+        // {
+        //   id: 'Shopping_add',
+        //   title: 'Add',
+        //   type: 'item',
+        //   url: '/orders/shopping/new',
+        //   target: false
+        // }
       ]
-    },
+    }
   ]
 };
 
-export default pages;
+export default orders;

@@ -1,16 +1,11 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
-// ** Axios Imports
-// import client from '../../../../axios';
-// import { generateError } from '@utils';
-
-// import toast from 'react-hot-toast';
+import { baseUrl } from '../../../../../config/axios';
 
 export const fetchShoppingCategories = createAsyncThunk('category/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/shopping-categories/';
+    const url = `${baseUrl}/main/shopping-categories/`;
     const response = await axios.get(url);
 
     const categories = response.data;
@@ -22,7 +17,7 @@ export const fetchShoppingCategories = createAsyncThunk('category/fetchAll', asy
 
 export const addShoppingCategory = createAsyncThunk('category/addCategory', async (data, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/shopping-categories/new';
+    const url = `${baseUrl}/main/shopping-categories/new`;
 
     const newCategory = {
       name: data.name
@@ -41,7 +36,7 @@ export const addShoppingCategory = createAsyncThunk('category/addCategory', asyn
 
 export const deleteShoppingCategory = createAsyncThunk('category/deleteCategory', async (id, thunkAPI) => {
   try {
-    const url = `https://us-central1-sail-courier.cloudfunctions.net/courierApi/main/shopping-categories/delete/${id}`;
+    const url = `${baseUrl}/main/shopping-categories/delete/${id}`;
     const response = await axios.delete(url);
     return response.data;
   } catch (error) {

@@ -32,7 +32,7 @@ const ShoppingItemsNew = () => {
     dispatch(fetchShoppingCategories());
   }, [dispatch]);
 
-  return (
+  return ( 
     <div>
       <p>Add New Item</p>
       {shoppingCategoriesStore.data.length >= 1 ? (

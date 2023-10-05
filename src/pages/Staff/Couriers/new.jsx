@@ -296,7 +296,7 @@ const CouriersNew = () => {
             </FormControl>
 
             <Box mt={2}>
-              <Box> Select Courier Passport Photo </Box>
+              <Box>Upload Courier Passport Photo </Box>
               <Box py={2} border={'1px solid grey'} borderRadius={'5px'}>
                 <ImageDropZoneBase64 fileBase64={fileBase64} setFileBase64={setFileBase64} />
               </Box>

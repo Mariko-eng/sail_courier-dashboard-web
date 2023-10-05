@@ -2,36 +2,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import {auth } from '../../../../firebase/config';
+import { baseUrl } from '../../../../config/axios';
 import toast from 'react-hot-toast';
 
 export const fetchCouriers = createAsyncThunk('courier/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/users/couriers/';
+    const url = `${baseUrl}/users/couriers/`;
     const response = await axios.get(url);
-
-    // console.log('response.data');
-    // console.log(response.data);
-    // const couriers = response.data; 
-
-    // const data = [];
-
-    // couriers.forEach((item) =>
-    //   data.push({
-    //     id: item.id,
-    //     courierNo: item.courierNo,
-    //     phone: item.phone,
-    //     firstName: item.firstName,
-    //     surName: item.surName,
-    //     email: item.email,
-    //     isActive: item.isActive,
-    //     isOnline: item.isOnline,
-    //     createdAt: item.createdAt
-    //   })
-    // );
-
-    // console.log('data');
-    // console.log(data);
-    // console.log(structuredClone(data))
 
     return response.data;
   } catch (error) {
@@ -41,7 +18,7 @@ export const fetchCouriers = createAsyncThunk('courier/fetchAll', async (_, thun
 
 export const addCourier = createAsyncThunk('courier/addNew', async (data, thunkAPI) => {
   try {
-    const url = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi/users/couriers/new';
+    const url = `${baseUrl}/users/couriers/new`;
     const timestamp = Date.now().toString();
     const uniqueNo = timestamp.substring(4, 12);
     const uniqueNumber = 'SC' + uniqueNo;
@@ -88,8 +65,8 @@ export const addCourier = createAsyncThunk('courier/addNew', async (data, thunkA
       ...courierData
     };
   } catch (error) {
-    console.log(error);
-    console.log(error.response.data.message);
+    // console.log(error);
+    // console.log(error.response.data.message);
 
     if (error.response.status == 400) {
       if (error.response.data.message) {
@@ -105,9 +82,9 @@ export const addCourier = createAsyncThunk('courier/addNew', async (data, thunkA
 
 export const deleteCourier = createAsyncThunk('courier/delete', async (id, thunkAPI) => {
   try {
-    const url = `https://us-central1-sail-courier.cloudfunctions.net/courierApi/users/couriers/delete/${id}`;
-    const response = await axios.delete(url)
-    return response.data;
+    const url = `${baseUrl}/users/couriers/delete/${id}`;
+    await axios.delete(url)
+    return id;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -186,11 +163,7 @@ export const CouriersSlice = createSlice({
 
       .addCase(deleteCourier.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.data = state.data.filter((item) => {
-          if (item.id !== payload) {
-            return item;
-          }
-        });
+        state.data = state.data.filter((item) => item.id !== payload)
       })
 
       .addCase(deleteCourier.rejected, errorReducer);
