@@ -8,10 +8,11 @@ import { materialTableIcons } from '../../../utils/material-table-icons';
 import { columns } from './columns';
 
 // ** Store & Actions
-import { fetchLaundryOrders } from '../store';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchLaundryOrders } from '../store/extra_reducers';
 import { Card, CardMedia } from '@mui/material';
 import { capitalize } from '../../../utils/app-functions';
+import UiLoadingOverlay from '../../../components/overlay';
 
 const Laundry = () => {
 
@@ -30,6 +31,7 @@ const Laundry = () => {
 
   return (
     <>
+      <UiLoadingOverlay>
       <div style={{ overflowX: 'auto' }}>
         <MaterialTable
           icons={materialTableIcons}
@@ -124,6 +126,7 @@ const Laundry = () => {
           }}
         />
       </div>
+      </UiLoadingOverlay>
     </>
   );
 };

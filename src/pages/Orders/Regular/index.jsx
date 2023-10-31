@@ -11,30 +11,28 @@ import SideNav from '../../../components/sidenav/SideNav';
 // import MoreVertIcon from '@material-ui/icons/';
 
 // ** Store & Actions
-import { fetchRegularOrders } from '../store';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, Menu, MenuItem } from '@mui/material';
+import { fetchRegularOrders } from '../store/extra_reducers';
+import { Box, Card, FormControl, InputLabel, Menu, MenuItem, Select, TextField } from '@mui/material';
 import { capitalize } from '../../../utils/app-functions';
 import AlertConfrimationDialog from '../../../components/dailog/confirmDialog';
 import SelectCourier from '../actions/SelectCourier';
 import UiLoadingOverlay from '../../../components/overlay';
-import { approveOrder ,assignCourierToRegularOrder, deleteOrder } from '../store/reducers';
+import { approveOrder, assignCourierToRegularOrder, deleteOrder } from '../store/reducers';
 import { confirmRegularOrderPickUp, confirmOrderdelivery } from '../store/reducers';
 import { rejectOrder, cancelOrder } from '../store/reducers';
 import OrderHistory from '../history';
 
 const Regular = () => {
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [[anchorEl, selectedRow], setAnchorEl] = useState([null, undefined]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [actionType, setActionType] = useState(null);
   const [message, setMessage] = useState('Are You Sure that you want To Continue?');
-  const [sidebarType, setSidebarType] = useState("")
+  const [sidebarType, setSidebarType] = useState('');
+  const [showSidebar, setShowSidebar] = useState(false);
   const [selectedCourier, setSelectedCourier] = useState({});
 
   const handleOpenMenuActions = (event, rowData) => {
-    // console.log(event);
-    // console.log(rowData);
     setAnchorEl([event.currentTarget, rowData]);
   };
 
@@ -42,9 +40,9 @@ const Regular = () => {
     setAnchorEl([null, undefined]);
   };
 
-    const handleCloseMenuActionsSideBar = () => {
-      setAnchorEl((prev) => [null, prev[1]]);
-    };
+  const handleCloseMenuActionsSideBar = () => {
+    setAnchorEl((prev) => [null, prev[1]]);
+  };
 
   const handleOpenDialog = (action, desc) => {
     setIsDialogOpen(true);
@@ -57,7 +55,7 @@ const Regular = () => {
   };
 
   const openSidebar = (type) => {
-    setSidebarType(type)
+    setSidebarType(type);
     setShowSidebar(true);
   };
 
@@ -77,9 +75,154 @@ const Regular = () => {
   const newLoadList = structuredClone(orders);
   // console.log(store.loading);
 
+  const [status, setStatus] = useState('all');
+  const [timePeriod, setTimePeriod] = useState('today');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [isTimeePeriod, setIsTimeePeriod] = useState(null);
+
+  const handleFilter = (event) => {
+    if (event.target.name == 'status') {
+      setStatus(event.target.value);
+    }
+
+    if (event.target.name == 'timePeriod') {
+      setIsTimeePeriod(true);
+      setTimePeriod(event.target.value);
+    }
+
+    if (event.target.name == 'startDate') {
+      setIsTimeePeriod(false);
+
+      // Parse the selected date as a Date object
+      const selectedDate = new Date(event.target.value);
+
+      // Convert the selected date to an ISO string
+      const isoDateString = selectedDate.toISOString();
+
+      setStartDate(isoDateString);
+    }
+
+    if (event.target.name == 'endDate') {
+      setIsTimeePeriod(false);
+
+      // Parse the selected date as a Date object
+      const selectedDate = new Date(event.target.value);
+
+      // Convert the selected date to an ISO string
+      const isoDateString = selectedDate.toISOString();
+
+      setEndDate(isoDateString);
+    }
+  };
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams();
+
+    if (status !== 'all') {
+      queryParams.append('status', status);
+    }
+
+    if (timePeriod) {
+      queryParams.append('timePeriod', timePeriod);
+    }
+
+    if (isTimeePeriod) {
+      const queryString = queryParams.toString();
+      console.log(queryString);
+    }
+  }, [status, isTimeePeriod, timePeriod]);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams();
+
+    if (status !== 'all') {
+      queryParams.append('status', status);
+    }
+
+    if (startDate) {
+      queryParams.append('startDate', startDate);
+    }
+
+    if (endDate) {
+      queryParams.append('endDate', endDate);
+    }
+
+    if (!isTimeePeriod) {
+      const queryString = queryParams.toString();
+      console.log(queryString);
+    }
+  }, [status, isTimeePeriod, startDate, endDate]);
+
   return (
     <>
       <UiLoadingOverlay loading={store.loading}>
+        <Box px={'10px'} py={'20px'} display={'flex'} justifyContent={'space-between'}>
+          <FormControl style={{ minWidth: 150 }}>
+            <InputLabel id="status-label">Order Status</InputLabel>
+            <Select labelId="status-label" label="Order Status" defaultValue="all" name="status" onChange={handleFilter}>
+              <MenuItem value="all">All</MenuItem>
+              <MenuItem value="pending">Pending</MenuItem>
+              <MenuItem value="approved">Approved</MenuItem>
+              <MenuItem value="pickedUp">PickedUp</MenuItem>
+              <MenuItem value="delivered">Delivered</MenuItem>
+            </Select>
+          </FormControl>
+          <Box ml={'20px'} display={'flex'}>
+            <FormControl style={{ minWidth: 150 }}>
+              <InputLabel id="period-label">Period</InputLabel>
+              <Select
+                labelId="period-label"
+                label="Period"
+                defaultValue="today"
+                name="timePeriod"
+                onChange={handleFilter}
+                style={{ minWidth: 120 }}
+              >
+                <MenuItem value="today" selected>
+                  Today
+                </MenuItem>
+                <MenuItem value="yesterday">Yesterday</MenuItem>
+                <MenuItem value="last7days">Last 7 Days</MenuItem>
+                <MenuItem value="last14days">Last 14 Days</MenuItem>
+                <MenuItem value="last30days">Last 30 Days</MenuItem>
+                <MenuItem value="last3months">Last 3 Months</MenuItem>
+                <MenuItem value="last6months">Last 6 Months</MenuItem>
+                <MenuItem value="last12months">Last 12 Months</MenuItem>
+              </Select>
+            </FormControl>
+            <Box width={'20px'} />
+            <TextField
+              id="start-date"
+              label="Start Date"
+              type="date"
+              name="startDate"
+              onChange={handleFilter}
+              style={{ minWidth: 120 }}
+              InputLabelProps={{
+                shrink: true
+              }}
+              InputProps={{
+                placeholder: ''
+              }}
+            />
+            <Box width={'20px'} />
+            <TextField
+              id="end-date"
+              label="End Date"
+              type="date"
+              name="endDate"
+              onChange={handleFilter}
+              style={{ minWidth: 120 }}
+              InputLabelProps={{
+                shrink: true
+              }}
+              InputProps={{
+                placeholder: ''
+              }}
+            />
+          </Box>
+        </Box>
         <div style={{ overflowX: 'auto' }}>
           <MaterialTable
             icons={materialTableIcons}
@@ -171,7 +314,8 @@ const Regular = () => {
             <div>
               <MenuItem
                 onClick={() => {
-                  // handleCloseMenuActions();
+                  // console.log("tracking")
+                  handleCloseMenuActionsSideBar();
                   openSidebar('track');
                 }}
               >
@@ -301,7 +445,7 @@ const Regular = () => {
             }}
           />
         ) : (
-          <OrderHistory />
+          <OrderHistory order={selectedRow} />
         )}
       </SideNav>
     </>

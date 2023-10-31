@@ -26,7 +26,21 @@ export const columns = [
     field: 'status',
     render: (rowData) => (
       <div>
-        {rowData.status === 'pending' ? <Chip label="Pending" color="primary" /> : <Chip label={rowData.status} variant="outlined" />}
+        {rowData.status === 'pending' ? (
+          <Chip label="Pending" color="primary" variant="outlined" />
+        ) : rowData.status === 'approved' ? (
+          <Chip label="Approved" color="primary" variant="contained" />
+        ) : rowData.status === 'assigned' ? (
+          <Chip label="Assigned" color="secondary" variant="outlined" />
+        ) : rowData.status === 'pickedUp' ? (
+          <Chip label="PickedUp" color="secondary" variant="contained" />
+        ) : rowData.status === 'delivered' ? (
+          <Chip label="Delivered" color="success" variant="contained" />
+        ) : rowData.status === 'cancelled' || rowData.status === 'rejected' ? (
+          <Chip label={capitalize(rowData.status)} color="error" variant="contained" />
+        ) : (
+          <Chip label={capitalize(rowData.status)} variant="outlined" />
+        )}
       </div>
     )
   },

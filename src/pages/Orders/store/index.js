@@ -1,6 +1,6 @@
 // ** Redux Imports
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from '@reduxjs/toolkit';
+import toast from 'react-hot-toast';
 import {
   approveOrder,
   assignCourierToRegularOrder,
@@ -16,88 +16,20 @@ import {
   cancelOrder,
   deleteOrder
 } from './reducers';
-import { baseUrl } from '../../../config/axios';
+import {
+  fetchAllOrders,
+  fetchRegularOrders,
+  fetchLaundryOrders,
+  fetchShoppingOrders,
+  getOrderDetail,
+  addRegularorder,
+  addLaundryOrder,
+  fetchOrderHistory,
+  addOrderHistory
+} from './extra_reducers'
 
 // ** Axios Imports
-// import client from '../../../../axios';
-// import { generateError } from '@utils';
 // import toast from 'react-hot-toast';
-
-const ordersurl = `${baseUrl}/main/orders`;
-
-export const fetchAllOrders = createAsyncThunk('orders/fetchAll', async (_, thunkAPI) => {
-  try {
-    const response = await axios.get(`${ordersurl}/?limit=1000`);
-    // console.log(response.data);
-    // return structuredClone(response.data);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async (_, thunkAPI) => {
-  try {
-    const response = await axios.get(`${ordersurl}/regular/?limit=1000`);
-    
-    // console.log(response.data);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const fetchLaundryOrders = createAsyncThunk('orders/fetchLaundry', async (configs, thunkAPI) => {
-  try {
-    const response = await axios.get(`${ordersurl}/laundry/?limit=1000`);
-    // console.log(response.data);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const fetchShoppingOrders = createAsyncThunk('orders/fetchShopping', async (configs, thunkAPI) => {
-  try {
-    const response = await axios.get(`${ordersurl}/shopping/?limit=1000`);
-    // console.log(response.data);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const getOrderDetail = createAsyncThunk('orders/getDetail', async (id, thunkAPI) => {
-  try {
-    const response = await axios.get(`${ordersurl}/detail/${id}`);
-    // console.log(response.data);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const addRegularorder = createAsyncThunk('orders/addRegular', async (data, thunkAPI) => {
-  try {
-    // const response = await client.post('/api/v1/users/register', data);
-    // const msg = data.id ? `User info updated successfully` : `New user registered`;
-    // toast.success(msg, { duration: 8000, position: 'top-center' });
-    // return response.data.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const addLaundryOrder = createAsyncThunk('orders/addLaundry', async (data, thunkAPI) => {
-  try {
-    // const response = await client.post('/api/v1/users/register', data);
-    // const msg = data.id ? `User info updated successfully` : `New user registered`;
-    // toast.success(msg, { duration: 8000, position: 'top-center' });
-    // return response.data.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
 
 const errorReducer = (state, { payload }) => {
   state.loading = false;
@@ -112,6 +44,7 @@ export const appOrdersSlice = createSlice({
     limit: 1,
     total: 1,
     orders: [],
+    orderHistory: [],
     edit: false,
     error: null,
     selectedOrder: null
@@ -429,7 +362,37 @@ export const appOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(cancelOrder.rejected, errorReducer);
+      .addCase(cancelOrder.rejected, errorReducer)
+
+      .addCase(fetchOrderHistory.pending, (state) => {
+        state.loading = true;
+        state.orderHistory = [];
+      })
+      .addCase(fetchOrderHistory.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.limit = action.payload.limit;
+        // state.total = action.payload.total;
+        state.orderHistory = action.payload;
+      })
+      .addCase(fetchOrderHistory.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      .addCase(addOrderHistory.pending, (state) => {
+        state.loading = true;
+      })
+
+      .addCase(addOrderHistory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.submitted = true;
+        state.orderHistory.unshift(action.payload);
+      })
+
+      .addCase(addOrderHistory.rejected, (state, { payload }) => {
+        state.loading = false;
+        toast.error(payload, { position: 'bottom-right' });
+      });
+
   }
 });
 export const { clearError, setOrderError, setSubmitted, setEditing } = appOrdersSlice.actions;

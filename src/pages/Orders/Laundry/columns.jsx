@@ -26,7 +26,11 @@ export const columns = [
     field: 'status',
     render: (rowData) => (
       <div>
-        {rowData.status === 'pending' ? <Chip label="Pending" color="primary" /> : <Chip label={rowData.status} variant="outlined" />}
+        {rowData.status === 'pending' ? (
+          <Chip label="Pending" color="primary" />
+        ) : (
+          <Chip label={capitalize(rowData.status)} variant="outlined" />
+        )}
       </div>
     )
   },
