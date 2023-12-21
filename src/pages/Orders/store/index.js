@@ -14,7 +14,8 @@ import {
   confirmOrderdelivery,
   rejectOrder,
   cancelOrder,
-  deleteOrder
+  deleteOrder,
+  toggleOrderPaymentStatus
 } from './reducers';
 import {
   fetchAllOrders,
@@ -364,6 +365,22 @@ export const appOrdersSlice = createSlice({
       })
       .addCase(cancelOrder.rejected, errorReducer)
 
+      // Payment status 10
+      .addCase(toggleOrderPaymentStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(toggleOrderPaymentStatus.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.orders = state.orders.map((order) => {
+          if (order.id === payload.id) {
+            return { ...order, ...payload };
+          }
+          return order;
+        });
+      })
+      .addCase(toggleOrderPaymentStatus.rejected, errorReducer)
+
+      // Historu
       .addCase(fetchOrderHistory.pending, (state) => {
         state.loading = true;
         state.orderHistory = [];

@@ -244,3 +244,23 @@ export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (id, thu
     return thunkAPI.rejectWithValue(error);
   }
 });
+
+export const toggleOrderPaymentStatus = createAsyncThunk('orders/toggleOrderPayment', async (data, thunkAPI) => {
+  try {
+    const id = data.id;
+    const isFullyPaid = data.isFullyPaid;
+    const orderData = {
+      isFullyPaid: isFullyPaid,
+      updatedBy: auth.currentUser.uid,
+      updatedAt: new Date().toISOString()
+    };
+    await axios.put(`${ordersurl}/payment-status/toggle/${id}`, orderData);
+    return {
+      id: data.id,
+      isFullyPaid: isFullyPaid,
+      ...orderData
+    };
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});

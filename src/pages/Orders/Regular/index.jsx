@@ -20,7 +20,7 @@ import SelectCourier from '../actions/SelectCourier';
 import UiLoadingOverlay from '../../../components/overlay';
 import { approveOrder, assignCourierToRegularOrder, deleteOrder } from '../store/reducers';
 import { confirmRegularOrderPickUp, confirmOrderdelivery } from '../store/reducers';
-import { rejectOrder, cancelOrder } from '../store/reducers';
+import { rejectOrder, cancelOrder, toggleOrderPaymentStatus } from '../store/reducers';
 import OrderHistory from '../history';
 
 const Regular = () => {
@@ -290,8 +290,8 @@ const Regular = () => {
               searchFieldAlignment: 'right',
               searchFieldVariant: 'standard',
               paging: true,
-              pageSizeOptions: [10, 20, 30, 50, 100],
-              pageSize: 10,
+              pageSizeOptions: [25, 50, 80, 100, 150],
+              pageSize: 25,
               showFirstLastPageButtons: false,
               // paginationType:"stepped",
               // paginationPosition:"both",
@@ -312,6 +312,15 @@ const Regular = () => {
         <Menu id="more-menu" anchorEl={anchorEl} keepMounted={true} open={Boolean(anchorEl)} onClose={handleCloseMenuActions}>
           {selectedRow.status === 'cancelled' || selectedRow.status === 'delivered' ? (
             <div>
+              {selectedRow.isFullyPaid === false ? (
+                <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
+                  Confirm Payment
+                </MenuItem>
+              ) : (
+                <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
+                  Cancel Payment
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => {
                   // console.log("tracking")
@@ -327,6 +336,15 @@ const Regular = () => {
               <MenuItem onClick={() => handleOpenDialog('re-publish', 'Are You sure You Want To Re-publish Of This Order')}>
                 Republish Order
               </MenuItem>
+              {selectedRow.isFullyPaid === false ? (
+                <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
+                  Confirm Payment
+                </MenuItem>
+              ) : (
+                <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
+                  Cancel Payment
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => {
                   handleCloseMenuActionsSideBar();
@@ -340,6 +358,15 @@ const Regular = () => {
             <div>
               <MenuItem onClick={() => handleOpenDialog('approve', 'Are You sure You Want To Approve This Order')}>Approve Order</MenuItem>
               <MenuItem onClick={() => handleOpenDialog('reject', 'Are You sure You Want To Reject This Order')}>Reject Order </MenuItem>
+              {selectedRow.isFullyPaid === false ? (
+                <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
+                  Confirm Payment
+                </MenuItem>
+              ) : (
+                <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
+                  Cancel Payment
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => {
                   handleCloseMenuActionsSideBar();
@@ -376,7 +403,16 @@ const Regular = () => {
               <MenuItem onClick={() => handleOpenDialog('confirm_delivery', 'Are You sure You Want To Confirm Delivery Of This Order')}>
                 Confirm Delivery
               </MenuItem>
-              <MenuItem onClick={() => handleOpenDialog('cancel', 'Are You sure You Want To Cancel This Order')}>Cancel Order </MenuItem>
+              <MenuItem onClick={() => handleOpenDialog('cancel', 'Are You sure You Want To Cancel This Order')}>Cancel Order</MenuItem>
+              {selectedRow.isFullyPaid === false ? (
+                <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
+                  Confirm Payment
+                </MenuItem>
+              ) : (
+                <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
+                  Cancel Payment
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => {
                   handleCloseMenuActionsSideBar();
@@ -427,6 +463,14 @@ const Regular = () => {
             if (actionType === 'cancel') {
               handleCloseDialog();
               dispatch(cancelOrder({ id: selectedRow.id }));
+            }
+            if (actionType === 'confirm_payment') {
+              handleCloseDialog();
+              dispatch(toggleOrderPaymentStatus({ id: selectedRow.id, isFullyPaid: true }));
+            }
+            if (actionType === 'cancel_payment') {
+              handleCloseDialog();
+              dispatch(toggleOrderPaymentStatus({ id: selectedRow.id, isFullyPaid: false }));
             }
             if (actionType === 're-publish') {
               handleCloseDialog();

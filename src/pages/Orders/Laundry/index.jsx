@@ -32,100 +32,100 @@ const Laundry = () => {
   return (
     <>
       <UiLoadingOverlay>
-      <div style={{ overflowX: 'auto' }}>
-        <MaterialTable
-          icons={materialTableIcons}
-          title="Laundry Orders"
-          columns={columns}
-          data={newLoadList}
-          detailPanel={[
-            {
-              icon: ArrowDropDownIcon,
-              openIcon: ArrowDropUpIcon,
-              render: (rowData) => {
-                return (
-                  <Card sx={{ paddingLeft: '20px' }}>
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontWeight: 'bold' }}>Service - {capitalize(rowData.laundryType)}</div>
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontWeight: 'bold' }}>Package Items </div>
-                      <div style={{ paddingLeft: '10px' }}>
-                        {rowData.parcelItems.map((obj, index) => (
-                          <div key={index} style={{ display: 'flex', marginRight: '10px' }}>
-                            <div style={{ width: '50px' }}>
-                              <CardMedia
-                                component="img"
-                                alt="green iguana"
-                                height="30"
-                                width="40"
-                                image={obj.item.imageFormat + ',' + obj.item.imageBase64}
-                              />
-                            </div>
-                            <div style={{ width: '50px' }}>{obj.item.name}</div>
-                            <div style={{ width: '50px' }}>{obj.itemQty}</div>
-                            {rowData.laundryType == 'wash-and-iron' ? (
-                              <div>{obj.item.priceWash * obj.itemQty}</div>
-                            ) : (
-                              <div>{obj.item.priceDry * obj.itemQty}</div>
-                            )}
-                          </div>
-                        ))}
+        <div style={{ overflowX: 'auto' }}>
+          <MaterialTable
+            icons={materialTableIcons}
+            title="Laundry Orders"
+            columns={columns}
+            data={newLoadList}
+            detailPanel={[
+              {
+                icon: ArrowDropDownIcon,
+                openIcon: ArrowDropUpIcon,
+                render: (rowData) => {
+                  return (
+                    <Card sx={{ paddingLeft: '20px' }}>
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontWeight: 'bold' }}>Service - {capitalize(rowData.laundryType)}</div>
                       </div>
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontWeight: 'bold' }}>Pickup Point - {rowData.senderOtpCode} </div>
-                      <div style={{ paddingLeft: '10px' }}>{rowData.pickName}</div>
-                      <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelSenderName)}</div>
-                      <div style={{ paddingLeft: '10px' }}>{rowData.parcelSenderPhone}</div>
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontWeight: 'bold' }}>Delivery Point - {rowData.receiverOtpCode}</div>
-                    </div>
-                  </Card>
-                );
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontWeight: 'bold' }}>Package Items </div>
+                        <div style={{ paddingLeft: '10px' }}>
+                          {rowData.parcelItems.map((obj, index) => (
+                            <div key={index} style={{ display: 'flex', marginRight: '10px' }}>
+                              <div style={{ width: '50px' }}>
+                                <CardMedia
+                                  component="img"
+                                  alt="green iguana"
+                                  height="30"
+                                  width="40"
+                                  image={obj.item.imageFormat + ',' + obj.item.imageBase64}
+                                />
+                              </div>
+                              <div style={{ width: '50px' }}>{obj.item.name}</div>
+                              <div style={{ width: '50px' }}>{obj.itemQty}</div>
+                              {rowData.laundryType == 'wash-and-iron' ? (
+                                <div>{obj.item.priceWash * obj.itemQty}</div>
+                              ) : (
+                                <div>{obj.item.priceDry * obj.itemQty}</div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontWeight: 'bold' }}>Pickup Point - {rowData.senderOtpCode} </div>
+                        <div style={{ paddingLeft: '10px' }}>{rowData.pickName}</div>
+                        <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelSenderName)}</div>
+                        <div style={{ paddingLeft: '10px' }}>{rowData.parcelSenderPhone}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontWeight: 'bold' }}>Delivery Point - {rowData.receiverOtpCode}</div>
+                      </div>
+                    </Card>
+                  );
+                }
               }
-            }
-          ]}
-          onRowClick={(event, rowData, togglePanel) => togglePanel()}
-          actions={[
-            {
-              icon: SaveAltIcon,
-              tooltip: 'Save Order',
-              onClick: (event, rowData) => alert('You saved ' + rowData.name)
-            },
-            (rowData) => ({
-              icon: ClearIcon,
-              tooltip: 'Delete Order',
-              onClick: (event, rowData) => confirm('You want to delete ' + rowData.name),
-              disabled: rowData.birthYear < 2000
-            })
-          ]}
-          options={{
-            // selection: true,
-            actionsColumnIndex: -1,
-            sorting: true,
-            search: true,
-            searchAutoFocus: true,
-            searchFieldAlignment: 'right',
-            searchFieldVariant: 'standard',
-            paging: true,
-            pageSizeOptions: [10, 20, 30, 50, 100],
-            pageSize: 10,
-            showFirstLastPageButtons: false,
-            // paginationType:"stepped",
-            // paginationPosition:"both",
-            exportAllData: true,
-            exportButton: true,
-            title: 'Orders',
-            headerStyle: {
-              backgroundColor: '#01579b',
-              color: '#FFF'
-            },
-            showSelectAllCheckbox: true
-          }}
-        />
-      </div>
+            ]}
+            onRowClick={(event, rowData, togglePanel) => togglePanel()}
+            actions={[
+              {
+                icon: SaveAltIcon,
+                tooltip: 'Save Order',
+                onClick: (event, rowData) => alert('You saved ' + rowData.name)
+              },
+              (rowData) => ({
+                icon: ClearIcon,
+                tooltip: 'Delete Order',
+                onClick: (event, rowData) => confirm('You want to delete ' + rowData.name),
+                disabled: rowData.birthYear < 2000
+              })
+            ]}
+            options={{
+              // selection: true,
+              actionsColumnIndex: -1,
+              sorting: true,
+              search: true,
+              searchAutoFocus: true,
+              searchFieldAlignment: 'right',
+              searchFieldVariant: 'standard',
+              paging: true,
+              pageSizeOptions: [25, 50, 80, 100, 150],
+              pageSize: 25,
+              showFirstLastPageButtons: false,
+              // paginationType:"stepped",
+              // paginationPosition:"both",
+              exportAllData: true,
+              exportButton: true,
+              title: 'Orders',
+              headerStyle: {
+                backgroundColor: '#01579b',
+                color: '#FFF'
+              },
+              showSelectAllCheckbox: true
+            }}
+          />
+        </div>
       </UiLoadingOverlay>
     </>
   );

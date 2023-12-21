@@ -16,6 +16,7 @@ export const fetchAllOrders = createAsyncThunk('orders/fetchAll', async (_, thun
 export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async (_, thunkAPI) => {
   try {
     const response = await axios.get(`${baseUrl}/main/orders/regular/?limit=1000`);
+    // console.log(response.data);
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);

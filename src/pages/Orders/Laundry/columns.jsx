@@ -52,7 +52,25 @@ export const columns = [
     field: 'totalCharges',
     type: 'numeric'
     // render: (rowData) => <div>{formatNumberWithCommas(rowData.totalCharges)}</div>
-  }
+  },
 
-  //   { title: 'Birth Place', field: 'birthCity', lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' } }
+  {
+    title: 'Payment Status',
+    field: 'isFullyPaid',
+    render: (rowData) => (
+      <div>
+        {rowData.isFullyPaid ? (
+          <Chip label="Fully Paid" color="success" variant="contained" />
+        ) : (
+          <Chip label="Not Paid" color="primary" variant="outlined" />
+        )}
+      </div>
+    )
+  },
+
+  {
+    title: 'Payment Medium',
+    field: 'transactionId',
+    render: (rowData) => <div>{rowData.transactionId == '' ? <div>{capitalize('Cash')}</div> : <div>{capitalize('Momo')}</div>}</div>
+  }
 ];

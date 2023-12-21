@@ -63,11 +63,33 @@ export const columns = [
     title: 'Charges',
     field: 'totalCharges',
     type: 'numeric'
-    // render: (rowData) => <div>{formatNumberWithCommas(rowData.totalCharges)}</div>
-  }
+  },
 
-  // {
-  //   title: 'Actions',
-  //   render: (rowData) => <OrderActions data={rowData} />
-  // }
+  {
+    title: 'Payment Status',
+    field: 'isFullyPaid',
+    render: (rowData) => (
+      <div>
+        {rowData.isFullyPaid ? (
+          <Chip label="Fully Paid" color="success" variant="contained" />
+        ) : (
+          <Chip label="Not Paid" color="secondary" variant="outlined" />
+        )}
+      </div>
+    )
+  },
+
+  {
+    title: 'Payment Medium',
+    field: 'transactionId',
+    render: (rowData) => (
+      <div>
+        {rowData.transactionId == '' ? (
+          <div>{capitalize("Cash")}</div>
+        ) : (
+          <div>{capitalize("Momo")}</div>
+        )}
+      </div>
+    )
+  },
 ];
