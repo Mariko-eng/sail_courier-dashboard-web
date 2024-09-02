@@ -1,38 +1,54 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { auth } from '../../../firebase/config';
+import { auth } from '../../../config/firebase';
 import { baseUrl } from '../../../config/axios';
+import { formatError } from '../../../utils/axios-error';
 
 // Corporate Companies
 
 export const fetchCorporateCompanies = createAsyncThunk('client/corporate/companies/fetch/all', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/corporate/companies`;
+    const devUrl = `${baseUrl}/users/corporate/companies/?env=dev`;
+    const prodUrl = `${baseUrl}/users/corporate/companies/?env=prod`;
+
+    const url = import.meta.env.VITE_ENV === "DEV" ? devUrl : prodUrl;
+    
     // const url = '${baseUrl}/users/corporate/companies';
     const response = await axios.get(url);
 
+    console.log(response.data);
+
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
+
 export const addCorporateCompany = createAsyncThunk('client/corporate/companies/add/new', async (data, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/corporate/companies/new'`;
+    const devUrl = `${baseUrl}/users/corporate/companies/new/?env=dev`;
+    const prodUrl = `${baseUrl}/users/corporate/companies/new/?env=prod`;
 
-    const timestamp = Date.now().toString();
-    const uniqueNo = timestamp.substring(4, 12);
+    const url = import.meta.env.VITE_ENV === "DEV" ? devUrl : prodUrl;
 
     const companyData = {
-      companyNo: uniqueNo,
-      companyAddress: data.companyAddress,
-      companyAddressCordinates: data.companyAddressCordinates,
-      companyAddressPlaceId: data.companyAddressPlaceId,
-      companyEmail: data.companyEmail,
-      companyForm20: data.companyForm20,
       companyName: data.companyName,
-      companyTele: data.companyTele,
+      companyPhone: data.companyPhone,
+      companyEmail: data.companyEmail,
+      // companyTele: data.companyTele,
+      // companyAddress: data.companyAddress,
+      // companyAddressCordinates: data.companyAddressCordinates,
+      companyAddressPlaceId: data.companyAddressPlaceId,
+      companyAddressPlaceName: data.companyAddressPlaceName,
+      companyAddressCordinatesLat: data.companyAddressCordinatesLat,
+      companyAddressCordinatesLng: data.companyAddressCordinatesLng,
+      companyForm20ImageFormat : data.companyForm20ImageFormat,
+      companyForm20ImageBase64 : data.companyForm20ImageBase64,
       companyTinNumber: data.companyTinNumber,
       companyWebsite: data.companyWebsite,
       contactPersonEmail: data.contactPersonEmail,
@@ -40,10 +56,12 @@ export const addCorporateCompany = createAsyncThunk('client/corporate/companies/
       contactPersonPhone: data.contactPersonPhone,
       isActive: true,
       createdBy: auth.currentUser.uid,
-      createdAt: new Date().toISOString(),
+      // createdAt: new Date().toISOString(),
       updatedBy: auth.currentUser.uid,
-      updatedAt: new Date().toISOString()
+      // updatedAt: new Date().toISOString()
     };
+
+    // console.log("companyData : " ,companyData)
 
     const response = await axios.post(url, companyData);
     return {
@@ -51,28 +69,39 @@ export const addCorporateCompany = createAsyncThunk('client/corporate/companies/
       ...companyData
     };
   } catch (error) {
-    console.log(error);
-    console.log(error.response.data.message);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
 
-    if (error.response.status == 400) {
-      if (error.response.data.message) {
-        return thunkAPI.rejectWithValue(`Error creating user: ${error.response.data.message}`);
-      }
-    } else {
-      return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
-    }
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
 
-    return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
+    // if (error.response.status == 400) {
+    //   if (error.response.data.message) {
+    //     return thunkAPI.rejectWithValue(`Error creating user: ${error.response.data.message}`);
+    //   }
+    // } else {
+    //   return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
+    // }
+
+    // return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
   }
 });
 
 export const deleteCorporateCompany = createAsyncThunk('client/corporate/companies/delete', async (id, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/corporate/companies/delete/${id}`;
+    const devUrl = `${baseUrl}/users/corporate/companies/delete/${id}/?env=dev`;
+    const prodUrl = `${baseUrl}/users/corporate/companies/delete/${id}/?env=prod`;
+
+    const url = import.meta.env.VITE_ENV === "DEV" ? devUrl : prodUrl;
+
     await axios.delete(url);
     return id;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
+
+    // return thunkAPI.rejectWithValue(error);
   }
 });
 
@@ -81,60 +110,68 @@ export const deleteCorporateCompany = createAsyncThunk('client/corporate/compani
 
 export const fetchClientsCorporate = createAsyncThunk('client/corporate/fetch/all', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/clients/corporate`;
+    const devUrl = `${baseUrl}/users/clients/corporate/?env=dev`;
+    const prodUrl = `${baseUrl}/users/clients/corporate/?env=prod`;
+    
+    const url = import.meta.env.VITE_ENV === "DEV" ? devUrl : prodUrl;
+
     const response = await axios.get(url);
     // console.log(response.data)
 
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
+
+    // return thunkAPI.rejectWithValue(error);
   }
 });
 
 export const addClientCorporate = createAsyncThunk('client/corporate/add/new', async (data, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/clients/corporate/new`;
-    const timestamp = Date.now().toString();
-    const uniqueNo = timestamp.substring(4, 12);
+    const devUrl = `${baseUrl}/users/clients/corporate/new/?env=dev`;
+    const prodUrl = `${baseUrl}/users/clients/corporate/new/?env=prod`;
+    
+    const url = import.meta.env.VITE_ENV === "DEV" ? devUrl : prodUrl;
 
     const clientData = {
-      accountType: 'corporate',
-      company: data.company,
-      username: data.username + uniqueNo,
+      companyId: data.company.id,
+      username: data.username,
       phone: data.phone,
       email: data.email,
       password: data.password,
-      isActive: true,
-      isPhoneVerified: false,
-      token: '',
-      topic: 'client',
       createdBy: auth.currentUser.uid,
-      createdAt: new Date().toISOString(),
+      // createdAt: new Date().toISOString(),
       updatedBy: auth.currentUser.uid,
-      updatedAt: new Date().toISOString()
+      // updatedAt: new Date().toISOString()
     };
 
-    // console.log(clientData);
 
     const response = await axios.post(url, clientData);
 
     return {
-      id: response.id,
-      ...clientData
+      // id: response.data.id,
+      ...response.data,
+      company: data.company,
+      ...clientData,
     };
   } catch (error) {
-    console.log(error);
-    console.log(error.response.data.message);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
 
-    if (error.response.status == 400) {
-      if (error.response.data.message) {
-        return thunkAPI.rejectWithValue(`Error creating user: ${error.response.data.message}`);
-      }
-    } else {
-      return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
-    }
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
 
-    return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
+    // if (error.response.status == 400) {
+    //   if (error.response.data.message) {
+    //     return thunkAPI.rejectWithValue(`Error creating user: ${error.response.data.message}`);
+    //   }
+    // } else {
+    //   return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
+    // }
+
+    // return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
   }
 });
 
@@ -142,12 +179,21 @@ export const addClientCorporate = createAsyncThunk('client/corporate/add/new', a
 
 export const fetchClientsPersonal = createAsyncThunk('client/personal/fetch/all', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/clients/personal`;
-    const response = await axios.get(url);
+    const devUrl = `${baseUrl}/users/clients/personal/?env=dev`;
+    const prodUrl = `${baseUrl}/users/clients/personal/?env=prod`;
+    
+    const url = import.meta.env.VITE_ENV === "DEV" ? devUrl : prodUrl;
+
+    const response = await axios.get(prodUrl);
 
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
+
+    // return thunkAPI.rejectWithValue(error);
   }
 });
 
@@ -155,10 +201,19 @@ export const fetchClientsPersonal = createAsyncThunk('client/personal/fetch/all'
 
 export const deleteClient = createAsyncThunk('client/delete', async (id, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/clients/delete/${id}`;
+    const devUrl = `${baseUrl}/users/clients/delete/${id}/?env=dev`;
+    const prodUrl = `${baseUrl}/users/clients/delete/${id}/?env=prod`;
+    
+    const url = import.meta.env.VITE_ENV === "DEV" ? devUrl : prodUrl;
+
     await axios.delete(url);
     return id;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
+
+    // return thunkAPI.rejectWithValue(error);
   }
 });

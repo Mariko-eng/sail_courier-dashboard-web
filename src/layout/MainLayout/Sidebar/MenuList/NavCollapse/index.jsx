@@ -13,7 +13,10 @@ import NavItem from '../NavItem';
 
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { IconChevronDown, IconChevronUp } from '@tabler/icons';
+import { TbChevronDown } from "react-icons/tb";
+import { TbChevronUp } from "react-icons/tb";
+
+
 
 // ==============================|| SIDEBAR MENU LIST COLLAPSE ITEMS ||============================== //
 
@@ -121,9 +124,9 @@ const NavCollapse = ({ menu, level }) => {
           }
         />
         {open ? (
-          <IconChevronUp stroke={1.5} size="1rem" style={{ marginTop: 'auto', marginBottom: 'auto' }} />
+          <TbChevronUp stroke={1.5} size="1rem" style={{ marginTop: 'auto', marginBottom: 'auto' }} />
         ) : (
-          <IconChevronDown stroke={1.5} size="1rem" style={{ marginTop: 'auto', marginBottom: 'auto' }} />
+          <TbChevronDown stroke={1.5} size="1rem" style={{ marginTop: 'auto', marginBottom: 'auto' }} />
         )}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>

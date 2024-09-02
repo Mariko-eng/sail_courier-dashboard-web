@@ -1,12 +1,12 @@
 // assets
-import { IconKey, IconTruckDelivery, IconShoppingCart } from '@tabler/icons';
+import { TbFavicon } from "react-icons/tb";
+import { TbShoppingCart } from "react-icons/tb";
+import { TbBabyCarriage } from "react-icons/tb";
 
-
-// constant
 const icons = {
-  IconKey,
-  IconTruckDelivery,
-  IconShoppingCart
+  TbFavicon,
+  TbShoppingCart,
+  TbBabyCarriage
 };
 
 // ==============================|| EXTRA ORDERS MENU ITEMS ||============================== //

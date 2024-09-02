@@ -13,7 +13,10 @@ import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
 import Transitions from "../../../../ui-component/extended/Transitions";
 
 // assets
-import { IconAdjustmentsHorizontal, IconSearch, IconX } from '@tabler/icons';
+import { TbAdjustments } from "react-icons/tb";
+import { TbIcons } from "react-icons/tb";
+import { TbListSearch } from "react-icons/tb";
+
 import { shouldForwardProp } from '@mui/system';
 
 // styles
@@ -70,14 +73,14 @@ const MobileSearch = ({ value, setValue, popupState }) => {
       placeholder="Search"
       startAdornment={
         <InputAdornment position="start">
-          <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
+          <TbListSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
         </InputAdornment>
       }
       endAdornment={
         <InputAdornment position="end">
           <ButtonBase sx={{ borderRadius: '12px' }}>
             <HeaderAvatarStyle variant="rounded">
-              <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
+              <TbAdjustments stroke={1.5} size="1.3rem" />
             </HeaderAvatarStyle>
           </ButtonBase>
           <Box sx={{ ml: 2 }}>
@@ -96,7 +99,7 @@ const MobileSearch = ({ value, setValue, popupState }) => {
                 }}
                 {...bindToggle(popupState)}
               >
-                <IconX stroke={1.5} size="1.3rem" />
+                <TbIcons stroke={1.5} size="1.3rem" />
               </Avatar>
             </ButtonBase>
           </Box>
@@ -129,7 +132,7 @@ const SearchSection = () => {
               <Box sx={{ ml: 2 }}>
                 <ButtonBase sx={{ borderRadius: '12px' }}>
                   <HeaderAvatarStyle variant="rounded" {...bindToggle(popupState)}>
-                    <IconSearch stroke={1.5} size="1.2rem" />
+                    <TbListSearch stroke={1.5} size="1.2rem" />
                   </HeaderAvatarStyle>
                 </ButtonBase>
               </Box>
@@ -170,14 +173,14 @@ const SearchSection = () => {
           placeholder="Search"
           startAdornment={
             <InputAdornment position="start">
-              <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
+              <TbListSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
             </InputAdornment>
           }
           endAdornment={
             <InputAdornment position="end">
               <ButtonBase sx={{ borderRadius: '12px' }}>
                 <HeaderAvatarStyle variant="rounded">
-                  <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
+                  <TbAdjustments stroke={1.5} size="1.3rem" />
                 </HeaderAvatarStyle>
               </ButtonBase>
             </InputAdornment>

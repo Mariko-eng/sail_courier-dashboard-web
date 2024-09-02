@@ -1,14 +1,31 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createSlice } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
-import { fetchCorporateCompanies, addCorporateCompany, deleteCorporateCompany } from './extra_reducers';
-import { fetchClientsCorporate, addClientCorporate } from './extra_reducers';
-import { fetchClientsPersonal, deleteClient } from './extra_reducers';
+import {
+  fetchCorporateCompanies,
+  addCorporateCompany,
+  deleteCorporateCompany,
+  fetchClientsCorporate,
+  addClientCorporate,
+  fetchClientsPersonal,
+  deleteClient
+} from './extra_reducers';
 
-
-const errorReducer = (state, { payload }) => {
+// Helper function for handling errors
+const handleError = (state, { payload }) => {
   state.loading = false;
-  state.error = payload;
+  state.error = payload || 'An unexpected error occurred';
+  toast.error(state.error, { position: 'bottom-right' });
+};
+
+// Helper function to update or add data
+const updateData = (state, action) => {
+  if (state.edit) {
+    state.selectedData = action.payload;
+    state.data = state.data.map((item) => (item.id === action.payload.id ? { ...item, ...action.payload } : item));
+  } else {
+    state.data.unshift(action.payload);
+  }
 };
 
 export const clientsSlice = createSlice({
@@ -18,7 +35,7 @@ export const clientsSlice = createSlice({
     submitted: null,
     total: 1,
     data: [],
-    dataCompanies : [],
+    dataCompanies: [],
     edit: false,
     error: null,
     selectedData: null
@@ -34,12 +51,12 @@ export const clientsSlice = createSlice({
     setEditing: (state, { payload }) => {
       state.edit = payload;
     },
-    setDataError: errorReducer
+    setDataError: handleError
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCorporateCompanies.pending, (state) => { // Fetch Corp Company
+      .addCase(fetchCorporateCompanies.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchCorporateCompanies.fulfilled, (state, action) => {
@@ -47,85 +64,57 @@ export const clientsSlice = createSlice({
         state.dataCompanies = action.payload;
         state.total = action.payload.length;
       })
-      .addCase(fetchCorporateCompanies.rejected, errorReducer)
+      .addCase(fetchCorporateCompanies.rejected, handleError)
 
-      .addCase(addCorporateCompany.pending, (state) => { // Add Corp Company
+      .addCase(addCorporateCompany.pending, (state) => {
         state.loading = true;
       })
-
       .addCase(addCorporateCompany.fulfilled, (state, action) => {
         state.loading = false;
         state.submitted = true;
-        if (state.edit) {
-          state.selectedData = action.payload;
-          state.data = state.data.map((item) => {
-            if (item.id === action.payload.id) {
-              return { ...item, ...action.payload };
-            }
-            return item;
-          });
-        } else {
-          state.data.unshift(action.payload);
-        }
+        updateData(state, action);
+        toast.success('Corporate company added successfully', { position: 'top-right' });
       })
-
       .addCase(addCorporateCompany.rejected, (state, { payload }) => {
         state.loading = false;
-        toast.error(payload, { position: 'bottom-right' });
+        handleError(state, { payload });
       })
 
-      .addCase(deleteCorporateCompany.pending, (state) => {// Delete Corp Company
+      .addCase(deleteCorporateCompany.pending, (state) => {
         state.loading = true;
       })
-
       .addCase(deleteCorporateCompany.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.data = state.data.filter((item) => {
-          if (item.id !== payload) {
-            return item;
-          }
-        });
+        state.data = state.data.filter((item) => item.id !== payload);
+        toast.success('Corporate company deleted successfully', { position: 'top-right' });
       })
+      .addCase(deleteCorporateCompany.rejected, handleError)
 
-      .addCase(deleteCorporateCompany.rejected, errorReducer)
-
-      .addCase(fetchClientsCorporate.pending, (state) => { // Fetch Corp Clients
+      .addCase(fetchClientsCorporate.pending, (state) => {
         state.loading = true;
       })
-
       .addCase(fetchClientsCorporate.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
         state.total = action.payload.length;
       })
-      .addCase(fetchClientsCorporate.rejected, errorReducer)
+      .addCase(fetchClientsCorporate.rejected, handleError)
 
-      .addCase(addClientCorporate.pending, (state) => { // Add Corp Client
+      .addCase(addClientCorporate.pending, (state) => {
         state.loading = true;
       })
-
       .addCase(addClientCorporate.fulfilled, (state, action) => {
         state.loading = false;
         state.submitted = true;
-        if (state.edit) {
-          state.selectedData = action.payload;
-          state.data = state.data.map((item) => {
-            if (item.id === action.payload.id) {
-              return { ...item, ...action.payload };
-            }
-            return item;
-          });
-        } else {
-          state.data.unshift(action.payload);
-        }
+        updateData(state, action);
+        toast.success('Corporate client added successfully', { position: 'top-right' });
       })
-
       .addCase(addClientCorporate.rejected, (state, { payload }) => {
         state.loading = false;
-        toast.error(payload, { position: 'bottom-right' });
+        handleError(state, { payload });
       })
 
-      .addCase(fetchClientsPersonal.pending, (state) => { // Fetch Personal Client
+      .addCase(fetchClientsPersonal.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchClientsPersonal.fulfilled, (state, action) => {
@@ -133,23 +122,19 @@ export const clientsSlice = createSlice({
         state.data = action.payload;
         state.total = action.payload.length;
       })
-      .addCase(fetchClientsPersonal.rejected, errorReducer)
+      .addCase(fetchClientsPersonal.rejected, handleError)
 
-      .addCase(deleteClient.pending, (state) => { // Delete Client
+      .addCase(deleteClient.pending, (state) => {
         state.loading = true;
       })
-
       .addCase(deleteClient.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.data = state.data.filter((item) => {
-          if (item.id !== payload) {
-            return item;
-          }
-        });
+        state.data = state.data.filter((item) => item.id !== payload);
+        toast.success('Client deleted successfully', { position: 'top-right' });
       })
-
-      .addCase(deleteClient.rejected, errorReducer);
+      .addCase(deleteClient.rejected, handleError);
   }
 });
+
 export const { clearError, setDataError, setSubmitted, setEditing } = clientsSlice.actions;
 export default clientsSlice.reducer;

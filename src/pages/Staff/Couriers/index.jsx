@@ -13,7 +13,7 @@ import { materialTableIcons } from '../../../utils/material-table-icons';
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCouriers, deleteCourier } from './store';
-import MaterialTable from 'material-table';
+// import MaterialTable from 'material-table';
 import UiLoadingOverlay from '../../../components/overlay';
 
 const Couriers = () => {
@@ -53,7 +53,7 @@ const Couriers = () => {
         >
           <Card sx={{ overflow: 'hidden' }}>
             <div style={{ overflowX: 'auto' }}>
-              <MaterialTable
+              {/* <MaterialTable
                 icons={materialTableIcons}
                 title="Couriers"
                 columns={columns}
@@ -102,7 +102,7 @@ const Couriers = () => {
                   },
                   showSelectAllCheckbox: true
                 }}
-              />
+              /> */}
             </div>
           </Card>
         </MainCard>

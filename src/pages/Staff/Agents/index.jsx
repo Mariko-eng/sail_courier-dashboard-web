@@ -6,7 +6,7 @@ import SideNav from '../../../components/sidenav/SideNav';
 import AgentsNew from './new';
 import { columns } from './columns';
 import { materialTableIcons } from '../../../utils/material-table-icons';
-import MaterialTable from 'material-table';
+// import MaterialTable from 'material-table';
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,7 +48,7 @@ const Agents = () => {
       >
         <Card sx={{ overflow: 'hidden' }}>
           <div style={{ overflowX: 'auto' }}>
-            <MaterialTable
+            {/* <MaterialTable
               icons={materialTableIcons}
               title="Agents"
               columns={columns}
@@ -77,7 +77,7 @@ const Agents = () => {
                 },
                 showSelectAllCheckbox: true
               }}
-            />
+            /> */}
           </div>
         </Card>
       </MainCard>

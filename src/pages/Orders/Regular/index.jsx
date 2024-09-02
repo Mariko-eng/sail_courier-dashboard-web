@@ -1,29 +1,36 @@
-import { useState } from 'react';
-import ClearIcon from '@mui/icons-material/Clear';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import MoreVertIcon from '@mui/icons-material/MoreVertOutlined';
-import MaterialTable from 'material-table';
-import { useEffect } from 'react';
-import { materialTableIcons } from '../../../utils/material-table-icons';
-import { columns } from './columns';
+import { useState, useEffect } from 'react';
 import SideNav from '../../../components/sidenav/SideNav';
-// import MoreVertIcon from '@material-ui/icons/';
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchRegularOrders } from '../store/extra_reducers';
-import { Box, Card, FormControl, InputLabel, Menu, MenuItem, Select, TextField } from '@mui/material';
-import { capitalize } from '../../../utils/app-functions';
+import { Box, FormControl, InputLabel, Menu, MenuItem, Select, TextField } from '@mui/material';
 import AlertConfrimationDialog from '../../../components/dailog/confirmDialog';
 import SelectCourier from '../actions/SelectCourier';
 import UiLoadingOverlay from '../../../components/overlay';
-import { approveOrder, assignCourierToRegularOrder, deleteOrder } from '../store/reducers';
-import { confirmRegularOrderPickUp, confirmOrderdelivery } from '../store/reducers';
-import { rejectOrder, cancelOrder, toggleOrderPaymentStatus } from '../store/reducers';
+import { fetchRegularOrders } from '../store/reducers/extra_reducers';
+import { approveOrder, assignCourierToRegularOrder } from '../store/reducers/reducers';
+import { confirmRegularOrderPickUp, confirmOrderdelivery } from '../store/reducers/reducers';
+import { rejectOrder, cancelOrder, toggleOrderPaymentStatus } from '../store/reducers/reducers';
 import OrderHistory from '../history';
+import RegularOrdersTable from './table';
+
+// Utility function to format date in YYYY-MM-DD
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 const Regular = () => {
+  const today = new Date();
+  const [status, setStatus] = useState('all');
+  const [timePeriod, setTimePeriod] = useState('today');
+  const [startDate, setStartDate] = useState(formatDate(today));
+  const [endDate, setEndDate] = useState(formatDate(today));
+  const [queryStr, setQueryStr] = useState('');
+  const [rowsPerPage, setRowsPerPage] = useState(50);
+
   const [[anchorEl, selectedRow], setAnchorEl] = useState([null, undefined]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [actionType, setActionType] = useState(null);
@@ -32,9 +39,6 @@ const Regular = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedCourier, setSelectedCourier] = useState({});
 
-  const handleOpenMenuActions = (event, rowData) => {
-    setAnchorEl([event.currentTarget, rowData]);
-  };
 
   const handleCloseMenuActions = () => {
     setAnchorEl([null, undefined]);
@@ -64,95 +68,112 @@ const Regular = () => {
   };
 
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.orders);
-
-  useEffect(() => {
-    dispatch(fetchRegularOrders());
-  }, [dispatch]);
+  const store = useSelector((state) => state.regularOrders);
 
   const orders = store.orders;
 
-  const newLoadList = structuredClone(orders);
-  // console.log(store.loading);
+  const newLoadList = orders;
+  // const newLoadList = structuredClone(orders);
 
-  const [status, setStatus] = useState('all');
-  const [timePeriod, setTimePeriod] = useState('today');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [isTimeePeriod, setIsTimeePeriod] = useState(null);
-
-  const handleFilter = (event) => {
-    if (event.target.name == 'status') {
-      setStatus(event.target.value);
-    }
-
-    if (event.target.name == 'timePeriod') {
-      setIsTimeePeriod(true);
-      setTimePeriod(event.target.value);
-    }
-
-    if (event.target.name == 'startDate') {
-      setIsTimeePeriod(false);
-
-      // Parse the selected date as a Date object
-      const selectedDate = new Date(event.target.value);
-
-      // Convert the selected date to an ISO string
-      const isoDateString = selectedDate.toISOString();
-
-      setStartDate(isoDateString);
-    }
-
-    if (event.target.name == 'endDate') {
-      setIsTimeePeriod(false);
-
-      // Parse the selected date as a Date object
-      const selectedDate = new Date(event.target.value);
-
-      // Convert the selected date to an ISO string
-      const isoDateString = selectedDate.toISOString();
-
-      setEndDate(isoDateString);
-    }
-  };
 
   useEffect(() => {
     const queryParams = new URLSearchParams();
 
-    if (status !== 'all') {
-      queryParams.append('status', status);
-    }
-
-    if (timePeriod) {
-      queryParams.append('timePeriod', timePeriod);
-    }
-
-    if (isTimeePeriod) {
-      const queryString = queryParams.toString();
-      console.log(queryString);
-    }
-  }, [status, isTimeePeriod, timePeriod]);
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams();
+    queryParams.append('limit', rowsPerPage);
 
     if (status !== 'all') {
       queryParams.append('status', status);
     }
 
     if (startDate) {
-      queryParams.append('startDate', startDate);
+      const selectedDate = new Date(startDate);
+      const startDateIsoDateString = selectedDate.toISOString();
+
+      queryParams.append('startDate', startDateIsoDateString);
     }
 
     if (endDate) {
-      queryParams.append('endDate', endDate);
+      const selectedDate = new Date(endDate);
+      const endDateIsoDateString = selectedDate.toISOString();
+
+      queryParams.append('endDate', endDateIsoDateString);
     }
 
-    if (!isTimeePeriod) {
-      const queryString = queryParams.toString();
-      console.log(queryString);
+    setQueryStr(queryParams)
+
+    if (queryStr !== "") {
+      dispatch(fetchRegularOrders(queryStr));
     }
-  }, [status, isTimeePeriod, startDate, endDate]);
+
+  }, [rowsPerPage, status, startDate, endDate, setQueryStr]);
+
+
+  // Function to handle the filter change
+  const handleFilter = (event) => {
+    const { name, value } = event.target;
+
+    if (name === 'timePeriod') {
+      setTimePeriod(value);
+      updateDates(value);
+    } else {
+      // Handle date changes or other filters if necessary
+      if (name === 'startDate') setStartDate(value);
+      if (name === 'endDate') setEndDate(value);
+      if (name === 'status') setStatus(value);
+    }
+  };
+
+  // Function to update dates based on the selected time period
+  const updateDates = (period) => {
+    // Create a new Date object to avoid mutating the original today object
+    const today = new Date();
+    let start, end;
+
+    switch (period) {
+      case 'today':
+        start = end = new Date(today); // Create a new Date object for both start and end
+        break;
+      case 'yesterday':
+        start = end = new Date(today.setDate(today.getDate() - 1));
+        break;
+      case 'last7days':
+        start = new Date(today.setDate(today.getDate() - 7));
+        end = new Date(); // New Date object for end
+        break;
+      case 'last14days':
+        start = new Date(today.setDate(today.getDate() - 14));
+        end = new Date(); // New Date object for end
+        break;
+      case 'last30days':
+        start = new Date(today.setDate(today.getDate() - 30));
+        end = new Date(); // New Date object for end
+        break;
+      case 'last3months':
+        start = new Date(today.setMonth(today.getMonth() - 3));
+        end = new Date(); // New Date object for end
+        break;
+      case 'last6months':
+        start = new Date(today.setMonth(today.getMonth() - 6));
+        end = new Date(); // New Date object for end
+        break;
+      case 'last12months':
+        start = new Date(today.setFullYear(today.getFullYear() - 1));
+        end = new Date(); // New Date object for end
+        break;
+      default:
+        start = end = new Date(today); // Default case
+    }
+
+    setStartDate(formatDate(start));
+    setEndDate(formatDate(end));
+  };
+
+
+  useEffect(() => {
+    if (queryStr !== "") {
+      dispatch(fetchRegularOrders(queryStr));
+    }
+  }, [queryStr, dispatch]);
 
   return (
     <>
@@ -168,20 +189,19 @@ const Regular = () => {
               <MenuItem value="delivered">Delivered</MenuItem>
             </Select>
           </FormControl>
+
           <Box ml={'20px'} display={'flex'}>
             <FormControl style={{ minWidth: 150 }}>
               <InputLabel id="period-label">Period</InputLabel>
               <Select
                 labelId="period-label"
                 label="Period"
-                defaultValue="today"
+                value={timePeriod}
                 name="timePeriod"
                 onChange={handleFilter}
                 style={{ minWidth: 120 }}
               >
-                <MenuItem value="today" selected>
-                  Today
-                </MenuItem>
+                <MenuItem value="today">Today</MenuItem>
                 <MenuItem value="yesterday">Yesterday</MenuItem>
                 <MenuItem value="last7days">Last 7 Days</MenuItem>
                 <MenuItem value="last14days">Last 14 Days</MenuItem>
@@ -197,6 +217,7 @@ const Regular = () => {
               label="Start Date"
               type="date"
               name="startDate"
+              value={startDate}
               onChange={handleFilter}
               style={{ minWidth: 120 }}
               InputLabelProps={{
@@ -212,6 +233,7 @@ const Regular = () => {
               label="End Date"
               type="date"
               name="endDate"
+              value={endDate}
               onChange={handleFilter}
               style={{ minWidth: 120 }}
               InputLabelProps={{
@@ -224,86 +246,10 @@ const Regular = () => {
           </Box>
         </Box>
         <div style={{ overflowX: 'auto' }}>
-          <MaterialTable
-            icons={materialTableIcons}
-            title="Regular Orders"
-            columns={columns}
-            data={newLoadList}
-            detailPanel={[
-              {
-                icon: ArrowDropDownIcon,
-                openIcon: ArrowDropUpIcon,
-                render: (rowData) => {
-                  return (
-                    <Card sx={{ paddingLeft: '20px' }}>
-                      <div style={{ marginBottom: '10px' }}>
-                        <div style={{ fontWeight: 'bold' }}>Package Items </div>
-                        <div style={{ paddingLeft: '10px' }}>
-                          {rowData.parcelItems.map((item, index) => (
-                            <div key={index}>{item}</div>
-                          ))}
-                        </div>
-                      </div>
-                      <div style={{ marginBottom: '10px' }}>
-                        <div style={{ fontWeight: 'bold' }}>Pickup Point - {rowData.senderOtpCode} </div>
-                        <div style={{ paddingLeft: '10px' }}>{rowData.pickName}</div>
-                        <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelSenderName)}</div>
-                        <div style={{ paddingLeft: '10px' }}>{rowData.parcelSenderPhone}</div>
-                      </div>
-                      <div style={{ marginBottom: '10px' }}>
-                        <div style={{ fontWeight: 'bold' }}>Delivery Point - {rowData.receiverOtpCode}</div>
-                        <div style={{ paddingLeft: '10px' }}>{rowData.dropName}</div>
-                        <div style={{ paddingLeft: '10px' }}>{capitalize(rowData.parcelReceiverName)}</div>
-                        <div style={{ paddingLeft: '10px' }}>{rowData.parcelReceiverPhone}</div>
-                      </div>
-                    </Card>
-                  );
-                }
-              }
-            ]}
-            onRowClick={(event, rowData, togglePanel) => togglePanel()}
-            actions={[
-              {
-                icon: MoreVertIcon,
-                tooltip: 'More',
-                onClick: handleOpenMenuActions
-              },
-
-              (rowData) => ({
-                icon: ClearIcon,
-                tooltip: 'Delete Order',
-                onClick: (event, rowData) => {
-                  var result = confirm('You want to delete order ' + rowData.orderTrackerNo);
-                  if (result === true) {
-                    dispatch(deleteOrder(rowData.id));
-                  }
-                },
-                disabled: rowData.status !== 'cancelled' && rowData.status !== 'rejected'
-              })
-            ]}
-            options={{
-              // selection: true,
-              actionsColumnIndex: -1,
-              sorting: true,
-              search: true,
-              searchAutoFocus: true,
-              searchFieldAlignment: 'right',
-              searchFieldVariant: 'standard',
-              paging: true,
-              pageSizeOptions: [25, 50, 80, 100, 150],
-              pageSize: 25,
-              showFirstLastPageButtons: false,
-              // paginationType:"stepped",
-              // paginationPosition:"both",
-              exportAllData: true,
-              exportButton: true,
-              title: 'Orders',
-              headerStyle: {
-                backgroundColor: '#01579b',
-                color: '#FFF'
-              },
-              showSelectAllCheckbox: true
-            }}
+          <RegularOrdersTable 
+          orders={newLoadList} 
+          rowsPerPage={rowsPerPage} 
+          setRowsPerPage={setRowsPerPage}
           />
         </div>
       </UiLoadingOverlay>

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { auth, db } from '../../../../firebase/config';
+import { auth, db } from '../../../../config/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -11,6 +11,8 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }, thunkAPI) => {
     // Take two parameters
     try {
+      // console.log(email)
+      // console.log(password)
       const response = await signInWithEmailAndPassword(auth, email, password);
       // console.log(response.user)
       // console.log(response.user.uid);
@@ -32,7 +34,7 @@ export const loginUser = createAsyncThunk(
       return { message: 'Logged In Successfully' };
     } catch (error) {
       // You should handle errors here
-      //   console.log("Error", error);
+      console.log("Error", error);
       return thunkAPI.rejectWithValue({ message: 'Failed to login' });
     }
   }

@@ -1,12 +1,14 @@
 // assets
-import { IconTypography, IconPalette, IconShadow, IconWindmill } from '@tabler/icons';
+import { TbClipboardTypography } from "react-icons/tb";
+import { TbPalette } from "react-icons/tb";
+import { TbShadow } from "react-icons/tb";
+import { TbWindmill } from "react-icons/tb";
 
-// constant
 const icons = {
-  IconTypography,
-  IconPalette,
-  IconShadow,
-  IconWindmill
+  TbClipboardTypography,
+  TbPalette,
+  TbShadow,
+  TbWindmill
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //

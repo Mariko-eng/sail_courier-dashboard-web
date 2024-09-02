@@ -11,7 +11,7 @@ import ProfileSection from './ProfileSection';
 import NotificationSection from './NotificationSection';
 
 // assets
-import { IconMenu2 } from '@tabler/icons';
+import { TbMenu } from "react-icons/tb";
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -50,7 +50,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
             onClick={handleLeftDrawerToggle}
             color="inherit"
           >
-            <IconMenu2 stroke={1.5} size="1.3rem" />
+            <TbMenu stroke={1.5} size="1.3rem" />
           </Avatar>
         </ButtonBase>
       </Box>

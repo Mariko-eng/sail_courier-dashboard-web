@@ -1,5 +1,6 @@
-// import React from 'react'
-import ReactDOM from "react-dom/client";
+import React from 'react'
+import { Suspense } from "react";
+import ReactDOM from 'react-dom/client'
 // Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap Bundle JS
@@ -8,14 +9,14 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import { Suspense } from "react";
-import { Spinner } from "react-bootstrap";
-import { Toaster } from "react-hot-toast";
-import "./firebase/config";
 
 // third party
+import { Toaster } from 'react-hot-toast'
+import { Spinner } from "react-bootstrap";
+
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
+
 
 // project imports
 import App from './App';
@@ -24,7 +25,8 @@ import store from './store';
 // style + assets
 import './assets/scss/style.scss';
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+
+ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Suspense fallback={<Spinner />}>
       <Provider store={store}>
@@ -36,4 +38,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       </Provider>
     </Suspense>
   </BrowserRouter>
-);
+)

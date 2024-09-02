@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import {auth } from '../../../../firebase/config';
+import {auth } from '../../../../config/firebase';
 import { baseUrl } from '../../../../config/axios';
 import toast from 'react-hot-toast';
 

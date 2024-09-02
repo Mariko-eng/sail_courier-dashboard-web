@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
-import useScriptRef from '../../../hooks/useScriptRef';
+import { Link } from 'react-router-dom';
+
+import useScriptRef from '../../../../hooks/useScriptRef';
 
 // third party
 import * as Yup from 'yup';
@@ -11,13 +13,12 @@ import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, Me
 
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import AnimateButton from '../../../ui-component/extended/AnimateButton';
+import AnimateButton from '../../../../ui-component/extended/AnimateButton';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addClientCorporate } from './../store/extra_reducers';
+import { addClientCorporate } from './../../store/extra_reducers';
 
-import { fetchCorporateCompanies } from './../store/extra_reducers';
-import { Link } from 'react-router-dom';
+import { fetchCorporateCompanies } from './../../store/extra_reducers';
 
 const CorporateNew = () => {
   const theme = useTheme();

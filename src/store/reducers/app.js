@@ -1,8 +1,17 @@
-// project imports
+import config from "../../config";
 
-// action - state management
-import config from '../../config';
-import * as actionTypes from './actions';
+// actionTypes - customization reducer
+export const SET_MENU = '@customization/SET_MENU';
+export const MENU_TOGGLE = '@customization/MENU_TOGGLE';
+export const MENU_OPEN = '@customization/MENU_OPEN';
+export const SET_FONT_FAMILY = '@customization/SET_FONT_FAMILY';
+export const SET_BORDER_RADIUS = '@customization/SET_BORDER_RADIUS';
+
+
+// theme constant
+export const gridSpacing = 3;
+export const drawerWidth = 260;
+export const appDrawerWidth = 320;
 
 export const initialState = {
     isOpen: [], // for active default menu
@@ -17,23 +26,23 @@ export const initialState = {
 const customizationReducer = (state = initialState, action) => {
     let id;
     switch (action.type) {
-        case actionTypes.MENU_OPEN:
+        case MENU_OPEN:
             id = action.id;
             return {
                 ...state,
                 isOpen: [id]
             };
-        case actionTypes.SET_MENU:
+        case SET_MENU:
             return {
                 ...state,
                 opened: action.opened
             };
-        case actionTypes.SET_FONT_FAMILY:
+        case SET_FONT_FAMILY:
             return {
                 ...state,
                 fontFamily: action.fontFamily
             };
-        case actionTypes.SET_BORDER_RADIUS:
+        case SET_BORDER_RADIUS:
             return {
                 ...state,
                 borderRadius: action.borderRadius

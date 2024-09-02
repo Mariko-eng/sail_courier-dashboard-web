@@ -2,7 +2,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 
 // material-ui
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+// import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/styles';
 import { AppBar, Box, CssBaseline, Toolbar, useMediaQuery } from '@mui/material';
 
 // project imports
@@ -13,13 +15,11 @@ import Sidebar from './Sidebar';
 import Customization from '../Customization';
 // import navigation from 'menu-items';
 import navigation from "../../components/menu-items";
-// import { drawerWidth } from 'store/constant';
-import { drawerWidth } from "../../store/app/constant";
-// import { SET_MENU } from 'store/actions';
-import { SET_MENU } from "../../store/app/actions";
+
+import { drawerWidth, SET_MENU } from './../../store/reducers/app';
 
 // assets
-import { IconChevronRight } from '@tabler/icons';
+import { TbArrowNarrowRight } from "react-icons/tb";
 
 // styles
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
@@ -30,13 +30,13 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
     'margin',
     open
       ? {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen
-        }
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen
+      }
       : {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen
-        }
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen
+      }
   ),
   [theme.breakpoints.up('md')]: {
     marginLeft: open ? 0 : -(drawerWidth - 20),
@@ -55,6 +55,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
   }
 }));
 
+
+
 // ==============================|| MAIN LAYOUT ||============================== //
 
 const MainLayout = () => {
@@ -69,7 +71,6 @@ const MainLayout = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
       {/* header */}
       <AppBar
         enableColorOnDark
@@ -86,18 +87,15 @@ const MainLayout = () => {
         </Toolbar>
       </AppBar>
 
-      {/* drawer */}
+      {/* sidebar */}
       <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
 
-      {/* main content */}
       <Main theme={theme} open={leftDrawerOpened}>
-        {/* breadcrumb */}
-        <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
         <Outlet />
       </Main>
+
       <Customization />
-    </Box>
-  );
+    </Box>)
 };
 
 export default MainLayout;

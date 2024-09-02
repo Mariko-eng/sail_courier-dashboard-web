@@ -4,7 +4,7 @@ import { lazy } from 'react';
 import Loadable from '../../ui-component/Loadable';
 
 // Dashboard
-const DashboardDefault = Loadable(lazy(() => import('../../pages/dashboard/Default')));
+const DashboardDefault = Loadable(lazy(() => import('../../pages/Dashboard/Default')));
 
 // Orders
 const RegularOrders = Loadable(lazy(() => import('../../pages/Orders/Regular')));
@@ -14,7 +14,7 @@ const ShoppingOrders = Loadable(lazy(() => import('../../pages/Orders/Shopping')
 
 // Clients - Corporate Accounts
 const CorporateCompanies = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies')));
-const ClientsCorporate = Loadable(lazy(() => import('../../pages/Clients/Corporate')));
+const ClientsCorporate = Loadable(lazy(() => import('../../pages/Clients/Corporate/Users')));
 
 // Clients - Personal Accounts
 const ClientsPersonal = Loadable(lazy(() => import('../../pages/Clients/Personal')));

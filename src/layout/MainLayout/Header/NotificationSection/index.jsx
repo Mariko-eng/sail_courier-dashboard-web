@@ -32,7 +32,7 @@ import Transitions from "../../../../ui-component/extended/Transitions";
 import NotificationList from './NotificationList';
 
 // assets
-import { IconBell } from '@tabler/icons';
+import { TbBell } from "react-icons/tb";
 
 // notification status options
 const status = [
@@ -121,7 +121,7 @@ const NotificationSection = () => {
             onClick={handleToggle}
             color="inherit"
           >
-            <IconBell stroke={1.5} size="1.3rem" />
+            <TbBell stroke={1.5} size="1.3rem" />
           </Avatar>
         </ButtonBase>
       </Box>

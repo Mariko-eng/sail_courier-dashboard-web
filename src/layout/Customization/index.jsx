@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import { IconSettings } from '@tabler/icons';
+import { TbSettings } from "react-icons/tb";
 
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -26,10 +26,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import SubCard from "../../ui-component/cards/SubCard";
 // import AnimateButton from 'ui-component/extended/AnimateButton';
 import AnimateButton from "../../ui-component/extended/AnimateButton";
-// import { SET_BORDER_RADIUS, SET_FONT_FAMILY } from 'store/actions';
-import { SET_BORDER_RADIUS, SET_FONT_FAMILY } from "../../store/app/actions";
-// import { gridSpacing } from 'store/constant';
-import { gridSpacing } from "../../store/app/constant";
+
+import { SET_BORDER_RADIUS, SET_FONT_FAMILY, gridSpacing } from "../../store/reducers/app";
 
 // concat 'px'
 function valueText(value) {
@@ -116,7 +114,7 @@ const Customization = () => {
         >
           <AnimateButton type="rotate">
             <IconButton color="inherit" size="large" disableRipple>
-              <IconSettings />
+              <TbSettings />
             </IconButton>
           </AnimateButton>
         </Fab>

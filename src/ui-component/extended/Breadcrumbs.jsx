@@ -10,11 +10,12 @@ import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
 // project imports
 // import config from 'config';
 import config from "../../config";
-// import { gridSpacing } from 'store/constant';
-import { gridSpacing } from "../../store/app/constant";
+
+import { gridSpacing } from "../../store/reducers/app";
 
 // assets
-import { IconTallymark1 } from '@tabler/icons';
+import { TbBrandMonday } from "react-icons/tb";
+
 import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
 import HomeIcon from '@mui/icons-material/Home';
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
@@ -71,7 +72,7 @@ const Breadcrumbs = ({ card, divider, icon, icons, maxItems, navigation, rightAl
 
   // item separator
   const SeparatorIcon = separator;
-  const separatorIcon = separator ? <SeparatorIcon stroke={1.5} size="1rem" /> : <IconTallymark1 stroke={1.5} size="1rem" />;
+  const separatorIcon = separator ? <SeparatorIcon stroke={1.5} size="1rem" /> : <TbBrandMonday stroke={1.5} size="1rem" />;
 
   let mainContent;
   let itemContent;

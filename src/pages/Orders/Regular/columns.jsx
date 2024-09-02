@@ -6,7 +6,7 @@ import { capitalize, prettyDate } from '../../../utils/app-functions';
 export const columns = [
   {
     title: '#',
-    field: 'orderNo',
+    field: 'orderNo', 
     cellStyle: {
       backgroundColor: '#039be5',
       color: '#FFF'

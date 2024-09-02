@@ -39,7 +39,10 @@ import Transitions from "../../../../ui-component/extended/Transitions";
 import User1 from "../../../../assets/images/users/user-round.svg";
 
 // assets
-import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
+import { TbLogout } from "react-icons/tb";
+import { TbListSearch } from "react-icons/tb";
+import { TbSettings } from "react-icons/tb";
+import { TbUser } from "react-icons/tb";
 
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -134,7 +137,7 @@ const ProfileSection = () => {
             color="inherit"
           />
         }
-        label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
+        label={<TbSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
         variant="outlined"
         ref={anchorRef}
         aria-controls={open ? 'menu-list-grow' : undefined}
@@ -183,7 +186,7 @@ const ProfileSection = () => {
                       placeholder="Search profile options"
                       startAdornment={
                         <InputAdornment position="start">
-                          <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
+                          <TbListSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
                         </InputAdornment>
                       }
                       aria-describedby="search-helper-text"
@@ -262,7 +265,7 @@ const ProfileSection = () => {
                           onClick={(event) => handleListItemClick(event, 0, '#')}
                         >
                           <ListItemIcon>
-                            <IconSettings stroke={1.5} size="1.3rem" />
+                            <TbSettings stroke={1.5} size="1.3rem" />
                           </ListItemIcon>
                           <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
                         </ListItemButton>
@@ -272,7 +275,7 @@ const ProfileSection = () => {
                           onClick={(event) => handleListItemClick(event, 1, '#')}
                         >
                           <ListItemIcon>
-                            <IconUser stroke={1.5} size="1.3rem" />
+                            <TbUser stroke={1.5} size="1.3rem" />
                           </ListItemIcon>
                           <ListItemText
                             primary={
@@ -300,7 +303,7 @@ const ProfileSection = () => {
                           onClick={handleLogout}
                         >
                           <ListItemIcon>
-                            <IconLogout stroke={1.5} size="1.3rem" />
+                            <TbLogout stroke={1.5} size="1.3rem" />
                           </ListItemIcon>
                           <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
                         </ListItemButton>

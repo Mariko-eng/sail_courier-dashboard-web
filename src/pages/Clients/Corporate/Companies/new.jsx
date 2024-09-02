@@ -68,7 +68,7 @@ const CorporateCompaniesNew = () => {
         initialValues={{
           companyName: '',
           companyEmail: '',
-          companyTele: '',
+          companyPhone: '',
           companyWebsite: '',
           companyTinNumber: '',
           contactPersonName: '',
@@ -79,7 +79,7 @@ const CorporateCompaniesNew = () => {
         validationSchema={Yup.object().shape({
           companyName: Yup.string().min(5).max(25).required('Company Name is required'),
           companyEmail: Yup.string().email('Invalid email').required('Company Email Address is required'),
-          companyTele: Yup.string().max(25).required('Company Telephone is required'),
+          companyPhone: Yup.string().max(25).required('Company Telephone is required'),
           companyWebsite: Yup.string(),
           companyTinNumber: Yup.string(),
           contactPersonName: Yup.string().min(2).max(25).required('Contact Person Name is required'),
@@ -96,19 +96,27 @@ const CorporateCompaniesNew = () => {
             }
             let data = {
               ...values,
-              companyAddress: companyAddress,
               companyAddressPlaceId: companyAddressPlaceId,
-              companyAddressCordinates: companyAddressCordinates
+              companyAddressPlaceName: companyAddress,
+              companyAddressCordinatesLat : companyAddressCordinates.lat,
+              companyAddressCordinatesLng : companyAddressCordinates.lng,
             };
+
             if (scriptedRef.current) {
-              let companyForm20 = {
-                imageFormat: '',
-                imageBase64: ''
-              };
+              let companyForm20ImageFormat = "";
+              let companyForm20ImageBase64 = "";
+
+              // let companyForm20 = {
+              //   imageFormat: '',
+              //   imageBase64: ''
+              // };
               if (companyForm20FileBase64 === '') {
                 data = {
                   ...data,
-                  companyForm20: companyForm20
+                  companyForm20ImageFormat,
+                  companyForm20ImageBase64,
+
+                  // companyForm20: companyForm20
                 };
                 // console.log(data);
                 dispatch(addCorporateCompany(data));
@@ -122,14 +130,20 @@ const CorporateCompaniesNew = () => {
               } else {
                 const list = companyForm20FileBase64.split(',');
                 if (list.length >= 2) {
-                  companyForm20 = {
-                    imageFormat: list[0],
-                    imageBase64: list[1]
-                  };
+                  companyForm20ImageFormat = list[0];
+                  companyForm20ImageBase64 = list[1];
+
+                  // companyForm20 = {
+                  //   imageFormat: list[0],
+                  //   imageBase64: list[1]
+                  // };
 
                   data = {
                     ...data,
-                    companyForm20: companyForm20
+                    companyForm20ImageFormat,
+                    companyForm20ImageBase64,
+
+                    // companyForm20: companyForm20
                   };
                   //   console.log(data);
                   dispatch(addCorporateCompany(data));
@@ -191,21 +205,21 @@ const CorporateCompaniesNew = () => {
                 </FormHelperText>
               )}
             </FormControl>
-            <FormControl fullWidth error={Boolean(touched.companyTele && errors.companyTele)} sx={{ ...theme.typography.customInput }}>
-              <InputLabel htmlFor="outlined-adornment-companyTele">Company Telephone</InputLabel>
+            <FormControl fullWidth error={Boolean(touched.companyPhone && errors.companyPhone)} sx={{ ...theme.typography.customInput }}>
+              <InputLabel htmlFor="outlined-adornment-companyPhone">Company Phone</InputLabel>
               <OutlinedInput
-                id="outlined-adornment-companyTele"
+                id="outlined-adornment-companyPhone"
                 type="text"
-                value={values.companyTele}
-                name="companyTele"
+                value={values.companyPhone}
+                name="companyPhone"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 label="Company Telephone"
                 inputProps={{}}
               />
-              {touched.companyTele && errors.companyTele && (
-                <FormHelperText error id="standard-weight-helper-text-companyTele-login">
-                  {errors.companyTele}
+              {touched.companyPhone && errors.companyPhone && (
+                <FormHelperText error id="standard-weight-helper-text-companyPhone-login">
+                  {errors.companyPhone}
                 </FormHelperText>
               )}
             </FormControl>
@@ -345,7 +359,7 @@ const CorporateCompaniesNew = () => {
                           backgroundColor: suggestion.active ? '#41b6e6' : '#fff'
                         };
                         return (
-                          <div key={index} {...getSuggestionItemProps(suggestion, { style })}>
+                          <div {...getSuggestionItemProps(suggestion, { style })} key={index}>
                             {suggestion.description}
                           </div>
                         );
