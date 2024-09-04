@@ -7,20 +7,19 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import PropTypes from 'prop-types';
-import { IconButton, TextField, InputAdornment } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import { Menu, MenuItem } from '@mui/material';
-import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import { Chip, IconButton } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
-import { prettyDate } from '../../../utils/app-functions';
-
+import { capitalize, prettyDate } from '../../../../utils/app-functions';
 
 const columns = [
+    {
+        id: 'createdAt', label: 'Date', minWidth: 100,
+        format: (value) => prettyDate(value),
+    },
     { id: 'orderNo', label: 'N0', minWidth: 100 },
     { id: 'orderTrackerNo', label: 'Tracker ID', minWidth: 170 },
     { id: 'status', label: 'Status', minWidth: 100 },
@@ -31,94 +30,29 @@ const columns = [
     { id: 'clientAccountType', label: 'Client Type', minWidth: 100 },
     { id: 'totalCharges', label: 'Total Cost', minWidth: 100 },
     { id: 'isFullyPaid', label: 'is Fully Paid', minWidth: 100 },
-
-    {
-        id: 'createdAt', label: 'Created At', minWidth: 100,
-        format: (value) => prettyDate(value),
-    },
-    { id: 'actions', label: 'Actions', minWidth: 100 }, // Add action column
 ];
 
-function processData(dataList, query) {
+
+function processData(dataList) {
     let newData = [];
     for (var i = 0; i < dataList.length; i++) {
         var cords = `${dataList[i].companyAddressCordinatesLat} , ${dataList[i].companyAddressCordinatesLng}`;
         newData.push({
             ...dataList[i],
             companyAddressCordinates: cords,
-            action: 'Actions' // Example value for action button
         })
     }
 
-    if (!query) return newData;
-
-    return newData.filter(item => {
-        return Object.values(item).some(val =>
-            val.toString().toLowerCase().includes(query.toLowerCase())
-        );
-    });
+    return newData;
 }
 
-export default function ShoppingOrdersTable({ orders, rowsPerPage, setRowsPerPage }) {
-    const [page, setPage] = React.useState(0);
+export default function TodayOrdersTable({ orders }) {
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [selectedRow, setSelectedRow] = React.useState(null);
-    const [searchQuery, setSearchQuery] = React.useState('');
-
-    const handleSearchChange = (event) => {
-        setSearchQuery(event.target.value);
-    };
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-
-    const handleClick = (event, row) => {
-        setAnchorEl(event.currentTarget);
-        setSelectedRow(row);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-        setSelectedRow(null);
-    };
-
-    const handleAction = (action) => {
-        if (selectedRow) {
-            // Perform action based on the selectedRow
-            console.log(`Performing ${action} on row`, selectedRow);
-            handleClose();
-        }
-    };
-
-    const open = Boolean(anchorEl);
-
-    const rows = processData(orders, searchQuery);
+    const rows = processData(orders);
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                        <TextField
-                placeholder="Search..."
-                variant="outlined"
-                fullWidth
-                value={searchQuery}
-                onChange={handleSearchChange}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    ),
-                }}
-                sx={{ mb: 2, p: 2 }}
-            />
-            <TableContainer sx={{ minHeight: 440 }}>
+            <TableContainer sx={{ minHeight: 240 }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -136,35 +70,33 @@ export default function ShoppingOrdersTable({ orders, rowsPerPage, setRowsPerPag
                     </TableHead>
 
                     <TableBody>
-                        {rows.map((row, index) => (
-                            <Row key={index} row={row} handleClick={handleClick} />
-                        ))}
+                        {rows.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length}>
+                                    <Box 
+                                        display="flex" 
+                                        width="100%" 
+                                        justifyContent="center" 
+                                        p={2}
+                                    >
+                                        No Data!
+                                    </Box>
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            rows.map((row, index) => (
+                                <Row key={index} row={row} />
+                            ))
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[50, 100, 150]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-            <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-            >
-                <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem>
-                <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem>
-            </Menu>
         </Paper>
     );
 }
 
 // Define PropTypes for the Table component
-ShoppingOrdersTable.propTypes = {
+TodayOrdersTable.propTypes = {
     rowsPerPage: PropTypes.number,
     setRowsPerPage: PropTypes.func,
     orders: PropTypes.arrayOf(
@@ -187,7 +119,7 @@ ShoppingOrdersTable.propTypes = {
 
 
 const Row = (props) => {
-    const { row, handleClick } = props;
+    const { row } = props;
     const [openDetail, setOpenDetail] = React.useState(false);
 
     return (
@@ -206,11 +138,35 @@ const Row = (props) => {
                     const value = row[column.id];
                     return (
                         <TableCell key={column.id} align={column.align}>
-                            {column.id === 'actions' ?
-                                <IconButton onClick={(event) => handleClick(event, row)}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                                :
+                            {column.id === 'status' ? <>
+                                {value === 'pending' ? (
+                                    <Chip label="Pending" color="primary" variant="outlined" />
+                                ) : value === 'approved' ? (
+                                    <Chip label="Approved" color="primary" variant="contained" />
+                                ) : value === 'assigned' ? (
+                                    <Chip label="Assigned" color="secondary" variant="outlined" />
+                                ) : value === 'pickedUp' ? (
+                                    <Chip label="PickedUp" color="secondary" variant="contained" />
+                                ) : value === 'delivered' ? (
+                                    <Chip label="Delivered" color="success" variant="contained" />
+                                ) : value === 'cancelled' || value === 'rejected' ? (
+                                    <Chip label={capitalize(value)} color="error" variant="contained" />
+                                ) : (
+                                    <Chip label={capitalize(value)} variant="outlined" />
+                                )}
+                            </> : column.id === 'isFullyPaid' ? <>
+                                {value ? (
+                                    <Chip label="Fully Paid" color="success" variant="contained" />
+                                ) : (
+                                    <Chip label="Not Paid" color="secondary" variant="outlined" />
+                                )}
+                            </> : column.id === 'clientAccountType' ? <>
+                                {value === "corporate" ? (
+                                    <Chip label="Corporate" color="warning" variant="contained" />
+                                ) : (
+                                    <Chip label="Personal" color="primary" variant="outlined" />
+                                )}
+                            </> :
                                 (<>
                                     {column.format ? column.format(value) : value}
                                 </>)}

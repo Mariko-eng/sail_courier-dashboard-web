@@ -1,9 +1,8 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { auth } from '../../../../config/firebase';
 import { baseUrl } from '../../../../config/axios';
-import toast from 'react-hot-toast';
 
 export const fetchAdmins = createAsyncThunk('admin/fetchAll', async (_, thunkAPI) => {
   try {
@@ -75,9 +74,11 @@ export const deleteAdmin = createAsyncThunk('admin/delete', async (id, thunkAPI)
   }
 });
 
-const errorReducer = (state, { payload }) => {
+// Helper function for handling errors
+const handleError = (state, { payload }) => {
   state.loading = false;
-  state.error = payload;
+  state.error = payload || 'An unexpected error occurred';
+  toast.error(state.error, { position: 'bottom-right' });
 };
 
 export const adminsSlice = createSlice({
@@ -102,7 +103,7 @@ export const adminsSlice = createSlice({
     setEditing: (state, { payload }) => {
       state.edit = payload;
     },
-    setDataError: errorReducer
+    setDataError: handleError
   },
 
   extraReducers: (builder) => {
@@ -115,7 +116,7 @@ export const adminsSlice = createSlice({
         state.data = action.payload;
         state.total = action.payload.length;
       })
-      .addCase(fetchAdmins.rejected, errorReducer)
+      .addCase(fetchAdmins.rejected, handleError)
 
       .addCase(addAdmin.pending, (state) => {
         state.loading = true;
@@ -155,7 +156,7 @@ export const adminsSlice = createSlice({
         });
       })
 
-      .addCase(deleteAdmin.rejected, errorReducer);
+      .addCase(deleteAdmin.rejected, handleError);
   }
 });
 export const { clearError, setDataError, setSubmitted, setEditing } = adminsSlice.actions;

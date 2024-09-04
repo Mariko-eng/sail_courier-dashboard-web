@@ -1,6 +1,6 @@
-// ** Redux Imports
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { baseUrl } from '../../../../../config/axios';
 
 export const fetchShoppingCategories = createAsyncThunk('category/fetchAll', async (_, thunkAPI) => {
@@ -44,9 +44,11 @@ export const deleteShoppingCategory = createAsyncThunk('category/deleteCategory'
   }
 });
 
-const errorReducer = (state, { payload }) => {
+// Helper function for handling errors
+const handleError = (state, { payload }) => {
   state.loading = false;
-  state.error = payload;
+  state.error = payload || 'An unexpected error occurred';
+  toast.error(state.error, { position: 'bottom-right' });
 };
 
 export const shoppingCategoriesSlice = createSlice({
@@ -71,7 +73,7 @@ export const shoppingCategoriesSlice = createSlice({
     setEditing: (state, { payload }) => {
       state.edit = payload;
     },
-    setDataError: errorReducer
+    setDataError: handleError
   },
 
   extraReducers: (builder) => {
@@ -84,7 +86,7 @@ export const shoppingCategoriesSlice = createSlice({
         state.data = action.payload;
         state.total = action.payload.length;
       })
-      .addCase(fetchShoppingCategories.rejected, errorReducer)
+      .addCase(fetchShoppingCategories.rejected, handleError)
 
       .addCase(addShoppingCategory.pending, (state) => {
         state.loading = true;
@@ -106,7 +108,7 @@ export const shoppingCategoriesSlice = createSlice({
         }
       })
 
-      .addCase(addShoppingCategory.rejected, errorReducer)
+      .addCase(addShoppingCategory.rejected, handleError)
 
       .addCase(deleteShoppingCategory.pending, (state) => {
         state.loading = true;
@@ -121,7 +123,7 @@ export const shoppingCategoriesSlice = createSlice({
         });
       })
 
-      .addCase(deleteShoppingCategory.rejected, errorReducer);
+      .addCase(deleteShoppingCategory.rejected, handleError);
   }
 });
 export const { clearError, setDataError, setSubmitted, setEditing } = shoppingCategoriesSlice.actions;

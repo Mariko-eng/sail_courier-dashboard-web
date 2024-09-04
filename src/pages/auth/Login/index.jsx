@@ -20,29 +20,22 @@ const Login = () => {
 
   // console.log(store)
 
-  // const login = (email,password) =>{
-  //   dispatch(loginUser({ email: email, password: password }));
-  // }
 
   const submitData = (event) =>{
     event.preventDefault();
-    // alert("it works!");
-
-    // console.log(email);
-    // console.log(password);
-
     dispatch(loginUser({ email: email, password: password }));
   }
 
   useEffect(() => {
-    if (Object.keys(store.user).length === 0) {
-      // console.log("The user object is empty.");
-    } else {
-      // console.log("The user object has data.");
-      navigate(getHomeRoute());
+    if (store.user === undefined || store.user === null ) {
+      console.log("The user is not yet loaded!.");
+    }else {
+      if (Object.keys(store.user).length > 0 ){
+        console.log("The user is loaded successfully.");
+        navigate(getHomeRoute());
+      }
     }
-
-  }, [store,navigate])
+  },[store,navigate])
 
 
   return (

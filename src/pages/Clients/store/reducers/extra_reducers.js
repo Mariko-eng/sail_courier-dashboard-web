@@ -1,8 +1,8 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { auth } from '../../../config/firebase';
-import { baseUrl } from '../../../config/axios';
-import { formatError } from '../../../utils/axios-error';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { auth } from '../../../../config/firebase';
+import { baseUrl } from '../../../../config/axios';
+import { formatError } from '../../../../utils/axios-error';
 
 // Corporate Companies
 
@@ -16,7 +16,7 @@ export const fetchCorporateCompanies = createAsyncThunk('client/corporate/compan
     // const url = '${baseUrl}/users/corporate/companies';
     const response = await axios.get(url);
 
-    console.log(response.data);
+    // console.log(response.data);
 
     return response.data;
   } catch (error) {
@@ -61,11 +61,16 @@ export const addCorporateCompany = createAsyncThunk('client/corporate/companies/
       // updatedAt: new Date().toISOString()
     };
 
-    // console.log("companyData : " ,companyData)
-
     const response = await axios.post(url, companyData);
+
+    // console.log({
+    //   ...response.data,
+    //   ...companyData
+    // })
+
     return {
-      id: response.id,
+      // id: response.data.id,
+      ...response.data,
       ...companyData
     };
   } catch (error) {

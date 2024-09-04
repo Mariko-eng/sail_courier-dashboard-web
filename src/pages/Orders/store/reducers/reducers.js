@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { auth } from '../../../../config/firebase';
 import { baseUrl } from '../../../../config/axios';
+import { formatError } from '../../../../utils/axios-error';
 
 const ordersurl = `${baseUrl}/main/orders`;
 
@@ -19,7 +20,10 @@ export const approveOrder = createAsyncThunk('orders/approveOrder', async (data,
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -40,7 +44,10 @@ export const assignCourierToRegularOrder = createAsyncThunk('orders/assignCourie
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -62,7 +69,10 @@ export const assignCourierToLaundryOrder = createAsyncThunk('orders/assignCourie
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -82,7 +92,10 @@ export const reAssignCourierToOrder = createAsyncThunk('orders/reAssignCourierTo
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -100,7 +113,10 @@ export const confirmRegularOrderPickUp = createAsyncThunk('orders/confirmRegular
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -119,7 +135,10 @@ export const confirmLaundryOrderPickUp = createAsyncThunk('orders/confirmLaundry
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -141,7 +160,10 @@ export const confirmShoppingOrderPickUp = createAsyncThunk('orders/confirmShoppi
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -159,7 +181,10 @@ export const confirmLaundryOrderServicing = createAsyncThunk('orders/confirmLaun
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -178,7 +203,10 @@ export const confirmLaundryOrderDroppingOff = createAsyncThunk('orders/confirmLa
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -196,7 +224,10 @@ export const confirmOrderdelivery = createAsyncThunk('orders/confirmOrderdeliver
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -214,7 +245,10 @@ export const rejectOrder = createAsyncThunk('orders/rejectOrder', async (data, t
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -232,7 +266,10 @@ export const cancelOrder = createAsyncThunk('orders/cancelOrder', async (data, t
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -241,8 +278,11 @@ export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (id, thu
     await axios.delete(`${ordersurl}/delete/${id}`);
     return id;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
+    }
 });
 
 export const toggleOrderPaymentStatus = createAsyncThunk('orders/toggleOrderPayment', async (data, thunkAPI) => {
@@ -261,6 +301,9 @@ export const toggleOrderPaymentStatus = createAsyncThunk('orders/toggleOrderPaym
       ...orderData
     };
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });

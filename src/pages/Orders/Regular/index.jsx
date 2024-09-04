@@ -101,10 +101,6 @@ const Regular = () => {
 
     setQueryStr(queryParams)
 
-    if (queryStr !== "") {
-      dispatch(fetchRegularOrders(queryStr));
-    }
-
   }, [rowsPerPage, status, startDate, endDate, setQueryStr]);
 
 

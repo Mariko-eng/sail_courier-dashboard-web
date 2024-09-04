@@ -1,9 +1,8 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { auth } from '../../../../config/firebase';
 import { baseUrl } from '../../../../config/axios';
-import toast from 'react-hot-toast';
 
 export const fetchAgents = createAsyncThunk('agent/fetchAll', async (_, thunkAPI) => {
   try {
@@ -78,9 +77,11 @@ export const deleteAgent = createAsyncThunk('agent/delete', async (id, thunkAPI)
   }
 });
 
-const errorReducer = (state, { payload }) => {
+// Helper function for handling errors
+const handleError = (state, { payload }) => {
   state.loading = false;
-  state.error = payload;
+  state.error = payload || 'An unexpected error occurred';
+  toast.error(state.error, { position: 'bottom-right' });
 };
 
 export const agentsSlice = createSlice({
@@ -105,7 +106,7 @@ export const agentsSlice = createSlice({
     setEditing: (state, { payload }) => {
       state.edit = payload;
     },
-    setDataError: errorReducer
+    setDataError: handleError
   },
 
   extraReducers: (builder) => {
@@ -118,7 +119,7 @@ export const agentsSlice = createSlice({
         state.data = action.payload;
         state.total = action.payload.length;
       })
-      .addCase(fetchAgents.rejected, errorReducer)
+      .addCase(fetchAgents.rejected, handleError)
 
       .addCase(addAgent.pending, (state) => {
         state.loading = true;
@@ -158,7 +159,7 @@ export const agentsSlice = createSlice({
         });
       })
 
-      .addCase(deleteAgent.rejected, errorReducer);
+      .addCase(deleteAgent.rejected, handleError);
   }
 });
 export const { clearError, setDataError, setSubmitted, setEditing } = agentsSlice.actions;

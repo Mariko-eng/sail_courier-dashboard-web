@@ -10,12 +10,14 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import PropTypes from 'prop-types';
-import { IconButton } from '@mui/material';
+import { IconButton, TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { Menu, MenuItem } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
+import { prettyDate } from '../../../utils/app-functions';
 
 
 const columns = [
@@ -30,11 +32,15 @@ const columns = [
     { id: 'totalCharges', label: 'Total Cost', minWidth: 100 },
     { id: 'isFullyPaid', label: 'is Fully Paid', minWidth: 100 },
 
-    { id: 'createdAt', label: 'Created At', minWidth: 100 },
+    {
+        id: 'createdAt', label: 'Created At', minWidth: 100,
+        format: (value) => prettyDate(value),
+    },
     { id: 'actions', label: 'Actions', minWidth: 100 }, // Add action column
 ];
 
-function processData(dataList) {
+
+function processData(dataList, query) {
     let newData = [];
     for (var i = 0; i < dataList.length; i++) {
         var cords = `${dataList[i].companyAddressCordinatesLat} , ${dataList[i].companyAddressCordinatesLng}`;
@@ -45,33 +51,25 @@ function processData(dataList) {
         })
     }
 
-    return newData;
+    if (!query) return newData;
+
+    return newData.filter(item => {
+        return Object.values(item).some(val =>
+            val.toString().toLowerCase().includes(query.toLowerCase())
+        );
+    });
 }
 
 export default function LaundryOrdersTable({ orders, rowsPerPage, setRowsPerPage }) {
     const [page, setPage] = React.useState(0);
 
-    const [openDetail, setOpenDetail] = React.useState(false);
-
-    // const [rowsPerPage, setRowsPerPage] = React.useState(50);
-
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
+    const [searchQuery, setSearchQuery] = React.useState('');
 
-    const [toggledRows, setToggledRows] = React.useState(new Set());
-
-    const handleToggle = (id) => {
-        setToggledRows(prev => {
-            const newToggledRows = new Set(prev);
-            if (newToggledRows.has(id)) {
-                newToggledRows.delete(id);
-            } else {
-                newToggledRows.add(id);
-            }
-            return newToggledRows;
-        });
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
     };
-
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -102,10 +100,26 @@ export default function LaundryOrdersTable({ orders, rowsPerPage, setRowsPerPage
 
     const open = Boolean(anchorEl);
 
-    const rows = processData(orders)
+    const rows = processData(orders, searchQuery);
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                        <TextField
+                placeholder="Search..."
+                variant="outlined"
+                fullWidth
+                value={searchQuery}
+                onChange={handleSearchChange}
+                InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    ),
+                }}
+                sx={{ mb: 2, p: 2 }}
+            />
+
             <TableContainer sx={{ minHeight: 440 }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
@@ -199,9 +213,9 @@ const Row = (props) => {
                                     <MoreVertIcon />
                                 </IconButton>
                                 :
-                                (
-                                    value
-                                )}
+                                (<>
+                                    {column.format ? column.format(value) : value}
+                                </>)}
                         </TableCell>
                     );
                 })}

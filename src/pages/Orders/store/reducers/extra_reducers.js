@@ -5,7 +5,35 @@ import { auth } from '../../../../config/firebase';
 import { baseUrl } from '../../../../config/axios';
 import { formatError } from '../../../../utils/axios-error';
 
-export const fetchAllOrders = createAsyncThunk('orders/fetchAll', async (query, thunkAPI) => {
+export const fetchAllOrders = createAsyncThunk('orders/fetchAllOrders', async (query, thunkAPI) => {
+  try {
+    const url = `${baseUrl}/main/orders/?${query}`;
+
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
+  }
+});
+
+export const fetchOrdersToday = createAsyncThunk('orders/fetchOrdersToday', async (query, thunkAPI) => {
+  try {
+    const url = `${baseUrl}/main/orders/?${query}`;
+
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
+  }
+});
+
+export const fetchOrdersLatest = createAsyncThunk('orders/fetchOrdersLatest', async (query, thunkAPI) => {
   try {
     const url = `${baseUrl}/main/orders/?${query}`;
 

@@ -1,6 +1,5 @@
-// ** Redux Imports
-import { createSlice } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
+import { createSlice } from '@reduxjs/toolkit';
 import {
   approveOrder,
   reAssignCourierToOrder,
@@ -19,12 +18,11 @@ import {
   addOrderHistory
 } from '../reducers/extra_reducers'
 
-// ** Axios Imports
-// import toast from 'react-hot-toast';
-
-const errorReducer = (state, { payload }) => {
+// Helper function for handling errors
+const handleError = (state, { payload }) => {
   state.loading = false;
-  state.error = payload;
+  state.error = payload || 'An unexpected error occurred';
+  toast.error(state.error, { position: 'bottom-right' });
 };
 
 export const shoppingOrdersSlice = createSlice({
@@ -51,7 +49,7 @@ export const shoppingOrdersSlice = createSlice({
     setEditing: (state, { payload }) => {
       state.edit = payload;
     },
-    setOrderError: errorReducer
+    setOrderError: handleError
   },
 
   extraReducers: (builder) => {
@@ -66,7 +64,7 @@ export const shoppingOrdersSlice = createSlice({
         state.total = action.payload.total;
         state.orders = action.payload.entries;
       })
-      .addCase(fetchAllOrders.rejected, errorReducer)
+      .addCase(fetchAllOrders.rejected, handleError)
 
       .addCase(fetchShoppingOrders.pending, (state) => {
         state.loading = true;
@@ -78,7 +76,7 @@ export const shoppingOrdersSlice = createSlice({
         state.total = action.payload.total;
         state.orders = action.payload.entries;
       })
-      .addCase(fetchShoppingOrders.rejected, errorReducer)
+      .addCase(fetchShoppingOrders.rejected, handleError)
 
       .addCase(getOrderDetail.pending, (state) => {
         state.loading = true;
@@ -89,7 +87,7 @@ export const shoppingOrdersSlice = createSlice({
         state.selectedOrder = action.payload;
       })
 
-      .addCase(getOrderDetail.rejected, errorReducer)
+      .addCase(getOrderDetail.rejected, handleError)
 
 
       .addCase(deleteOrder.pending, (state) => {
@@ -104,7 +102,7 @@ export const shoppingOrdersSlice = createSlice({
           }
         });
       })
-      .addCase(deleteOrder.rejected, errorReducer)
+      .addCase(deleteOrder.rejected, handleError)
 
       // Status 1
       .addCase(approveOrder.pending, (state) => {
@@ -119,7 +117,7 @@ export const shoppingOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(approveOrder.rejected, errorReducer)
+      .addCase(approveOrder.rejected, handleError)
 
       // Status 4
       .addCase(reAssignCourierToOrder.pending, (state) => {
@@ -134,7 +132,7 @@ export const shoppingOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(reAssignCourierToOrder.rejected, errorReducer)
+      .addCase(reAssignCourierToOrder.rejected, handleError)
 
       // Status 7
       .addCase(confirmShoppingOrderPickUp.pending, (state) => {
@@ -149,7 +147,7 @@ export const shoppingOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(confirmShoppingOrderPickUp.rejected, errorReducer)
+      .addCase(confirmShoppingOrderPickUp.rejected, handleError)
 
 
       // Status 10
@@ -165,7 +163,7 @@ export const shoppingOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(confirmOrderdelivery.rejected, errorReducer)
+      .addCase(confirmOrderdelivery.rejected, handleError)
 
       // Status 10
       .addCase(rejectOrder.pending, (state) => {
@@ -180,7 +178,7 @@ export const shoppingOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(rejectOrder.rejected, errorReducer)
+      .addCase(rejectOrder.rejected, handleError)
 
       // Status 10
       .addCase(cancelOrder.pending, (state) => {
@@ -195,7 +193,7 @@ export const shoppingOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(cancelOrder.rejected, errorReducer)
+      .addCase(cancelOrder.rejected, handleError)
 
       // Payment status 10
       .addCase(toggleOrderPaymentStatus.pending, (state) => {
@@ -210,7 +208,7 @@ export const shoppingOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(toggleOrderPaymentStatus.rejected, errorReducer)
+      .addCase(toggleOrderPaymentStatus.rejected, handleError)
 
       // Historu
       .addCase(fetchOrderHistory.pending, (state) => {

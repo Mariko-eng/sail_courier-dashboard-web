@@ -1,4 +1,3 @@
-// ** Redux Imports
 import { createSlice } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
 import {
@@ -21,12 +20,11 @@ import {
   addOrderHistory
 } from '../reducers/extra_reducers'
 
-// ** Axios Imports
-// import toast from 'react-hot-toast';
-
-const errorReducer = (state, { payload }) => {
+// Helper function for handling errors
+const handleError = (state, { payload }) => {
   state.loading = false;
-  state.error = payload;
+  state.error = payload || 'An unexpected error occurred';
+  toast.error(state.error, { position: 'bottom-right' });
 };
 
 export const regularOrdersSlice = createSlice({
@@ -53,7 +51,7 @@ export const regularOrdersSlice = createSlice({
     setEditing: (state, { payload }) => {
       state.edit = payload;
     },
-    setOrderError: errorReducer
+    setOrderError: handleError
   },
 
   extraReducers: (builder) => {
@@ -68,7 +66,7 @@ export const regularOrdersSlice = createSlice({
         state.total = action.payload.total;
         state.orders = action.payload.entries;
       })
-      .addCase(fetchAllOrders.rejected, errorReducer)
+      .addCase(fetchAllOrders.rejected, handleError)
 
       .addCase(fetchRegularOrders.pending, (state) => {
         state.loading = true;
@@ -80,7 +78,7 @@ export const regularOrdersSlice = createSlice({
         state.total = action.payload.total;
         state.orders = action.payload.entries;
       })
-      .addCase(fetchRegularOrders.rejected, errorReducer)
+      .addCase(fetchRegularOrders.rejected, handleError)
 
       .addCase(getOrderDetail.pending, (state) => {
         state.loading = true;
@@ -91,7 +89,7 @@ export const regularOrdersSlice = createSlice({
         state.selectedOrder = action.payload;
       })
 
-      .addCase(getOrderDetail.rejected, errorReducer)
+      .addCase(getOrderDetail.rejected, handleError)
 
       .addCase(addRegularorder.pending, (state) => {
         state.loading = true;
@@ -113,7 +111,7 @@ export const regularOrdersSlice = createSlice({
         }
       })
 
-      .addCase(addRegularorder.rejected, errorReducer)
+      .addCase(addRegularorder.rejected, handleError)
 
       .addCase(deleteOrder.pending, (state) => {
         state.loading = true;
@@ -127,7 +125,7 @@ export const regularOrdersSlice = createSlice({
           }
         });
       })
-      .addCase(deleteOrder.rejected, errorReducer)
+      .addCase(deleteOrder.rejected, handleError)
 
       // Status 1
       .addCase(approveOrder.pending, (state) => {
@@ -142,7 +140,7 @@ export const regularOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(approveOrder.rejected, errorReducer)
+      .addCase(approveOrder.rejected, handleError)
 
       // Status 2
       .addCase(assignCourierToRegularOrder.pending, (state) => {
@@ -157,7 +155,7 @@ export const regularOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(assignCourierToRegularOrder.rejected, errorReducer)
+      .addCase(assignCourierToRegularOrder.rejected, handleError)
 
       // Status 4
       .addCase(reAssignCourierToOrder.pending, (state) => {
@@ -172,7 +170,7 @@ export const regularOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(reAssignCourierToOrder.rejected, errorReducer)
+      .addCase(reAssignCourierToOrder.rejected, handleError)
 
       // Status 5
       .addCase(confirmRegularOrderPickUp.pending, (state) => {
@@ -187,7 +185,7 @@ export const regularOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(confirmRegularOrderPickUp.rejected, errorReducer)
+      .addCase(confirmRegularOrderPickUp.rejected, handleError)
 
       // Status 10
       .addCase(confirmOrderdelivery.pending, (state) => {
@@ -202,7 +200,7 @@ export const regularOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(confirmOrderdelivery.rejected, errorReducer)
+      .addCase(confirmOrderdelivery.rejected, handleError)
 
       // Status 10
       .addCase(rejectOrder.pending, (state) => {
@@ -217,7 +215,7 @@ export const regularOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(rejectOrder.rejected, errorReducer)
+      .addCase(rejectOrder.rejected, handleError)
 
       // Status 10
       .addCase(cancelOrder.pending, (state) => {
@@ -232,7 +230,7 @@ export const regularOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(cancelOrder.rejected, errorReducer)
+      .addCase(cancelOrder.rejected, handleError)
 
       // Payment status 10
       .addCase(toggleOrderPaymentStatus.pending, (state) => {
@@ -247,7 +245,7 @@ export const regularOrdersSlice = createSlice({
           return order;
         });
       })
-      .addCase(toggleOrderPaymentStatus.rejected, errorReducer)
+      .addCase(toggleOrderPaymentStatus.rejected, handleError)
 
       // Historu
       .addCase(fetchOrderHistory.pending, (state) => {

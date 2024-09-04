@@ -1,8 +1,7 @@
-// ** Redux Imports
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import { baseUrl } from '../../../../../config/axios';
-
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchLaundryItems = createAsyncThunk('item/fetchAll', async (_, thunkAPI) => {
   try {
@@ -42,9 +41,11 @@ export const deleteLaundryItem = createAsyncThunk('item/deleteItem', async (id, 
   }
 });
 
-const errorReducer = (state, { payload }) => {
+// Helper function for handling errors
+const handleError = (state, { payload }) => {
   state.loading = false;
-  state.error = payload;
+  state.error = payload || 'An unexpected error occurred';
+  toast.error(state.error, { position: 'bottom-right' });
 };
 
 export const laundryItemsSlice = createSlice({
@@ -72,7 +73,7 @@ export const laundryItemsSlice = createSlice({
     setSelectedData: (state, { payload }) => {
       state.selectedData = payload;
     },
-    setDataError: errorReducer
+    setDataError: handleError
   },
 
   extraReducers: (builder) => {
@@ -85,7 +86,7 @@ export const laundryItemsSlice = createSlice({
         state.data = action.payload;
         state.total = action.payload.length;
       })
-      .addCase(fetchLaundryItems.rejected, errorReducer)
+      .addCase(fetchLaundryItems.rejected, handleError)
 
       .addCase(addLaundryItem.pending, (state) => {
         state.loading = true;
@@ -107,7 +108,7 @@ export const laundryItemsSlice = createSlice({
         }
       })
 
-      .addCase(addLaundryItem.rejected, errorReducer)
+      .addCase(addLaundryItem.rejected, handleError)
 
       .addCase(deleteLaundryItem.pending, (state) => {
         state.loading = true;
@@ -122,7 +123,7 @@ export const laundryItemsSlice = createSlice({
         });
       })
 
-      .addCase(deleteLaundryItem.rejected, errorReducer);
+      .addCase(deleteLaundryItem.rejected, handleError);
   }
 });
 export const { clearError, setDataError, setSubmitted, setEditing, setSelectedData } = laundryItemsSlice.actions;

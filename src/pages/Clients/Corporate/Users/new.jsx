@@ -10,15 +10,12 @@ import { Formik, Field } from 'formik';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, MenuItem } from '@mui/material';
-
 import LoadingButton from '@mui/lab/LoadingButton';
-
 import AnimateButton from '../../../../ui-component/extended/AnimateButton';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addClientCorporate } from './../../store/extra_reducers';
-
-import { fetchCorporateCompanies } from './../../store/extra_reducers';
+import { addClientCorporate } from './../../store/reducers/extra_reducers';
+import { fetchCorporateCompanies } from './../../store/reducers/extra_reducers';
 
 const CorporateNew = () => {
   const theme = useTheme();
@@ -26,7 +23,9 @@ const CorporateNew = () => {
 
   const dispatch = useDispatch();
 
-  const clientsStore = useSelector((store) => store.clients);
+  const store = useSelector((store) => store.corporateCompanies);
+
+  const companies = store.data;
 
   useEffect(() => {
     dispatch(fetchCorporateCompanies());
@@ -34,11 +33,11 @@ const CorporateNew = () => {
 
   return (
     <>
-      {clientsStore.loading && clientsStore.dataCompanies.length === 0 ? (
+      {store.loading && companies.length === 0 ? (
         <Box>
           <p>Loading Companies</p>
         </Box>
-      ) : clientsStore.dataCompanies.length === 0 ? (
+      ) : companies.length === 0 ? (
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
           <p>No Registered Companies</p>
           <p>
@@ -67,7 +66,7 @@ const CorporateNew = () => {
             onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
               try {
                 if (scriptedRef.current) {
-                  const company_obj = clientsStore.dataCompanies.find((itm) => itm.id == values.company);
+                  const company_obj = companies.find((itm) => itm.id == values.company);
                   const data = {
                     company: company_obj,
                     username: values.username,
@@ -107,7 +106,7 @@ const CorporateNew = () => {
                     <MenuItem value="">
                       <em>Select a company</em>
                     </MenuItem>
-                    {clientsStore.dataCompanies.map((item) => (
+                    {companies.map((item) => (
                       <MenuItem key={item.id} value={item.id}>
                         {item.companyName}
                       </MenuItem>
@@ -201,8 +200,8 @@ const CorporateNew = () => {
                   <AnimateButton>
                     <LoadingButton
                       disableElevation
-                      loading={clientsStore.loading}
-                      disabled={clientsStore.loading}
+                      loading={store.loading}
+                      disabled={store.loading}
                       fullWidth
                       size="large"
                       type="submit"

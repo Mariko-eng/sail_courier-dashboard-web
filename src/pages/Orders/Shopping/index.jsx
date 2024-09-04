@@ -98,10 +98,6 @@ const Shopping = () => {
 
     setQueryStr(queryParams)
 
-    if (queryStr !== "") {
-      dispatch(fetchRegularOrders(queryStr));
-    }
-
   }, [rowsPerPage, status, startDate, endDate, setQueryStr]);
 
 

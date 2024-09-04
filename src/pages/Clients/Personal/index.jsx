@@ -4,8 +4,7 @@ import MainCard from '../../../ui-component/cards/MainCard';
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchClientsPersonal, deleteClient } from './../store/extra_reducers'
-// import MaterialTable from 'material-table';
+import { fetchClientsPersonal } from './../store/reducers/extra_reducers'
 import UiLoadingOverlay from '../../../components/overlay';
 import ClientsPersonalTable from './table';
 
@@ -14,9 +13,9 @@ const ClientsPersonal = () => {
   const [rowsPerPage, setRowsPerPage] = useState(50);
 
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.clients);
+  const store = useSelector((state) => state.personalClients);
 
-  const data = store.data;
+  const data = store.data; 
 
   const newLoadList = structuredClone(data);
 

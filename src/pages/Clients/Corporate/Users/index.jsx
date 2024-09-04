@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react';
 import MainCard from '../../../../ui-component/cards/MainCard';
-
 import { Button, Card } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import SideNav from '../../../../components/sidenav/SideNav';
 import CorporateNew from './new';
-import Edit from '@mui/icons-material/Edit';
-import ClearIcon from '@mui/icons-material/Clear';
-
-import { materialTableIcons } from '../../../../utils/material-table-icons';
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchClientsCorporate, deleteClient } from '../../store/extra_reducers';
+import { fetchClientsCorporate } from '../../store/reducers/extra_reducers';
 import UiLoadingOverlay from '../../../../components/overlay';
 import ClientsCorporateTable from './table';
 
@@ -28,13 +23,14 @@ const ClientsCorporate = () => {
   };
 
     const dispatch = useDispatch();
-    const store = useSelector((state) => state.clients);
+    const store = useSelector((state) => state.corporateClients);
 
     const data = store.data;
 
-    const newLoadList = structuredClone(data);
+    console.log(data);
 
-    // console.log(newLoadList);
+    const newLoadList = data;
+    // const newLoadList = structuredClone(data);
 
     useEffect(() => {
       dispatch(fetchClientsCorporate());

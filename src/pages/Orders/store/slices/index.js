@@ -2,11 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
 import {
   approveOrder,
-  assignCourierToLaundryOrder,
   reAssignCourierToOrder,
-  confirmLaundryOrderPickUp,
-  confirmLaundryOrderServicing,
-  confirmLaundryOrderDroppingOff,
   confirmOrderdelivery,
   rejectOrder,
   cancelOrder,
@@ -15,9 +11,9 @@ import {
 } from '../reducers/reducers';
 import {
   fetchAllOrders,
-  fetchLaundryOrders,
+  fetchOrdersToday,
+  fetchOrdersLatest,
   getOrderDetail,
-  addLaundryOrder,
   fetchOrderHistory,
   addOrderHistory
 } from '../reducers/extra_reducers'
@@ -29,14 +25,34 @@ const handleError = (state, { payload }) => {
   toast.error(state.error, { position: 'bottom-right' });
 };
 
-export const laundryOrdersSlice = createSlice({
+const handleErrorTotal = (state, { payload }) => {
+    state.loadingTotal = false;
+    state.error = payload || 'An unexpected error occurred';
+    toast.error(state.error, { position: 'bottom-right' });
+  };
+
+  const handleErrorLatest = (state, { payload }) => {
+    state.loadingLatest = false;
+    state.error = payload || 'An unexpected error occurred';
+    toast.error(state.error, { position: 'bottom-right' });
+  };
+
+export const allOrdersSlice = createSlice({
   name: 'orders',
   initialState: {
     loading: false,
+    loadingToday: false,
+    loadingLatest: false,
     submitted: null,
     limit: 1,
+    limitToday: 1,
+    limitLatest: 1,
     total: 1,
+    totalToday: 1,
+    totalLatest: 1,
     orders: [],
+    ordersToday: [],
+    ordersLatest: [],
     orderHistory: [],
     edit: false,
     error: null,
@@ -70,17 +86,29 @@ export const laundryOrdersSlice = createSlice({
       })
       .addCase(fetchAllOrders.rejected, handleError)
 
-      .addCase(fetchLaundryOrders.pending, (state) => {
-        state.loading = true;
-        state.orders = [];
+      .addCase(fetchOrdersToday.pending, (state) => {
+        state.loadingToday = true;
+        state.ordersToday = [];
       })
-
-      .addCase(fetchLaundryOrders.fulfilled, (state, action) => {
-        state.loading = false;
-        state.limit = action.payload.limit;
-        state.total = action.payload.total;
+      .addCase(fetchOrdersToday.fulfilled, (state, action) => {
+        state.loadingToday = false;
+        state.limitToday = action.payload.limit;
+        state.totalToday = action.payload.total;
         state.orders = action.payload.entries;
       })
+      .addCase(fetchOrdersToday.rejected, handleErrorTotal)
+
+      .addCase(fetchOrdersLatest.pending, (state) => {
+        state.loadingLatest = true;
+        state.ordersLatest = [];
+      })
+      .addCase(fetchOrdersLatest.fulfilled, (state, action) => {
+        state.loadingLatest= false;
+        state.limitLatest = action.payload.limit;
+        state.totalLatest = action.payload.total;
+        state.ordersLatest = action.payload.entries;
+      })
+      .addCase(fetchOrdersLatest.rejected, handleErrorLatest)
 
       .addCase(getOrderDetail.pending, (state) => {
         state.loading = true;
@@ -92,28 +120,6 @@ export const laundryOrdersSlice = createSlice({
       })
 
       .addCase(getOrderDetail.rejected, handleError)
-
-      .addCase(addLaundryOrder.pending, (state) => {
-        state.loading = true;
-      })
-
-      .addCase(addLaundryOrder.fulfilled, (state, action) => {
-        state.loading = false;
-        state.submitted = true;
-        if (state.edit) {
-          state.selectedOrder = action.payload;
-          state.orders = state.orders.map((order) => {
-            if (order.id === action.payload.id) {
-              return { ...order, ...action.payload };
-            }
-            return order;
-          });
-        } else {
-          state.orders.unshift(action.payload);
-        }
-      })
-
-      .addCase(addLaundryOrder.rejected, handleError)
 
       .addCase(deleteOrder.pending, (state) => {
         state.loading = true;
@@ -144,20 +150,6 @@ export const laundryOrdersSlice = createSlice({
       })
       .addCase(approveOrder.rejected, handleError)
 
-      // Status 3
-      .addCase(assignCourierToLaundryOrder.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(assignCourierToLaundryOrder.fulfilled, (state, { payload }) => {
-        state.loading = false;
-        state.orders = state.orders.map((order) => {
-          if (order.id === payload.id) {
-            return { ...order, ...payload };
-          }
-          return order;
-        });
-      })
-      .addCase(assignCourierToLaundryOrder.rejected, handleError)
 
       // Status 4
       .addCase(reAssignCourierToOrder.pending, (state) => {
@@ -173,51 +165,6 @@ export const laundryOrdersSlice = createSlice({
         });
       })
       .addCase(reAssignCourierToOrder.rejected, handleError)
-
-      // Status 6
-      .addCase(confirmLaundryOrderPickUp.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(confirmLaundryOrderPickUp.fulfilled, (state, { payload }) => {
-        state.loading = false;
-        state.orders = state.orders.map((order) => {
-          if (order.id === payload.id) {
-            return { ...order, ...payload };
-          }
-          return order;
-        });
-      })
-      .addCase(confirmLaundryOrderPickUp.rejected, handleError)
-
-      // Status 8
-      .addCase(confirmLaundryOrderServicing.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(confirmLaundryOrderServicing.fulfilled, (state, { payload }) => {
-        state.loading = false;
-        state.orders = state.orders.map((order) => {
-          if (order.id === payload.id) {
-            return { ...order, ...payload };
-          }
-          return order;
-        });
-      })
-      .addCase(confirmLaundryOrderServicing.rejected, handleError)
-
-      // Status 9
-      .addCase(confirmLaundryOrderDroppingOff.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(confirmLaundryOrderDroppingOff.fulfilled, (state, { payload }) => {
-        state.loading = false;
-        state.orders = state.orders.map((order) => {
-          if (order.id === payload.id) {
-            return { ...order, ...payload };
-          }
-          return order;
-        });
-      })
-      .addCase(confirmLaundryOrderDroppingOff.rejected, handleError)
 
       // Status 10
       .addCase(confirmOrderdelivery.pending, (state) => {
@@ -311,5 +258,5 @@ export const laundryOrdersSlice = createSlice({
 
   }
 });
-export const { clearError, setOrderError, setSubmitted, setEditing } = laundryOrdersSlice.actions;
-export default laundryOrdersSlice.reducer;
+export const { clearError, setOrderError, setSubmitted, setEditing } = allOrdersSlice.actions;
+export default allOrdersSlice.reducer;

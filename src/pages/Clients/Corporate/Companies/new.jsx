@@ -15,7 +15,7 @@ import AnimateButton from '../../../../ui-component/extended/AnimateButton';
 import ImageDropZoneBase64 from '../../../../components/input/ImageDropZoneBase64';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addCorporateCompany } from './../../store/extra_reducers';
+import { addCorporateCompany } from './../../store/reducers/extra_reducers';
 
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { Marker, GoogleMap } from '@react-google-maps/api';
@@ -56,7 +56,7 @@ const CorporateCompaniesNew = () => {
 
   const dispatch = useDispatch();
 
-  const clientsStore = useSelector((store) => store.clients);
+  const store = useSelector((store) => store.corporateCompanies);
 
   return (
     <div>
@@ -393,8 +393,8 @@ const CorporateCompaniesNew = () => {
               <AnimateButton>
                 <LoadingButton
                   disableElevation
-                  loading={clientsStore.loading}
-                  disabled={clientsStore.loading}
+                  loading={store.loading}
+                  disabled={store.loading}
                   fullWidth
                   size="large"
                   type="submit"

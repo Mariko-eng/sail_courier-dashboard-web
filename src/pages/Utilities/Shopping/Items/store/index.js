@@ -1,6 +1,6 @@
-// ** Redux Imports
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { baseUrl } from '../../../../../config/axios';
 
 
@@ -41,9 +41,11 @@ export const deleteShoppingItem = createAsyncThunk('item/deleteItem', async (id,
   }
 });
 
-const errorReducer = (state, { payload }) => {
+// Helper function for handling errors
+const handleError = (state, { payload }) => {
   state.loading = false;
-  state.error = payload;
+  state.error = payload || 'An unexpected error occurred';
+  toast.error(state.error, { position: 'bottom-right' });
 };
 
 export const shoppingItemsSlice = createSlice({
@@ -68,7 +70,7 @@ export const shoppingItemsSlice = createSlice({
     setEditing: (state, { payload }) => {
       state.edit = payload;
     },
-    setDataError: errorReducer
+    setDataError: handleError
   },
 
   extraReducers: (builder) => {
@@ -81,7 +83,7 @@ export const shoppingItemsSlice = createSlice({
         state.data = action.payload;
         state.total = action.payload.length;
       })
-      .addCase(fetchShoppingItems.rejected, errorReducer)
+      .addCase(fetchShoppingItems.rejected, handleError)
 
       .addCase(addShoppingItem.pending, (state) => {
         state.loading = true;
@@ -103,7 +105,7 @@ export const shoppingItemsSlice = createSlice({
         }
       })
 
-      .addCase(addShoppingItem.rejected, errorReducer)
+      .addCase(addShoppingItem.rejected, handleError)
 
       .addCase(deleteShoppingItem.pending, (state) => {
         state.loading = true;
@@ -118,7 +120,7 @@ export const shoppingItemsSlice = createSlice({
         });
       })
 
-      .addCase(deleteShoppingItem.rejected, errorReducer);
+      .addCase(deleteShoppingItem.rejected, handleError);
   }
 });
 export const { clearError, setDataError, setSubmitted, setEditing } = shoppingItemsSlice.actions;

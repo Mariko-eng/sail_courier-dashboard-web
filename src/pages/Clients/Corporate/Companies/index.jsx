@@ -5,14 +5,9 @@ import CorporateCompaniesNew from './new';
 import SideNav from '../../../../components/sidenav/SideNav';
 import UiLoadingOverlay from '../../../../components/overlay';
 import MainCard from '../../../../ui-component/cards/MainCard';
-import Edit from '@mui/icons-material/Edit';
-import ClearIcon from '@mui/icons-material/Clear';
-// import MaterialTable from 'material-table';
-import { materialTableIcons } from '../../../../utils/material-table-icons';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCorporateCompanies, deleteCorporateCompany } from './../../store/extra_reducers';
-import StickyHeadTable from './table2';
+import { fetchCorporateCompanies } from './../../store/reducers/extra_reducers';
+import StickyHeadTable from './table';
 
 
 const CorporateCompanies = () => {
@@ -27,13 +22,12 @@ const CorporateCompanies = () => {
   };
 
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.clients);
+  const store = useSelector((state) => state.corporateCompanies);
 
-    const data = store.dataCompanies;
+    const data = store.data;
 
-    const newLoadList = structuredClone(data);
-
-    // console.log(newLoadList);
+    const newLoadList = data;
+    // const newLoadList = structuredClone(data);
 
     useEffect(() => {
       dispatch(fetchCorporateCompanies());

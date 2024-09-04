@@ -5,11 +5,7 @@ import {
   fetchCorporateCompanies,
   addCorporateCompany,
   deleteCorporateCompany,
-  fetchClientsCorporate,
-  addClientCorporate,
-  fetchClientsPersonal,
-  deleteClient
-} from './extra_reducers';
+} from '../reducers/extra_reducers';
 
 // Helper function for handling errors
 const handleError = (state, { payload }) => {
@@ -28,14 +24,13 @@ const updateData = (state, action) => {
   }
 };
 
-export const clientsSlice = createSlice({
-  name: 'clients',
+export const coporateCompaniesSlice = createSlice({
+  name: 'corporate_company',
   initialState: {
     loading: false,
     submitted: null,
     total: 1,
     data: [],
-    dataCompanies: [],
     edit: false,
     error: null,
     selectedData: null
@@ -61,7 +56,7 @@ export const clientsSlice = createSlice({
       })
       .addCase(fetchCorporateCompanies.fulfilled, (state, action) => {
         state.loading = false;
-        state.dataCompanies = action.payload;
+        state.data = action.payload;
         state.total = action.payload.length;
       })
       .addCase(fetchCorporateCompanies.rejected, handleError)
@@ -89,52 +84,8 @@ export const clientsSlice = createSlice({
         toast.success('Corporate company deleted successfully', { position: 'top-right' });
       })
       .addCase(deleteCorporateCompany.rejected, handleError)
-
-      .addCase(fetchClientsCorporate.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchClientsCorporate.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = action.payload;
-        state.total = action.payload.length;
-      })
-      .addCase(fetchClientsCorporate.rejected, handleError)
-
-      .addCase(addClientCorporate.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(addClientCorporate.fulfilled, (state, action) => {
-        state.loading = false;
-        state.submitted = true;
-        updateData(state, action);
-        toast.success('Corporate client added successfully', { position: 'top-right' });
-      })
-      .addCase(addClientCorporate.rejected, (state, { payload }) => {
-        state.loading = false;
-        handleError(state, { payload });
-      })
-
-      .addCase(fetchClientsPersonal.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchClientsPersonal.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = action.payload;
-        state.total = action.payload.length;
-      })
-      .addCase(fetchClientsPersonal.rejected, handleError)
-
-      .addCase(deleteClient.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(deleteClient.fulfilled, (state, { payload }) => {
-        state.loading = false;
-        state.data = state.data.filter((item) => item.id !== payload);
-        toast.success('Client deleted successfully', { position: 'top-right' });
-      })
-      .addCase(deleteClient.rejected, handleError);
   }
 });
 
-export const { clearError, setDataError, setSubmitted, setEditing } = clientsSlice.actions;
-export default clientsSlice.reducer;
+export const { clearError, setDataError, setSubmitted, setEditing } = coporateCompaniesSlice.actions;
+export default coporateCompaniesSlice.reducer;

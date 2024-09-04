@@ -16,6 +16,7 @@ import { prettyDate } from '../../../utils/app-functions';
 
 
 const columns = [
+    { id: 'index', label: 'Index', minWidth: 70 },
     { id: 'username', label: 'Username', minWidth: 170 },
     { id: 'phone', label: 'Phone', minWidth: 100 },
     { id: 'email', label: 'Email', minWidth: 100 },
@@ -26,22 +27,11 @@ const columns = [
     { id: 'actions', label: 'Actions', minWidth: 100 }, // Add action column
 ];
 
-// function processData1(dataList) {
-//     let newData = [];
-//     for (var i = 0; i < dataList.length; i++) {
-//         newData.push({
-//             ...dataList[i],
-//             action: 'Actions' // Example value for action button
-//         })
-//     }
-
-//     return newData;
-// }
-
 function processData(dataList, query) {
     let newData = [];
     for (var i = 0; i < dataList.length; i++) {
         newData.push({
+            index: i + 1,
             ...dataList[i],
             action: 'Actions' // Example value for action button
         })
@@ -121,13 +111,19 @@ export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerP
                     <TableHead>
                         <TableRow>
                             {columns.map((column, index) => (
-                                <TableCell
-                                    key={index}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.label}
-                                </TableCell>
+                                <>
+                                    {
+                                        column.label === "Index" ? <TableCell /> :
+
+                                            <TableCell
+                                                key={index}
+                                                align={column.align}
+                                                style={{ minWidth: column.minWidth }}
+                                            >
+                                                {column.label}
+                                            </TableCell>
+                                    }
+                                </>
                             ))}
                         </TableRow>
                     </TableHead>
@@ -147,9 +143,9 @@ export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerP
                                                             <MoreVertIcon />
                                                         </IconButton>
                                                         :
-                                                        (
-                                                            value
-                                                        )}
+                                                        (<>
+                                                            {column.format ? column.format(value) : value}
+                                                        </>)}
                                                 </TableCell>
                                             );
                                         })}

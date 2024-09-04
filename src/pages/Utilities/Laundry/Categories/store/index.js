@@ -1,9 +1,7 @@
-// ** Redux Imports
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { baseUrl } from '../../../../../config/axios';
-
-// import toast from 'react-hot-toast';
 
 export const fetchLaundryCategories = createAsyncThunk('category/fetchAll', async (_, thunkAPI) => {
   try {
@@ -50,9 +48,11 @@ export const deleteLaundryCategory = createAsyncThunk('category/deleteCategory',
   }
 });
 
-const errorReducer = (state, { payload }) => {
+// Helper function for handling errors
+const handleError = (state, { payload }) => {
   state.loading = false;
-  state.error = payload;
+  state.error = payload || 'An unexpected error occurred';
+  toast.error(state.error, { position: 'bottom-right' });
 };
 
 export const laundryCategoriesSlice = createSlice({
@@ -77,7 +77,7 @@ export const laundryCategoriesSlice = createSlice({
     setEditing: (state, { payload }) => {
       state.edit = payload;
     },
-    setDataError: errorReducer
+    setDataError: handleError
   },
 
   extraReducers: (builder) => {
@@ -90,7 +90,7 @@ export const laundryCategoriesSlice = createSlice({
         state.data = action.payload;
         state.total = action.payload.length;
       })
-      .addCase(fetchLaundryCategories.rejected, errorReducer)
+      .addCase(fetchLaundryCategories.rejected, handleError)
 
       .addCase(addLaundryCategory.pending, (state) => {
         state.loading = true;
@@ -112,7 +112,7 @@ export const laundryCategoriesSlice = createSlice({
         }
       })
 
-      .addCase(addLaundryCategory.rejected, errorReducer)
+      .addCase(addLaundryCategory.rejected, handleError)
 
       .addCase(deleteLaundryCategory.pending, (state) => {
         state.loading = true;
@@ -127,7 +127,7 @@ export const laundryCategoriesSlice = createSlice({
         });
       })
 
-      .addCase(deleteLaundryCategory.rejected, errorReducer);
+      .addCase(deleteLaundryCategory.rejected, handleError);
   }
 });
 export const { clearError, setDataError, setSubmitted, setEditing } = laundryCategoriesSlice.actions;

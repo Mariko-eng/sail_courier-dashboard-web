@@ -13,7 +13,7 @@ import { Menu, MenuItem } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { prettyDate } from '../../../../utils/app-functions';
 import { useDispatch } from 'react-redux';
-import { deleteClient } from '../../store/extra_reducers';
+import { deleteClient } from '../../store/reducers/extra_reducers';
 
 const columns = [
     { id: 'username', label: 'Username', minWidth: 100 },
@@ -52,22 +52,7 @@ export default function ClientsCorporateTable({ clients }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
 
-    const [toggledRows, setToggledRows] = React.useState(new Set());
-
     const dispatch = useDispatch();
-
-    const handleToggle = (id) => {
-        setToggledRows(prev => {
-            const newToggledRows = new Set(prev);
-            if (newToggledRows.has(id)) {
-                newToggledRows.delete(id);
-            } else {
-                newToggledRows.add(id);
-            }
-            return newToggledRows;
-        });
-    };
-
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);

@@ -13,9 +13,10 @@ import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
 import Transitions from "../../../../ui-component/extended/Transitions";
 
 // assets
-import { TbAdjustments } from "react-icons/tb";
 import { TbIcons } from "react-icons/tb";
 import { TbListSearch } from "react-icons/tb";
+import { MdOutlineSearch } from "react-icons/md";
+import { MdOutlineToggleOff } from "react-icons/md";
 
 import { shouldForwardProp } from '@mui/system';
 
@@ -73,14 +74,14 @@ const MobileSearch = ({ value, setValue, popupState }) => {
       placeholder="Search"
       startAdornment={
         <InputAdornment position="start">
-          <TbListSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
+          <MdOutlineSearch />
         </InputAdornment>
       }
       endAdornment={
         <InputAdornment position="end">
           <ButtonBase sx={{ borderRadius: '12px' }}>
             <HeaderAvatarStyle variant="rounded">
-              <TbAdjustments stroke={1.5} size="1.3rem" />
+              <MdOutlineSearch />
             </HeaderAvatarStyle>
           </ButtonBase>
           <Box sx={{ ml: 2 }}>
@@ -132,7 +133,7 @@ const SearchSection = () => {
               <Box sx={{ ml: 2 }}>
                 <ButtonBase sx={{ borderRadius: '12px' }}>
                   <HeaderAvatarStyle variant="rounded" {...bindToggle(popupState)}>
-                    <TbListSearch stroke={1.5} size="1.2rem" />
+                    <MdOutlineSearch />
                   </HeaderAvatarStyle>
                 </ButtonBase>
               </Box>
@@ -173,14 +174,14 @@ const SearchSection = () => {
           placeholder="Search"
           startAdornment={
             <InputAdornment position="start">
-              <TbListSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
+                <MdOutlineSearch />
             </InputAdornment>
           }
           endAdornment={
             <InputAdornment position="end">
               <ButtonBase sx={{ borderRadius: '12px' }}>
                 <HeaderAvatarStyle variant="rounded">
-                  <TbAdjustments stroke={1.5} size="1.3rem" />
+                  <MdOutlineToggleOff />
                 </HeaderAvatarStyle>
               </ButtonBase>
             </InputAdornment>

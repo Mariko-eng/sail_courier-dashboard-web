@@ -1,7 +1,7 @@
 // assets
-import { TbDatabase } from "react-icons/tb";
+import { MdDashboard } from "react-icons/md";
 
-const icons = { TbDatabase };
+const icons = { MdDashboard };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -15,7 +15,7 @@ const dashboard = {
       title: 'Dashboard',
       type: 'item',
       url: '/home',
-      icon: icons.TbDatabase,
+      icon: icons.MdDashboard,
       breadcrumbs: false
     }
   ]
