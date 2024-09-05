@@ -13,13 +13,17 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Menu, MenuItem } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { prettyDate } from '../../../utils/app-functions';
+import { deleteCourier } from './store';
+import { useDispatch } from 'react-redux';
 
 
 const columns = [
     { id: 'index', label: 'Index', minWidth: 70 },
-    { id: 'username', label: 'Username', minWidth: 170 },
+    { id: 'courierNo', label: 'Unique No', minWidth: 100 },
+    { id: 'firstName', label: 'Username', minWidth: 100 },
+    { id: 'surName', label: 'Full Names', minWidth: 170 },
+    { id: 'email', label: 'Email', minWidth: 170 },
     { id: 'phone', label: 'Phone', minWidth: 100 },
-    { id: 'email', label: 'Email', minWidth: 100 },
     {
         id: 'createdAt', label: 'Created At', minWidth: 100,
         format: (value) => prettyDate(value),
@@ -46,12 +50,14 @@ function processData(dataList, query) {
     });
 }
 
-export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerPage }) {
+export default function CouriersTable({ clients, rowsPerPage, setRowsPerPage }) {
     const [page, setPage] = React.useState(0);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
     const [searchQuery, setSearchQuery] = React.useState('');
+
+    const dispatch = useDispatch();
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -79,9 +85,17 @@ export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerP
     const handleAction = (action) => {
         if (selectedRow) {
             // Perform action based on the selectedRow
-            console.log(`Performing ${action} on row`, selectedRow);
-            handleClose();
-        }
+            // console.log(`Performing ${action} on row`, selectedRow);
+            
+            if (action === "Delete") {
+                var result = confirm('You want to delete this courier? ' + selectedRow.firstName);
+                if (result === true) {
+                  dispatch(deleteCourier(selectedRow.id));
+                }
+            }
+
+                handleClose();
+            }
     };
 
     const open = Boolean(anchorEl);
@@ -109,7 +123,7 @@ export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerP
             <TableContainer sx={{ minHeight: 240 }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
-                    <TableRow>
+                        <TableRow>
                             <TableCell />
                             {columns.map((column, index) => (
                                 <React.Fragment key={index}>
@@ -128,7 +142,6 @@ export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerP
                             ))}
                         </TableRow>
                     </TableHead>
-
                     <TableBody>
                         {rows
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -170,21 +183,23 @@ export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerP
                 open={open}
                 onClose={handleClose}
             >
-                {/* <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem>
-                <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem> */}
+                {/* <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem> */}
+                <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem>
             </Menu>
         </Paper>
     );
 }
 
 // Define PropTypes for the Table component
-ClientsPersonalTable.propTypes = {
+CouriersTable.propTypes = {
     clients: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            username: PropTypes.string.isRequired,
-            phone: PropTypes.string.isRequired,
+            courierNo: PropTypes.string.isRequired,
+            firstName: PropTypes.string.isRequired,
+            surName: PropTypes.string.isRequired,
             email: PropTypes.string.isRequired,
+            phone: PropTypes.string.isRequired,
             createdAt: PropTypes.string.isRequired,
         })
     ).isRequired,

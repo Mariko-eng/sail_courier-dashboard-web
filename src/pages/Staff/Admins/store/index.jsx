@@ -3,25 +3,28 @@ import toast from 'react-hot-toast';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { auth } from '../../../../config/firebase';
 import { baseUrl } from '../../../../config/axios';
+import { formatError } from '../../../../utils/axios-error';
 
 export const fetchAdmins = createAsyncThunk('admin/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/admins/`;
+    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/admins/?env=dev` : `${baseUrl}/users/admins/?env=prod`;
     const response = await axios.get(url);
-
-    // console.log('response.data');
-    // console.log(response.data);
 
     const admins = response.data;
     return admins;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
 export const addAdmin = createAsyncThunk('admin/addNew', async (data, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/admins/new`;
+    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/admins/new/?env=dev` : `${baseUrl}/users/admins/new/?env=prod`;
+
     const timestamp = Date.now().toString();
     const uniqueNo = timestamp.substring(4, 12);
     const uniqueNumber = 'SD' + uniqueNo;
@@ -40,37 +43,32 @@ export const addAdmin = createAsyncThunk('admin/addNew', async (data, thunkAPI) 
       updatedAt: new Date().toISOString()
     };
 
-    // console.log(adminData)
-
     const response = await axios.post(url, adminData);
 
     return {
-      id: response.id,
+      id: response.data.id,
       ...adminData
     };
   } catch (error) {
-    console.log(error);
-    console.log(error.response.data.message);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
 
-    if (error.response.status == 400) {
-      if (error.response.data.message) {
-        return thunkAPI.rejectWithValue(`Error creating user: ${error.response.data.message}`);
-      }
-    } else {
-      return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
-    }
-
-    return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
 export const deleteAdmin = createAsyncThunk('admin/delete', async (id, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/admins/delete/${id}`;
+    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/admins/delete/${id}/?env=dev` : `${baseUrl}/users/admins/delete/${id}/?env=prod`;
     await axios.delete(url);
     return id;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 

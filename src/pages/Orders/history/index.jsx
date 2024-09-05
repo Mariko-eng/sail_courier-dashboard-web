@@ -20,13 +20,7 @@ const OrderHistory = ({ order }) => {
   const [ submitting, setSubmitting] = useState('');
   const dispatch = useDispatch();
 
-  const store = useSelector((state) => state.orders);
-
-  // console.log(store.orderHistory);
-
-  // const newLoadList = structuredClone(store.orderHistory);
-
-  // console.log(newLoadList);
+  const store = useSelector((state) => state.allOrders);
 
   useEffect(() => {
     // eslint-disable-next-line react/prop-types
@@ -87,7 +81,6 @@ const OrderHistory = ({ order }) => {
         >
           Submit
         </LoadingButton>
-      {/* </AnimateButton> */}
 
       {store.orderHistory.map((item, index) => (
         <Box key={index} mb={'10px'} mt={'10px'} color={'white'} p={2} sx={{ background: 'blue', borderRadius: '10px' }}>

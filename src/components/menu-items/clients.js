@@ -16,7 +16,7 @@ const icons = {
 
 const clients = {
   id: 'clients',
-  title: 'Client Accounts',
+  title: 'Clients',
   type: 'group',
   children: [
     {

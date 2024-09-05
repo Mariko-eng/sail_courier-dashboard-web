@@ -25,9 +25,7 @@ import {
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // project imports
-// import MainCard from 'ui-component/cards/MainCard';
 import MainCard from "../../../../ui-component/cards/MainCard";
-// import Transitions from 'ui-component/extended/Transitions';
 import Transitions from "../../../../ui-component/extended/Transitions";
 import NotificationList from './NotificationList';
 
@@ -121,7 +119,7 @@ const NotificationSection = () => {
             onClick={handleToggle}
             color="inherit"
           >
-            <TbBell stroke={1.5} size="1.3rem" />
+            <TbBell size="1.3rem" />
           </Avatar>
         </ButtonBase>
       </Box>
@@ -165,8 +163,8 @@ const NotificationSection = () => {
                           </Stack>
                         </Grid>
                         <Grid item>
-                          <Typography component={Link} to="#" variant="subtitle2" color="primary">
-                            Mark as all read
+                          <Typography variant="subtitle2" color="primary">
+                            Latest Alerts
                           </Typography>
                         </Grid>
                       </Grid>
@@ -198,7 +196,9 @@ const NotificationSection = () => {
                             <Divider sx={{ my: 0 }} />
                           </Grid>
                         </Grid>
-                        <NotificationList />
+
+                        {/* <NotificationList /> */}
+                        
                       </PerfectScrollbar>
                     </Grid>
                   </Grid>

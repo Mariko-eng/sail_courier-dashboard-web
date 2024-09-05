@@ -6,6 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 import NavigationScroll from './layout/NavigationScroll';
 
+import { Loader } from '@googlemaps/js-api-loader';
 import { LoadScript } from '@react-google-maps/api';
 
 // defaultTheme
@@ -36,6 +37,7 @@ function App() {
           try {
             dispatch(setIsLoading(true));
             const userData = await getUserData(user.uid);
+            // console.log(userData)
             const data = {
               accessToken: user.accessToken,
               user: userData
@@ -54,15 +56,27 @@ function App() {
       });
     }, [dispatch]);
 
+    useEffect(() => {
+      const loader = new Loader({
+        apiKey: import.meta.env.VITE_GOOGLE_API_KeY,
+        version: "weekly",
+        libraries: ["places"]
+      });
+
+      loader.importLibrary('places')
+
+      // loader.load()
+    })
+
 
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={themes(customization)}>
         <CssBaseline />
         <NavigationScroll>
-        <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
+        {/* <LoadScript googleMapsApiKey={apiKey} libraries={libraries}> */}
           <Router />
-        </LoadScript>
+        {/* </LoadScript> */}
         </NavigationScroll>
       </ThemeProvider>
     </StyledEngineProvider>

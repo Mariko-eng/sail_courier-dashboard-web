@@ -17,7 +17,7 @@ import { capitalize, prettyDate } from '../../../../utils/app-functions';
 
 const columns = [
   {
-    id: 'createdAt', label: 'Date', minWidth: 100,
+    id: 'createdAt', label: 'Date', minWidth: 170,
     format: (value) => prettyDate(value),
   },
   { id: 'orderNo', label: 'N0', minWidth: 100 },
@@ -53,10 +53,9 @@ export default function LatestOrdersTable({ orders }) {
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <TableContainer sx={{ minHeight: 240 }}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table>
           <TableHead>
             <TableRow>
-              <TableCell />
               {columns.map((column, index) => (
                 <TableCell
                   key={index}
@@ -123,17 +122,7 @@ const Row = (props) => {
   const [openDetail, setOpenDetail] = React.useState(false);
 
   return (
-    <>
       <TableRow hover role="checkbox" tabIndex={-1}>
-        <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpenDetail(!openDetail)}
-          >
-            {openDetail ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
         {columns.map((column) => {
           const value = row[column.id];
           return (
@@ -174,17 +163,5 @@ const Row = (props) => {
           );
         })}
       </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={openDetail} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Order Details
-              </Typography>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
   )
 }

@@ -53,10 +53,9 @@ export default function TodayOrdersTable({ orders }) {
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ minHeight: 240 }}>
-                <Table stickyHeader aria-label="sticky table">
+                <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell />
                             {columns.map((column, index) => (
                                 <TableCell
                                     key={index}
@@ -73,10 +72,10 @@ export default function TodayOrdersTable({ orders }) {
                         {rows.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={columns.length}>
-                                    <Box 
-                                        display="flex" 
-                                        width="100%" 
-                                        justifyContent="center" 
+                                    <Box
+                                        display="flex"
+                                        width="100%"
+                                        justifyContent="center"
                                         p={2}
                                     >
                                         No Data!
@@ -123,68 +122,46 @@ const Row = (props) => {
     const [openDetail, setOpenDetail] = React.useState(false);
 
     return (
-        <>
-            <TableRow hover role="checkbox" tabIndex={-1}>
-                <TableCell>
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => setOpenDetail(!openDetail)}
-                    >
-                        {openDetail ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                </TableCell>
-                {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                        <TableCell key={column.id} align={column.align}>
-                            {column.id === 'status' ? <>
-                                {value === 'pending' ? (
-                                    <Chip label="Pending" color="primary" variant="outlined" />
-                                ) : value === 'approved' ? (
-                                    <Chip label="Approved" color="primary" variant="contained" />
-                                ) : value === 'assigned' ? (
-                                    <Chip label="Assigned" color="secondary" variant="outlined" />
-                                ) : value === 'pickedUp' ? (
-                                    <Chip label="PickedUp" color="secondary" variant="contained" />
-                                ) : value === 'delivered' ? (
-                                    <Chip label="Delivered" color="success" variant="contained" />
-                                ) : value === 'cancelled' || value === 'rejected' ? (
-                                    <Chip label={capitalize(value)} color="error" variant="contained" />
-                                ) : (
-                                    <Chip label={capitalize(value)} variant="outlined" />
-                                )}
-                            </> : column.id === 'isFullyPaid' ? <>
-                                {value ? (
-                                    <Chip label="Fully Paid" color="success" variant="contained" />
-                                ) : (
-                                    <Chip label="Not Paid" color="secondary" variant="outlined" />
-                                )}
-                            </> : column.id === 'clientAccountType' ? <>
-                                {value === "corporate" ? (
-                                    <Chip label="Corporate" color="warning" variant="contained" />
-                                ) : (
-                                    <Chip label="Personal" color="primary" variant="outlined" />
-                                )}
-                            </> :
-                                (<>
-                                    {column.format ? column.format(value) : value}
-                                </>)}
-                        </TableCell>
-                    );
-                })}
-            </TableRow>
-            <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <Collapse in={openDetail} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                Order Details
-                            </Typography>
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </>
+        <TableRow hover role="checkbox" tabIndex={-1}>
+            {columns.map((column) => {
+                const value = row[column.id];
+                return (
+                    <TableCell key={column.id} align={column.align}>
+                        {column.id === 'status' ? <>
+                            {value === 'pending' ? (
+                                <Chip label="Pending" color="primary" variant="outlined" />
+                            ) : value === 'approved' ? (
+                                <Chip label="Approved" color="primary" variant="contained" />
+                            ) : value === 'assigned' ? (
+                                <Chip label="Assigned" color="secondary" variant="outlined" />
+                            ) : value === 'pickedUp' ? (
+                                <Chip label="PickedUp" color="secondary" variant="contained" />
+                            ) : value === 'delivered' ? (
+                                <Chip label="Delivered" color="success" variant="contained" />
+                            ) : value === 'cancelled' || value === 'rejected' ? (
+                                <Chip label={capitalize(value)} color="error" variant="contained" />
+                            ) : (
+                                <Chip label={capitalize(value)} variant="outlined" />
+                            )}
+                        </> : column.id === 'isFullyPaid' ? <>
+                            {value ? (
+                                <Chip label="Fully Paid" color="success" variant="contained" />
+                            ) : (
+                                <Chip label="Not Paid" color="secondary" variant="outlined" />
+                            )}
+                        </> : column.id === 'clientAccountType' ? <>
+                            {value === "corporate" ? (
+                                <Chip label="Corporate" color="warning" variant="contained" />
+                            ) : (
+                                <Chip label="Personal" color="primary" variant="outlined" />
+                            )}
+                        </> :
+                            (<>
+                                {column.format ? column.format(value) : value}
+                            </>)}
+                    </TableCell>
+                );
+            })}
+        </TableRow>
     )
 }

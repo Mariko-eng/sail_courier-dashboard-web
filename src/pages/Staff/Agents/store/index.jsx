@@ -3,25 +3,29 @@ import toast from 'react-hot-toast';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { auth } from '../../../../config/firebase';
 import { baseUrl } from '../../../../config/axios';
+import { formatError } from '../../../../utils/axios-error';
 
 export const fetchAgents = createAsyncThunk('agent/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/agents/`;
+    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/agents/?env=dev` : `${baseUrl}/users/agents/?env=prod`;
+    
     const response = await axios.get(url);
-
-    // console.log('response.data');
-    // console.log(response.data);
 
     const agents = response.data;
     return agents;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
 export const addAgent = createAsyncThunk('agent/addNew', async (data, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/agents/new`;
+    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/agents/new/?env=dev` : `${baseUrl}/users/agents/new/?env=prod`;
+    
     const timestamp = Date.now().toString();
     const uniqueNo = timestamp.substring(4, 12);
     const uniqueNumber = 'SA' + uniqueNo;
@@ -43,37 +47,32 @@ export const addAgent = createAsyncThunk('agent/addNew', async (data, thunkAPI) 
       updatedAt: new Date().toISOString()
     };
 
-    // console.log(agentData)
-
     const response = await axios.post(url, agentData);
 
     return {
-      id: response.id,
+      id: response.data.id,
       ...agentData
     };
   } catch (error) {
-    console.log(error);
-    console.log(error.response.data.message);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
 
-    if (error.response.status == 400) {
-      if (error.response.data.message) {
-        return thunkAPI.rejectWithValue(`Error creating user: ${error.response.data.message}`);
-      }
-    } else {
-      return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
-    }
-
-    return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
 export const deleteAgent = createAsyncThunk('agent/delete', async (id, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/agents/delete/${id}`;
+    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/agents/delete/${id}/?env=dev` : `${baseUrl}/users/agents/delete/${id}/?env=prod`;
     await axios.delete(url);
     return id;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 

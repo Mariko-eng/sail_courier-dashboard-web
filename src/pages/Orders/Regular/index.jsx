@@ -1,17 +1,10 @@
 import { useState, useEffect } from 'react';
-import SideNav from '../../../components/sidenav/SideNav';
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, FormControl, InputLabel, Menu, MenuItem, Select, TextField } from '@mui/material';
-import AlertConfrimationDialog from '../../../components/dailog/confirmDialog';
-import SelectCourier from '../actions/SelectCourier';
 import UiLoadingOverlay from '../../../components/overlay';
 import { fetchRegularOrders } from '../store/reducers/extra_reducers';
-import { approveOrder, assignCourierToRegularOrder } from '../store/reducers/reducers';
-import { confirmRegularOrderPickUp, confirmOrderdelivery } from '../store/reducers/reducers';
-import { rejectOrder, cancelOrder, toggleOrderPaymentStatus } from '../store/reducers/reducers';
-import OrderHistory from '../history';
 import RegularOrdersTable from './table';
 
 // Utility function to format date in YYYY-MM-DD
@@ -30,42 +23,6 @@ const Regular = () => {
   const [endDate, setEndDate] = useState(formatDate(today));
   const [queryStr, setQueryStr] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(50);
-
-  const [[anchorEl, selectedRow], setAnchorEl] = useState([null, undefined]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [actionType, setActionType] = useState(null);
-  const [message, setMessage] = useState('Are You Sure that you want To Continue?');
-  const [sidebarType, setSidebarType] = useState('');
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [selectedCourier, setSelectedCourier] = useState({});
-
-
-  const handleCloseMenuActions = () => {
-    setAnchorEl([null, undefined]);
-  };
-
-  const handleCloseMenuActionsSideBar = () => {
-    setAnchorEl((prev) => [null, prev[1]]);
-  };
-
-  const handleOpenDialog = (action, desc) => {
-    setIsDialogOpen(true);
-    setActionType(action);
-    setMessage(desc);
-  };
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-  };
-
-  const openSidebar = (type) => {
-    setSidebarType(type);
-    setShowSidebar(true);
-  };
-
-  const closeSidebar = () => {
-    setShowSidebar(false);
-  };
 
   const dispatch = useDispatch();
   const store = useSelector((state) => state.regularOrders);
@@ -250,178 +207,8 @@ const Regular = () => {
         </div>
       </UiLoadingOverlay>
 
-      {anchorEl !== null && (
-        <Menu id="more-menu" anchorEl={anchorEl} keepMounted={true} open={Boolean(anchorEl)} onClose={handleCloseMenuActions}>
-          {selectedRow.status === 'cancelled' || selectedRow.status === 'delivered' ? (
-            <div>
-              {selectedRow.isFullyPaid === false ? (
-                <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
-                  Confirm Payment
-                </MenuItem>
-              ) : (
-                <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
-                  Cancel Payment
-                </MenuItem>
-              )}
-              <MenuItem
-                onClick={() => {
-                  // console.log("tracking")
-                  handleCloseMenuActionsSideBar();
-                  openSidebar('track');
-                }}
-              >
-                Track Order
-              </MenuItem>
-            </div>
-          ) : selectedRow.status === 'rejected' ? (
-            <div>
-              <MenuItem onClick={() => handleOpenDialog('re-publish', 'Are You sure You Want To Re-publish Of This Order')}>
-                Republish Order
-              </MenuItem>
-              {selectedRow.isFullyPaid === false ? (
-                <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
-                  Confirm Payment
-                </MenuItem>
-              ) : (
-                <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
-                  Cancel Payment
-                </MenuItem>
-              )}
-              <MenuItem
-                onClick={() => {
-                  handleCloseMenuActionsSideBar();
-                  openSidebar('track');
-                }}
-              >
-                Track Order
-              </MenuItem>
-            </div>
-          ) : selectedRow.status === 'pending' ? (
-            <div>
-              <MenuItem onClick={() => handleOpenDialog('approve', 'Are You sure You Want To Approve This Order')}>Approve Order</MenuItem>
-              <MenuItem onClick={() => handleOpenDialog('reject', 'Are You sure You Want To Reject This Order')}>Reject Order </MenuItem>
-              {selectedRow.isFullyPaid === false ? (
-                <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
-                  Confirm Payment
-                </MenuItem>
-              ) : (
-                <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
-                  Cancel Payment
-                </MenuItem>
-              )}
-              <MenuItem
-                onClick={() => {
-                  handleCloseMenuActionsSideBar();
-                  openSidebar('track');
-                }}
-              >
-                Track Order
-              </MenuItem>
-            </div>
-          ) : (
-            <div>
-              {selectedRow.status === 'approved' ? (
-                <MenuItem
-                  onClick={() => {
-                    handleCloseMenuActionsSideBar();
-                    openSidebar('courier');
-                  }}
-                >
-                  Assign Courier
-                </MenuItem>
-              ) : (
-                <MenuItem
-                  onClick={() => {
-                    handleCloseMenuActionsSideBar();
-                    openSidebar('courier');
-                  }}
-                >
-                  Re-Assign Courier
-                </MenuItem>
-              )}
-              <MenuItem onClick={() => handleOpenDialog('confirm_pickup', 'Are You sure You Want To Confirm Pickup Of This Order')}>
-                Confirm Pickup
-              </MenuItem>
-              <MenuItem onClick={() => handleOpenDialog('confirm_delivery', 'Are You sure You Want To Confirm Delivery Of This Order')}>
-                Confirm Delivery
-              </MenuItem>
-              <MenuItem onClick={() => handleOpenDialog('cancel', 'Are You sure You Want To Cancel This Order')}>Cancel Order</MenuItem>
-              {selectedRow.isFullyPaid === false ? (
-                <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
-                  Confirm Payment
-                </MenuItem>
-              ) : (
-                <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
-                  Cancel Payment
-                </MenuItem>
-              )}
-              <MenuItem
-                onClick={() => {
-                  handleCloseMenuActionsSideBar();
-                  openSidebar('track');
-                }}
-              >
-                Track Order
-              </MenuItem>
-            </div>
-          )}
-        </Menu>
-      )}
-      {actionType !== null && (
-        <AlertConfrimationDialog
-          open={isDialogOpen}
-          handleClose={handleCloseDialog}
-          message={message}
-          onConfirm={() => {
-            handleCloseMenuActionsSideBar();
-            if (actionType === 'approve') {
-              handleCloseDialog();
-              dispatch(approveOrder({ id: selectedRow.id }));
-            }
-            if (actionType === 'assign_courier') {
-              handleCloseDialog();
-              dispatch(
-                assignCourierToRegularOrder({
-                  id: selectedRow.id,
-                  courierId: selectedCourier.id,
-                  courierName: selectedCourier.firstName,
-                  courierPhone: selectedCourier.phone
-                })
-              );
-              closeSidebar();
-            }
-            if (actionType === 'confirm_pickup') {
-              handleCloseDialog();
-              dispatch(confirmRegularOrderPickUp({ id: selectedRow.id }));
-            }
-            if (actionType === 'confirm_delivery') {
-              handleCloseDialog();
-              dispatch(confirmOrderdelivery({ id: selectedRow.id }));
-            }
-            if (actionType === 'reject') {
-              handleCloseDialog();
-              dispatch(rejectOrder({ id: selectedRow.id }));
-            }
-            if (actionType === 'cancel') {
-              handleCloseDialog();
-              dispatch(cancelOrder({ id: selectedRow.id }));
-            }
-            if (actionType === 'confirm_payment') {
-              handleCloseDialog();
-              dispatch(toggleOrderPaymentStatus({ id: selectedRow.id, isFullyPaid: true }));
-            }
-            if (actionType === 'cancel_payment') {
-              handleCloseDialog();
-              dispatch(toggleOrderPaymentStatus({ id: selectedRow.id, isFullyPaid: false }));
-            }
-            if (actionType === 're-publish') {
-              handleCloseDialog();
-              // dispatch(approveOrder1({ id: selectedRow.id }));
-            }
-          }}
-        />
-      )}
-      <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
+
+      {/* <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
         {sidebarType === 'courier' ? (
           <SelectCourier
             selectedCourier={selectedCourier}
@@ -433,7 +220,10 @@ const Regular = () => {
         ) : (
           <OrderHistory order={selectedRow} />
         )}
-      </SideNav>
+      </SideNav> */}
+
+
+
     </>
   );
 };

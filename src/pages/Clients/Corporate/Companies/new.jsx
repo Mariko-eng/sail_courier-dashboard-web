@@ -57,6 +57,7 @@ const CorporateCompaniesNew = () => {
   const dispatch = useDispatch();
 
   const store = useSelector((store) => store.corporateCompanies);
+  
 
   return (
     <div>

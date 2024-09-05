@@ -273,8 +273,10 @@ export const cancelOrder = createAsyncThunk('orders/cancelOrder', async (data, t
   }
 });
 
-export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (id, thunkAPI) => {
+export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (data, thunkAPI) => {
   try {
+    const id = data.id;
+
     await axios.delete(`${ordersurl}/delete/${id}`);
     return id;
   } catch (error) {

@@ -76,22 +76,3 @@ export const getUserData = async (userId) => {
     throw error;
   }
 };
-
-// async function getUserData(userId) {
-//   try {
-//     const docRef = doc(db, 'admins', userId);
-//     const docSnap = await getDoc(docRef);
-
-//     if (docSnap.exists()) {
-//       console.log('Document data:', docSnap.data());
-//       return docSnap.data();
-//     } else {
-//       // docSnap.data() will be undefined in this case
-//       console.log('No such document!');
-//       throw 'Document not found!';
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     throw error;
-//   }
-// }

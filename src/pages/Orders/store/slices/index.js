@@ -25,7 +25,7 @@ const handleError = (state, { payload }) => {
   toast.error(state.error, { position: 'bottom-right' });
 };
 
-const handleErrorTotal = (state, { payload }) => {
+const handleErrorToday = (state, { payload }) => {
     state.loadingTotal = false;
     state.error = payload || 'An unexpected error occurred';
     toast.error(state.error, { position: 'bottom-right' });
@@ -94,9 +94,9 @@ export const allOrdersSlice = createSlice({
         state.loadingToday = false;
         state.limitToday = action.payload.limit;
         state.totalToday = action.payload.total;
-        state.orders = action.payload.entries;
+        state.ordersToday = action.payload.entries;
       })
-      .addCase(fetchOrdersToday.rejected, handleErrorTotal)
+      .addCase(fetchOrdersToday.rejected, handleErrorToday)
 
       .addCase(fetchOrdersLatest.pending, (state) => {
         state.loadingLatest = true;

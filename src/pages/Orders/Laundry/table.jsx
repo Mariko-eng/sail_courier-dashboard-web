@@ -18,6 +18,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
 import { prettyDate } from '../../../utils/app-functions';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const columns = [
@@ -66,6 +67,18 @@ export default function LaundryOrdersTable({ orders, rowsPerPage, setRowsPerPage
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
     const [searchQuery, setSearchQuery] = React.useState('');
+    const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+    const [actionType, setActionType] = React.useState(null);
+    const [sidebarType, setSidebarType] = React.useState('');
+    const [showSidebar, setShowSidebar] = React.useState(false);
+    const [selectedCourier, setSelectedCourier] = React.useState({});
+    const [message, setMessage] = React.useState('Are You Sure that you want To Continue?');
+
+    const dispatch = useDispatch()
+
+    const store = useSelector(store => store.auth)
+
+    const loggedInUser = store.user;
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -85,18 +98,38 @@ export default function LaundryOrdersTable({ orders, rowsPerPage, setRowsPerPage
         setSelectedRow(row);
     };
 
-    const handleClose = () => {
+    const handleCloseMenuActions = () => {
         setAnchorEl(null);
-        setSelectedRow(null);
+        // setSelectedRow(null);
     };
 
-    const handleAction = (action) => {
-        if (selectedRow) {
-            // Perform action based on the selectedRow
-            console.log(`Performing ${action} on row`, selectedRow);
-            handleClose();
-        }
+    const handleOpenDialog = (action, desc) => {
+        setIsDialogOpen(true);
+        setActionType(action);
+        setMessage(desc);
     };
+
+    const handleCloseDialog = () => {
+        handleCloseMenuActions();
+        setIsDialogOpen(false);
+    };
+
+    const openSidebar = (type) => {
+        setSidebarType(type);
+        setShowSidebar(true);
+    };
+
+    const closeSidebar = () => {
+        setShowSidebar(false);
+    };
+
+    // const handleAction = (action) => {
+    //     if (selectedRow) {
+    //         // Perform action based on the selectedRow
+    //         console.log(`Performing ${action} on row`, selectedRow);
+    //         handleClose();
+    //     }
+    // };
 
     const open = Boolean(anchorEl);
 
@@ -104,7 +137,7 @@ export default function LaundryOrdersTable({ orders, rowsPerPage, setRowsPerPage
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                        <TextField
+            <TextField
                 placeholder="Search..."
                 variant="outlined"
                 fullWidth
@@ -153,14 +186,18 @@ export default function LaundryOrdersTable({ orders, rowsPerPage, setRowsPerPage
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-            >
-                <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem>
-                <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem>
-            </Menu>
+
+            {selectedRow !== null &&
+                <>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleCloseMenuActions}
+                    >
+                        {/* <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem>
+                        <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem> */}
+                    </Menu>
+                </>}
         </Paper>
     );
 }
@@ -224,9 +261,29 @@ const Row = (props) => {
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={openDetail} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                Order Details
+                            <Typography variant="h6" color='blue' gutterBottom component="div">
+                                MORE ORDER DETAILS
                             </Typography>
+                            <Card>
+                                <div style={{ marginBottom: '10px' }}>
+                                    <div style={{ fontWeight: 'bold' }}>Package Items </div>
+                                    <div style={{ paddingLeft: '10px' }}>
+                                        {row.orderDetails.parcelItems.map((item, index) => (
+                                            <div key={index}>{item}</div>
+                                        ))}
+                                    </div>
+                                    <div style={{ fontWeight: 'bold' }}>Package Description </div>
+                                    <p>{row.orderDetails.parcelDesc}</p>
+                                </div>
+                                <div style={{ marginBottom: '10px' }}>
+                                    <div style={{ fontWeight: 'bold' }}>Pickup Point - {row.senderOtpCode} </div>
+                                    <div style={{ paddingLeft: '10px' }}>{row.pickName}</div>
+                                </div>
+                                <div style={{ marginBottom: '10px' }}>
+                                    <div style={{ fontWeight: 'bold' }}>Delivery Point - {row.receiverOtpCode}</div>
+                                    <div style={{ paddingLeft: '10px' }}>{row.dropName}</div>
+                                </div>
+                            </Card>
                         </Box>
                     </Collapse>
                 </TableCell>

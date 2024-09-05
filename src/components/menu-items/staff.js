@@ -15,7 +15,7 @@ const icons = {
 
 const staff = {
   id: 'users',
-  title: 'Users',
+  title: 'Staff',
   type: 'group',
   children: [
     {
@@ -26,22 +26,22 @@ const staff = {
       icon: icons.IconTypography,
       breadcrumbs: false
     },
-    {
-      id: 'agents',
-      title: 'Agents',
-      type: 'item',
-      url: '/staff/agents',
-      icon: icons.IconPalette,
-      breadcrumbs: false
-    },
-    {
-      id: 'admins',
-      title: 'Admins',
-      type: 'item',
-      url: '/staff/admins',
-      icon: icons.IconTypography,
-      breadcrumbs: false
-    }
+    // {
+    //   id: 'agents',
+    //   title: 'Agents',
+    //   type: 'item',
+    //   url: '/staff/agents',
+    //   icon: icons.IconPalette,
+    //   breadcrumbs: false
+    // },
+    // {
+    //   id: 'admins',
+    //   title: 'Admins',
+    //   type: 'item',
+    //   url: '/staff/admins',
+    //   icon: icons.IconTypography,
+    //   breadcrumbs: false
+    // }
   ]
 };
 

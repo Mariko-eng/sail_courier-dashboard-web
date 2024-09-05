@@ -18,6 +18,7 @@ import { deleteCorporateCompany } from '../../store/reducers/extra_reducers';
 
 
 const columns = [
+    { id: 'index', label: 'Index', minWidth: 70 },
     { id: 'companyUniqueNo', label: 'ID', minWidth: 70 },
     { id: 'companyName', label: 'Name', minWidth: 100 },
     { id: 'companyEmail', label: 'Email', minWidth: 70 },
@@ -37,6 +38,7 @@ function processData(dataList) {
     for (var i = 0; i < dataList.length; i++) {
         var cords = `${dataList[i].companyAddressCordinatesLat} , ${dataList[i].companyAddressCordinatesLng}`;
         newData.push({
+            index: i + 1,
             ...dataList[i],
             companyAddressCordinates: cords,
             action: 'Toggle' // Example value for action button
@@ -114,15 +116,22 @@ export default function StickyHeadTable({ companies }) {
             <TableContainer sx={{ maxHeight: 440 }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
-                        <TableRow>
+                    <TableRow>
+                            <TableCell />
                             {columns.map((column, index) => (
-                                <TableCell
-                                    key={index}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.label}
-                                </TableCell>
+                                <React.Fragment key={index}>
+                                    {
+                                        column.label !== "Index" && (
+                                            <TableCell
+                                                key={index}
+                                                align={column.align}
+                                                style={{ minWidth: column.minWidth }}
+                                            >
+                                                {column.label}
+                                            </TableCell>
+                                        )
+                                    }
+                                </React.Fragment>
                             ))}
                         </TableRow>
                     </TableHead>

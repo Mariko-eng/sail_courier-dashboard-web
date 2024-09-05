@@ -1,0 +1,13 @@
+.app {
+    display: flex;
+    padding: 5rem;
+    justify-content: space-evenly;
+    font-family: Verdana, Geneva, Tahoma, sans-serif
+  }
+  
+  .map-container {
+    height: 200px;
+    width: 100%;
+    border: 1px solid black;
+    /* border-radius: 20px; */
+  }

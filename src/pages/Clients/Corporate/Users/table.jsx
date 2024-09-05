@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { deleteClient } from '../../store/reducers/extra_reducers';
 
 const columns = [
+    { id: 'index', label: 'Index', minWidth: 70 },
     { id: 'username', label: 'Username', minWidth: 100 },
     { id: 'phone', label: 'Phone', minWidth: 170 },
     { id: 'email', label: 'Email', minWidth: 100 },
@@ -35,6 +36,7 @@ function processData(dataList) {
         var caddr = `${dataList[i].company.companyAddressPlaceName}`;
 
         newData.push({
+            index: i + 1,
             ...dataList[i],
             companyName: cname,
             companyAddress: caddr,
@@ -98,15 +100,22 @@ export default function ClientsCorporateTable({ clients }) {
             <TableContainer sx={{ maxHeight: 440 }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
-                        <TableRow>
+                    <TableRow>
+                            <TableCell />
                             {columns.map((column, index) => (
-                                <TableCell
-                                    key={index}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.label}
-                                </TableCell>
+                                <React.Fragment key={index}>
+                                    {
+                                        column.label !== "Index" && (
+                                            <TableCell
+                                                key={index}
+                                                align={column.align}
+                                                style={{ minWidth: column.minWidth }}
+                                            >
+                                                {column.label}
+                                            </TableCell>
+                                        )
+                                    }
+                                </React.Fragment>
                             ))}
                         </TableRow>
                     </TableHead>
@@ -152,8 +161,8 @@ export default function ClientsCorporateTable({ clients }) {
                 open={open}
                 onClose={handleClose}
             >
-                <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem>
-                <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem>
+                {/* <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem>
+                <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem> */}
             </Menu>
         </Paper>
     );

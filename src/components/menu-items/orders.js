@@ -30,13 +30,13 @@ const orders = {
           url: '/orders/regular',
           target: false
         },
-        {
-          id: 'regular_add',
-          title: 'Add',
-          type: 'item',
-          url: '/orders/regular/new',
-          target: false
-        }
+        // {
+        //   id: 'regular_add',
+        //   title: 'Add',
+        //   type: 'item',
+        //   url: '/orders/regular/new',
+        //   target: false
+        // }
       ]
     },
     {

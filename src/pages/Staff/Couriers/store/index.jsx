@@ -1,23 +1,28 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import {auth } from '../../../../config/firebase';
+import { auth } from '../../../../config/firebase';
 import { baseUrl } from '../../../../config/axios';
+import { formatError } from '../../../../utils/axios-error';
 
 export const fetchCouriers = createAsyncThunk('courier/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/couriers/`;
+    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/couriers/?env=dev` : `${baseUrl}/users/couriers/?env=prod`;
     const response = await axios.get(url);
 
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
 export const addCourier = createAsyncThunk('courier/addNew', async (data, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/couriers/new`;
+    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/couriers/new/?env=dev` : `${baseUrl}/users/couriers/new/?env=prod`;
     const timestamp = Date.now().toString();
     const uniqueNo = timestamp.substring(4, 12);
     const uniqueNumber = 'SC' + uniqueNo;
@@ -26,8 +31,10 @@ export const addCourier = createAsyncThunk('courier/addNew', async (data, thunkA
       applied: false,
       applicationID: '',
       courierNo: uniqueNumber,
-      surName: data.surName,
       firstName: data.firstName,
+      userName: data.firstName,
+      surName: data.surName,
+      fullNames: data.surName,
       imageFormat: data.imageFormat,
       imageBase64: data.imageBase64,
       phone: data.phone,
@@ -56,36 +63,30 @@ export const addCourier = createAsyncThunk('courier/addNew', async (data, thunkA
 
     const response = await axios.post(url, courierData);
 
-    // console.log('response.data');
-    // console.log(response.data);
-
     return {
-      id: response.id,
+      id: response.data.id,
       ...courierData
     };
   } catch (error) {
-    // console.log(error);
-    // console.log(error.response.data.message);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
 
-    if (error.response.status == 400) {
-      if (error.response.data.message) {
-        return thunkAPI.rejectWithValue(`Error creating user: ${error.response.data.message}`);
-      }
-    } else {
-      return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
-    }
-
-    return thunkAPI.rejectWithValue(`Error creating user: ${error.message}`);
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
 export const deleteCourier = createAsyncThunk('courier/delete', async (id, thunkAPI) => {
   try {
-    const url = `${baseUrl}/users/couriers/delete/${id}`;
+    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/couriers/delete/${id}/?env=dev` : `${baseUrl}/users/couriers/delete/${id}/?env=prod`;
     await axios.delete(url)
     return id;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    // Format and reject with the formatted error
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+
+    return thunkAPI.rejectWithValue(customAxiosError.errorMessage);
   }
 });
 
@@ -126,7 +127,7 @@ export const CouriersSlice = createSlice({
       .addCase(fetchCouriers.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchCouriers.fulfilled, (state, action) => {        
+      .addCase(fetchCouriers.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
         state.total = action.payload.length;
@@ -135,11 +136,14 @@ export const CouriersSlice = createSlice({
 
       .addCase(addCourier.pending, (state) => {
         state.loading = true;
+        state.submitted = false;
+        state.error = null;
       })
 
       .addCase(addCourier.fulfilled, (state, action) => {
         state.loading = false;
         state.submitted = true;
+        state.error = null;
         if (state.edit) {
           state.selectedData = action.payload;
           state.data = state.data.map((item) => {
@@ -155,6 +159,8 @@ export const CouriersSlice = createSlice({
 
       .addCase(addCourier.rejected, (state, { payload }) => {
         state.loading = false;
+        state.submitted = false;
+        state.error = payload;
         toast.error(payload, { position: 'bottom-right' });
       })
 

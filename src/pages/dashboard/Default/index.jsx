@@ -51,10 +51,12 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (queryStrToday !== "") {
+      // console.log(queryStrToday)
       dispatch(fetchOrdersToday(queryStrToday));
     }
 
     if (queryStrLatest !== "") {
+      // console.log(queryStrLatest)
       dispatch(fetchOrdersLatest(queryStrLatest));
     }
   }, [queryStrToday, queryStrLatest, dispatch]);

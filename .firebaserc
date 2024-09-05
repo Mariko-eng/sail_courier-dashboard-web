@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "sail-courier"
+  },
+  "targets": {
+    "sail-courier": {
+      "hosting": {
+        "original": [
+          "sail-courier"
+        ],
+        "new": [
+          "sail-courier-admin-new"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

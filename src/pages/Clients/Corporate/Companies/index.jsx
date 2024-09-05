@@ -8,6 +8,7 @@ import MainCard from '../../../../ui-component/cards/MainCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCorporateCompanies } from './../../store/reducers/extra_reducers';
 import StickyHeadTable from './table';
+import CustomGoogleMap from '../../../../components/google-maps';
 
 
 const CorporateCompanies = () => {
@@ -32,6 +33,8 @@ const CorporateCompanies = () => {
     useEffect(() => {
       dispatch(fetchCorporateCompanies());
     }, [dispatch]);
+
+    const markerLocation = { lat: 0.3, lng: 32 };
 
   return (
     <>

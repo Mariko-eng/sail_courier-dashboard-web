@@ -23,7 +23,10 @@ export const fetchOrdersToday = createAsyncThunk('orders/fetchOrdersToday', asyn
   try {
     const url = `${baseUrl}/main/orders/?${query}`;
 
+    // console.log(url)
+
     const response = await axios.get(url);
+    // console.log(response.data);
     return response.data;
   } catch (error) {
     const customAxiosError = formatError(error);
