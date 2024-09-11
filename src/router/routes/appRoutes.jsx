@@ -4,7 +4,7 @@ import { lazy } from 'react';
 import Loadable from '../../ui-component/Loadable';
 
 // Dashboard
-const DashboardDefault = Loadable(lazy(() => import('../../pages/Dashboard/Default')));
+const DashboardDefault = Loadable(lazy(() => import('../../pages/Dashboard')));
 
 // Orders
 const RegularOrders = Loadable(lazy(() => import('../../pages/Orders/Regular')));
