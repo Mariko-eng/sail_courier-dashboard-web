@@ -25,7 +25,7 @@ const NavCollapse = ({ menu, level }) => {
   // const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(null); 
 
   const handleClick = () => {
     setOpen(!open);
@@ -36,6 +36,7 @@ const NavCollapse = ({ menu, level }) => {
   };
 
   const { pathname } = useLocation();
+
   const checkOpenForParent = (child, id) => {
     child.forEach((item) => {
       if (item.url === pathname) {

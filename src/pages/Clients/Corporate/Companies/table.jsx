@@ -95,16 +95,16 @@ export default function StickyHeadTable({ companies }) {
         if (selectedRow) {
             // Perform action based on the selectedRow
             console.log(`Performing ${action} on row`, selectedRow);
-            
+
             if (action === "Delete") {
                 var result = confirm('You want to delete this company? ' + selectedRow.companyName);
                 if (result === true) {
-                  dispatch(deleteCorporateCompany(selectedRow.id));
+                    dispatch(deleteCorporateCompany(selectedRow.id));
                 }
             }
 
-                handleClose();
-            }
+            handleClose();
+        }
     };
 
     const open = Boolean(anchorEl);
@@ -112,70 +112,72 @@ export default function StickyHeadTable({ companies }) {
     const rows = processData(companies)
 
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                    <TableRow>
-                            <TableCell />
-                            {columns.map((column, index) => (
-                                <React.Fragment key={index}>
-                                    {
-                                        column.label !== "Index" && (
-                                            <TableCell
-                                                key={index}
-                                                align={column.align}
-                                                style={{ minWidth: column.minWidth }}
-                                            >
-                                                {column.label}
-                                            </TableCell>
-                                        )
-                                    }
-                                </React.Fragment>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                        {rows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
-                                return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {column.id === 'action' ? (
-                                                        <IconButton onClick={() => handleToggle(row.companyUniqueNo)}>
-                                                            {toggledRows.has(row.companyUniqueNo) ? <ToggleOn /> : <ToggleOff />}
-                                                        </IconButton>
-                                                    ) : column.id === 'action2' ?
-                                                        <IconButton onClick={(event) => handleClick(event, row)}>
-                                                            <MoreVertIcon />
-                                                        </IconButton>
-                                                        :
-                                                        (<>
-                                                            {column.format ? column.format(value) : value}
-                                                        </>)}
+        <>
+            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer sx={{ maxHeight: 440 }}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell />
+                                {columns.map((column, index) => (
+                                    <React.Fragment key={index}>
+                                        {
+                                            column.label !== "Index" && (
+                                                <TableCell
+                                                    key={index}
+                                                    align={column.align}
+                                                    style={{ minWidth: column.minWidth }}
+                                                >
+                                                    {column.label}
                                                 </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+                                            )
+                                        }
+                                    </React.Fragment>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                            {rows
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
+                                    return (
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                                            {columns.map((column) => {
+                                                const value = row[column.id];
+                                                return (
+                                                    <TableCell key={column.id} align={column.align}>
+                                                        {column.id === 'action' ? (
+                                                            <IconButton onClick={() => handleToggle(row.companyUniqueNo)}>
+                                                                {toggledRows.has(row.companyUniqueNo) ? <ToggleOn /> : <ToggleOff />}
+                                                            </IconButton>
+                                                        ) : column.id === 'action2' ?
+                                                            <IconButton onClick={(event) => handleClick(event, row)}>
+                                                                <MoreVertIcon />
+                                                            </IconButton>
+                                                            :
+                                                            (<>
+                                                                {column.format ? column.format(value) : value}
+                                                            </>)}
+                                                    </TableCell>
+                                                );
+                                            })}
+                                        </TableRow>
+                                    );
+                                })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[10, 25, 100]}
+                    component="div"
+                    count={rows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
             <Menu
                 anchorEl={anchorEl}
                 open={open}
@@ -184,7 +186,7 @@ export default function StickyHeadTable({ companies }) {
                 {/* <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem> */}
                 <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem>
             </Menu>
-        </Paper>
+        </>
     );
 }
 

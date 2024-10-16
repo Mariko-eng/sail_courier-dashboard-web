@@ -7,7 +7,9 @@ import { formatError } from '../../../../utils/axios-error';
 
 export const fetchAllOrders = createAsyncThunk('orders/fetchAllOrders', async (query, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/orders/?${query}`;
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `${baseUrl}/main/orders/?${query}&env=${env}`;
 
     const response = await axios.get(url);
     return response.data;
@@ -21,9 +23,9 @@ export const fetchAllOrders = createAsyncThunk('orders/fetchAllOrders', async (q
 
 export const fetchOrdersToday = createAsyncThunk('orders/fetchOrdersToday', async (query, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/orders/?${query}`;
-
-    // console.log(url)
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `${baseUrl}/main/orders/?${query}&env=${env}`;
 
     const response = await axios.get(url);
     // console.log(response.data);
@@ -38,7 +40,9 @@ export const fetchOrdersToday = createAsyncThunk('orders/fetchOrdersToday', asyn
 
 export const fetchOrdersLatest = createAsyncThunk('orders/fetchOrdersLatest', async (query, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/orders/?${query}`;
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `${baseUrl}/main/orders/?${query}&env=${env}`;
 
     const response = await axios.get(url);
     return response.data;
@@ -52,14 +56,10 @@ export const fetchOrdersLatest = createAsyncThunk('orders/fetchOrdersLatest', as
 
 export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async (query, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/orders/regular/?${query}`;
-    // return {
-    //   limit : 1000,
-    //   total : 0,
-    //   entries : []
-    // };
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `${baseUrl}/main/orders/regular?${query}&env=${env}`;
 
-    // console.log("fetchRegularOrders");
     const response = await axios.get(url);
     // console.log(response.data);
     return response.data;
@@ -73,7 +73,9 @@ export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async 
 
 export const fetchLaundryOrders = createAsyncThunk('orders/fetchLaundry', async (query, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/orders/laundry/?${query}`;
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `${baseUrl}/main/orders/laundry?${query}&env=${env}`;
 
     const response = await axios.get(url);
     return response.data;
@@ -87,7 +89,9 @@ export const fetchLaundryOrders = createAsyncThunk('orders/fetchLaundry', async 
 
 export const fetchShoppingOrders = createAsyncThunk('orders/fetchShopping', async (query, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/orders/shopping/?${query}`;
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `${baseUrl}/main/orders/shopping?${query}&env=${env}`;
 
     const response = await axios.get(url);
     return response.data;
@@ -101,7 +105,11 @@ export const fetchShoppingOrders = createAsyncThunk('orders/fetchShopping', asyn
 
 export const getOrderDetail = createAsyncThunk('orders/getDetail', async (id, thunkAPI) => {
   try {
-    const response = await axios.get(`${baseUrl}/main/orders/detail/${id}`);
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `${baseUrl}/main/orders/detail/${id}/?env=${env}`;
+
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     const customAxiosError = formatError(error);
@@ -142,8 +150,13 @@ export const addLaundryOrder = createAsyncThunk('orders/addLaundry', async (data
 //// Order History
 export const fetchOrderHistory = createAsyncThunk('orders/fetchOrderHistory', async (data, thunkAPI) => {
   try {
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
     const id = data.id;
-    const response = await axios.get(`${baseUrl}/main/orders/history/list/${id}?limit=1000`);
+
+    const url = `${baseUrl}/main/orders/history/list/${id}/?env=${env}`;
+
+    const response = await axios.get(url);
     // console.log(response);
     return response.data;
   } catch (error) {
@@ -156,6 +169,10 @@ export const fetchOrderHistory = createAsyncThunk('orders/fetchOrderHistory', as
 
 export const addOrderHistory = createAsyncThunk('orders/addOrderHistory', async (data, thunkAPI) => {
   try {
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `${baseUrl}/main/orders/history/add/?env=${env}`;
+
     const payload = {
       order: data.order,
       description: data.description,
@@ -163,7 +180,7 @@ export const addOrderHistory = createAsyncThunk('orders/addOrderHistory', async 
       createdAt: new Date().toISOString()
     };
 
-    const response = await axios.post(`${baseUrl}/main/orders/history/add/`, payload);
+    const response = await axios.post(url, payload);
     return {
       id: response.data.id,
       description: data.description,

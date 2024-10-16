@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
 import {
   fetchClientsPersonal,
+  activateClient,
+  deactivateClient,
   deleteClient
 } from '../reducers/extra_reducers';
 
@@ -59,6 +61,26 @@ export const personalClientsSlice = createSlice({
         state.total = action.payload.length;
       })
       .addCase(fetchClientsPersonal.rejected, handleError)
+
+      .addCase(activateClient.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(activateClient.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        // state.data = state.data.filter((item) => item.id !== payload);
+        toast.success('Client activated successfully', { position: 'top-right' });
+      })
+      .addCase(activateClient.rejected, handleError)
+
+      .addCase(deactivateClient.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deactivateClient.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        // state.data = state.data.filter((item) => item.id !== payload);
+        toast.success('Client deactivated successfully', { position: 'top-right' });
+      })
+      .addCase(deactivateClient.rejected, handleError)
 
       .addCase(deleteClient.pending, (state) => {
         state.loading = true;

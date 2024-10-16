@@ -50,6 +50,7 @@ const CorporateNew = () => {
           <Formik
             initialValues={{
               company: '',
+              corporate_account_type: '',
               username: '',
               phone: '',
               email: '',
@@ -58,6 +59,7 @@ const CorporateNew = () => {
             }}
             validationSchema={Yup.object().shape({
               company: Yup.string().required('Select a company'),
+              corporate_account_type: Yup.string().required('Account type is required'),
               username: Yup.string().min(3).max(25).required('Username is required'),
               phone: Yup.string().min(3).max(25).required('Phone Number is required'),
               email: Yup.string().email('Invalid email').required('Email is required'),
@@ -69,6 +71,7 @@ const CorporateNew = () => {
                   const company_obj = companies.find((itm) => itm.id == values.company);
                   const data = {
                     company: company_obj,
+                    corporate_account_type: values.corporate_account_type,
                     username: values.username,
                     phone: values.phone,
                     email: values.email,
@@ -113,6 +116,30 @@ const CorporateNew = () => {
                     ))}
                   </Field>
                   {touched.company && errors.company && <FormHelperText error>{errors.company}</FormHelperText>}
+                </FormControl>
+
+                <FormControl fullWidth error={Boolean(touched.corporate_account_type && errors.corporate_account_type)} sx={{ marginTop: 2 }}>
+                  <InputLabel htmlFor="corporate_account_type">Account Type</InputLabel>
+                  <Field
+                    as={Select}
+                    id="corporate_account_type"
+                    name="corporate_account_type"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.corporate_account_type}
+                    input={<OutlinedInput label="Account Type" />}
+                  >
+                    <MenuItem value="">
+                      <em>Select account type</em>
+                    </MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                    <MenuItem value="standard">Standard</MenuItem>
+                  </Field>
+                  {touched.corporate_account_type && errors.corporate_account_type && (
+                    <FormHelperText error id="account_type-login">
+                      {errors.corporate_account_type}
+                    </FormHelperText>
+                  )}
                 </FormControl>
 
                 <FormControl fullWidth error={Boolean(touched.username && errors.username)} sx={{ ...theme.typography.customInput }}>
