@@ -266,12 +266,16 @@ const Row = (props) => {
                                 <div style={{ marginBottom: '10px' }}>
                                     <div style={{ fontWeight: 'bold' }}>Package Items </div>
                                     <div style={{ paddingLeft: '10px' }}>
-                                        {row.orderDetails.parcelItems.map((item, index) => (
-                                            <div key={index}>{item}</div>
-                                        ))}
+                                        {row.orderDetails.parcelItems && Array.isArray(row.orderDetails.parcelItems) && row.orderDetails.parcelItems.length > 0 && (
+                                            <>
+                                                {row.orderDetails.parcelItems.map((item, index) => (
+                                                    <div key={index}>{item}</div>
+                                                ))}
+                                            </>
+                                        )}
                                     </div>
                                     <div style={{ fontWeight: 'bold' }}>Package Description </div>
-                                    <p>{row.orderDetails.parcelDesc}</p>
+                                    <p>{row.orderDetails.parcelDesc ?? "Not Available"}</p>
                                 </div>
                                 <div style={{ marginBottom: '10px' }}>
                                     <div style={{ fontWeight: 'bold' }}>Pickup Point - {row.senderOtpCode} </div>

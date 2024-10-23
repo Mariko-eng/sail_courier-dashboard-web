@@ -102,7 +102,7 @@ export default function RegularOrdersTable({ orders, rowsPerPage, setRowsPerPage
   const [sidebarType, setSidebarType] = React.useState('');
   const [showSidebar, setShowSidebar] = React.useState(false);
   const [selectedCourier, setSelectedCourier] = React.useState({});
-  const [message, setMessage] = React.useState('Are You Sure that you want To Continue?'); 
+  const [message, setMessage] = React.useState('Are You Sure that you want To Continue?');
 
   const dispatch = useDispatch()
 
@@ -512,12 +512,16 @@ const Row = (props) => {
                 <div style={{ marginBottom: '10px' }}>
                   <div style={{ fontWeight: 'bold' }}>Package Items </div>
                   <div style={{ paddingLeft: '10px' }}>
-                    {row.orderDetails.parcelItems.map((item, index) => (
-                      <div key={index}>{item}</div>
-                    ))}
+                    {row.orderDetails.parcelItems && Array.isArray(row.orderDetails.parcelItems) && row.orderDetails.parcelItems.length > 0 && (
+                      <>
+                        {row.orderDetails.parcelItems.map((item, index) => (
+                          <div key={index}>{item}</div>
+                        ))}
+                      </>
+                    )}
                   </div>
                   <div style={{ fontWeight: 'bold' }}>Package Description </div>
-                  <p>{row.orderDetails.parcelDesc}</p>
+                  <p>{row.orderDetails.parcelDesc ?? "Not Available"}</p>
                 </div>
                 <div style={{ marginBottom: '10px' }}>
                   <div style={{ fontWeight: 'bold' }}>Pickup Point - {row.senderOtpCode} </div>

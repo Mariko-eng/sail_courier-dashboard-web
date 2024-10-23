@@ -21,7 +21,7 @@ const clients = {
   children: [
     {
       id: 'personal',
-      title: 'Personal',
+      title: 'Personal Accounts',
       type: 'item',
       url: '/clients/personal',
       icon: icons.IconTypography,
@@ -29,7 +29,7 @@ const clients = {
     },
     {
       id: 'corporate',
-      title: 'Corporate',
+      title: 'Corporate Accounts',
       type: 'item',
       url: '/clients/corporate',
       icon: icons.IconTypography,
@@ -37,7 +37,7 @@ const clients = {
     },
     {
       id: 'companies',
-      title: 'Companies',
+      title: 'Corporate Companies',
       type: 'item',
       url: '/clients/corporate/companies',
       icon: icons.IconTypography,

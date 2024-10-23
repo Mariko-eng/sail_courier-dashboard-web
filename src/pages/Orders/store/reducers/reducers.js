@@ -7,13 +7,15 @@ import { formatError } from '../../../../utils/axios-error';
 const ordersurl = `${baseUrl}/main/orders`;
 
 export const approveOrder = createAsyncThunk('orders/approveOrder', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/approve/${id}`, orderData);
+    await axios.put(`${ordersurl}/update/approve/${id}/?env=${env}`, orderData);
     return {
       id:data.id,
       status:"approved",
@@ -28,6 +30,8 @@ export const approveOrder = createAsyncThunk('orders/approveOrder', async (data,
 });
 
 export const assignCourierToRegularOrder = createAsyncThunk('orders/assignCourierToRegularOrder', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
@@ -37,7 +41,7 @@ export const assignCourierToRegularOrder = createAsyncThunk('orders/assignCourie
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/regular/update/courier/assign/${id}`, orderData);
+    await axios.put(`${ordersurl}/regular/update/courier/assign/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'assigned',
@@ -53,6 +57,8 @@ export const assignCourierToRegularOrder = createAsyncThunk('orders/assignCourie
 
 
 export const assignCourierToLaundryOrder = createAsyncThunk('orders/assignCourierToLaundryOrder', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
@@ -62,7 +68,7 @@ export const assignCourierToLaundryOrder = createAsyncThunk('orders/assignCourie
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/laundry/update/courier/assign/${id}`, orderData);
+    await axios.put(`${ordersurl}/laundry/update/courier/assign/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'assigned',
@@ -77,6 +83,8 @@ export const assignCourierToLaundryOrder = createAsyncThunk('orders/assignCourie
 });
 
 export const reAssignCourierToOrder = createAsyncThunk('orders/reAssignCourierToOrder', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
@@ -86,7 +94,7 @@ export const reAssignCourierToOrder = createAsyncThunk('orders/reAssignCourierTo
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/courier/re-assign/${id}`, orderData);
+    await axios.put(`${ordersurl}/update/courier/re-assign/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       ...orderData
@@ -100,13 +108,15 @@ export const reAssignCourierToOrder = createAsyncThunk('orders/reAssignCourierTo
 });
 
 export const confirmRegularOrderPickUp = createAsyncThunk('orders/confirmRegularOrderPickUp', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/regular/update/confirm-pickup/${id}`, orderData);
+    await axios.put(`${ordersurl}/regular/update/confirm-pickup/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'pickedUp',
@@ -122,13 +132,15 @@ export const confirmRegularOrderPickUp = createAsyncThunk('orders/confirmRegular
 
 
 export const confirmLaundryOrderPickUp = createAsyncThunk('orders/confirmLaundryOrderPickUp', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/laundry/update/confirm-pickup/${id}`, orderData);
+    await axios.put(`${ordersurl}/laundry/update/confirm-pickup/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'pickedUp',
@@ -144,6 +156,8 @@ export const confirmLaundryOrderPickUp = createAsyncThunk('orders/confirmLaundry
 
 
 export const confirmShoppingOrderPickUp = createAsyncThunk('orders/confirmShoppingOrderPickUp', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
@@ -153,7 +167,7 @@ export const confirmShoppingOrderPickUp = createAsyncThunk('orders/confirmShoppi
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/shopping/update/confirm-pickup/${id}`, orderData);
+    await axios.put(`${ordersurl}/shopping/update/confirm-pickup/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'pickedUp',
@@ -168,13 +182,15 @@ export const confirmShoppingOrderPickUp = createAsyncThunk('orders/confirmShoppi
 });
 
 export const confirmLaundryOrderServicing = createAsyncThunk('orders/confirmLaundryOrderServicing', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/laundry/update/servicing/${id}`, orderData);
+    await axios.put(`${ordersurl}/laundry/update/servicing/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'servicing',
@@ -190,13 +206,15 @@ export const confirmLaundryOrderServicing = createAsyncThunk('orders/confirmLaun
 
 
 export const confirmLaundryOrderDroppingOff = createAsyncThunk('orders/confirmLaundryOrderDroppingOff', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/laundry/update/dropping-off/${id}`, orderData);
+    await axios.put(`${ordersurl}/laundry/update/dropping-off/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'droppingOff',
@@ -211,13 +229,15 @@ export const confirmLaundryOrderDroppingOff = createAsyncThunk('orders/confirmLa
 });
 
 export const confirmOrderdelivery = createAsyncThunk('orders/confirmOrderdelivery', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/confirm-delivery/${id}`, orderData);
+    await axios.put(`${ordersurl}/update/confirm-delivery/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'delivered',
@@ -232,13 +252,15 @@ export const confirmOrderdelivery = createAsyncThunk('orders/confirmOrderdeliver
 });
 
 export const rejectOrder = createAsyncThunk('orders/rejectOrder', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/reject/${id}`, orderData);
+    await axios.put(`${ordersurl}/update/reject/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'rejected',
@@ -253,13 +275,15 @@ export const rejectOrder = createAsyncThunk('orders/rejectOrder', async (data, t
 });
 
 export const cancelOrder = createAsyncThunk('orders/cancelOrder', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const orderData = {
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/approve/${id}`, orderData);
+    await axios.put(`${ordersurl}/update/approve/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       status: 'cancelled',
@@ -274,10 +298,12 @@ export const cancelOrder = createAsyncThunk('orders/cancelOrder', async (data, t
 });
 
 export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
 
-    await axios.delete(`${ordersurl}/delete/${id}`);
+    await axios.delete(`${ordersurl}/delete/${id}/?env=${env}`);
     return id;
   } catch (error) {
     const customAxiosError = formatError(error);
@@ -288,6 +314,8 @@ export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (data, t
 });
 
 export const toggleOrderPaymentStatus = createAsyncThunk('orders/toggleOrderPayment', async (data, thunkAPI) => {
+  const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+
   try {
     const id = data.id;
     const isFullyPaid = data.isFullyPaid;
@@ -296,7 +324,7 @@ export const toggleOrderPaymentStatus = createAsyncThunk('orders/toggleOrderPaym
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/payment-status/toggle/${id}`, orderData);
+    await axios.put(`${ordersurl}/payment-status/toggle/${id}/?env=${env}`, orderData);
     return {
       id: data.id,
       isFullyPaid: isFullyPaid,

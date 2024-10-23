@@ -30,6 +30,7 @@ const Regular = () => {
   const orders = store.orders;
 
   const newLoadList = orders;
+  // console.log(orders)
   // const newLoadList = structuredClone(orders);
 
 
