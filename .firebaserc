@@ -5,11 +5,8 @@
   "targets": {
     "sail-courier": {
       "hosting": {
-        "original": [
+        "admin": [
           "sail-courier"
-        ],
-        "new": [
-          "sail-courier-admin-new"
         ]
       }
     }

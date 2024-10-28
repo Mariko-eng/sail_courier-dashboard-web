@@ -32,7 +32,7 @@ const DashboardSummary = () => {
  
 const store = useSelector((state) => state.dashboard);
 
-console.log(store)
+// console.log(store)
 
 const chartData = useMemo(() => {
   // Ensure monthlyOrders is available and is an array

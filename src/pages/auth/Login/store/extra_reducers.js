@@ -2,7 +2,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { auth, db } from '../../../../config/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { query, collection, where, doc, getDocs, getDoc } from 'firebase/firestore';
 
 // First, create the thunk
 export const loginUser = createAsyncThunk(
@@ -11,16 +11,18 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }, thunkAPI) => {
     // Take two parameters
     try {
-      // console.log(email)
-      // console.log(password)
+      // Check if the email exists in the admins collection
+      const q = query(collection(db, 'admins'), where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        return thunkAPI.rejectWithValue({ message: 'Sorry, Account does not exist' });
+      }
+
       const response = await signInWithEmailAndPassword(auth, email, password);
       // console.log(response.user)
       // console.log(response.user.uid);
       // console.log(response.user.accessToken);
-
-      // const userData = await getUserData(response.user.uid);
-
-      // console.log(userData)
 
       // window.localStorage.setItem('accessToken', response.user.accessToken);
       // window.localStorage.setItem('user', JSON.stringify(userData));

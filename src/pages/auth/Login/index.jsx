@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "./store/extra_reducers";
 import { useNavigate } from "react-router-dom";
 import { getHomeRoute } from '../../../utils/getHomeRoute';
-import logo  from '../../../assets/images/logo.jpg'
+import logo from '../../../assets/images/logo.jpg'
 
 
 const Login = () => {
 
-  const [ email, setEmail ] = useState("")
-  const [ password, setPassword ] = useState("");
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("");
 
   const dispatch = useDispatch()
   const store = useSelector((store) => store.auth);
@@ -21,35 +21,37 @@ const Login = () => {
   // console.log(store)
 
 
-  const submitData = (event) =>{
+  const submitData = (event) => {
     event.preventDefault();
     dispatch(loginUser({ email: email, password: password }));
   }
 
   useEffect(() => {
-    if (store.user === undefined || store.user === null ) {
+    if (store.user === undefined || store.user === null) {
       console.log("The user is not yet loaded!.");
-    }else {
-      if (Object.keys(store.user).length > 0 ){
+    } else {
+      if (Object.keys(store.user).length > 0) {
         console.log("The user is loaded successfully.");
         navigate(getHomeRoute());
       }
     }
-  },[store,navigate])
+  }, [store, navigate])
 
 
   return (
     <div className="d-flex align-items-center py-4 bg-body-tertiary">
       <main className="form-signin w-100 m-auto">
         <form onSubmit={submitData}>
-          <img
-            className="mb-4"
-            src={logo}
-            alt=""
-            width="72"
-            height="57"
-          />
-          <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+          <div className="d-flex justify-content-center">
+            <img
+              className="mb-4"
+              src={logo}
+              alt=""
+              width="72"
+              height="57"
+            />
+          </div>
+          <h1 className="h3 mb-3 fw-normal text-center">Please sign in</h1>
 
           <div className="form-floating">
             <input
@@ -83,10 +85,17 @@ const Login = () => {
               Remember me
             </label>
           </div>
-          <button className="btn btn-primary w-100 py-2" type="submit">
-            Sign in
-          </button>
-          <p className="mt-5 mb-3 text-body-secondary">&copy; 2017–2023</p>
+
+          {store.isLoading ? (
+            <div className="text-center">
+              .... Please wait ...
+            </div>
+          ) : (
+            <button className="btn btn-primary w-100 py-2" type="submit">
+              Sign in
+            </button>
+          )}
+
         </form>
       </main>
     </div>
