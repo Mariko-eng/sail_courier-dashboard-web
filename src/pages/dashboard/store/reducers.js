@@ -1,14 +1,15 @@
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { baseUrl } from '../../../config/axios';
 import { formatError } from '../../../utils/axios-error';
+import { API } from '../../../utils/api';
 
 export const fetchDashboardData = createAsyncThunk('orders/fetchDashboardData', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/dashboard/summary`;
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const response = await axios.get(url);
+    const url = `/dashboard/summary/?host=admin&env=${env}`;
+
+    const response = await API.get(url)
     return response.data;
   } catch (error) {
     const customAxiosError = formatError(error);

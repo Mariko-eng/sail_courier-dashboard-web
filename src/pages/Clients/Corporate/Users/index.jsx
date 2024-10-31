@@ -27,7 +27,7 @@ const ClientsCorporate = () => {
 
     const data = store.data;
 
-    console.log(data);
+    // console.log(data);
 
     const newLoadList = data;
     // const newLoadList = structuredClone(data);

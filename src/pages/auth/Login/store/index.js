@@ -54,8 +54,10 @@ const authSlice = createSlice({
 
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
+      state.user = action.payload.user;
+      window.localStorage.setItem('accessToken', action.payload.accessToken);
+      window.localStorage.setItem('user', JSON.stringify(action.payload.user));
       toast.success('Logged in Successfully', { position: 'top-right' });
     });
 

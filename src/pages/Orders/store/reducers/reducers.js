@@ -1,10 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { auth } from '../../../../config/firebase';
-import { baseUrl } from '../../../../config/axios';
 import { formatError } from '../../../../utils/axios-error';
+import { API } from '../../../../utils/api';
 
-const ordersurl = `${baseUrl}/main/orders`;
+const ordersurl = `/main/orders`;
 
 export const approveOrder = createAsyncThunk('orders/approveOrder', async (data, thunkAPI) => {
   const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
@@ -15,7 +14,7 @@ export const approveOrder = createAsyncThunk('orders/approveOrder', async (data,
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/approve/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/update/approve/${id}/?host=admin&env=${env}`, orderData);
     return {
       id:data.id,
       status:"approved",
@@ -41,7 +40,7 @@ export const assignCourierToRegularOrder = createAsyncThunk('orders/assignCourie
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/regular/update/courier/assign/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/regular/update/courier/assign/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'assigned',
@@ -68,7 +67,7 @@ export const assignCourierToLaundryOrder = createAsyncThunk('orders/assignCourie
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/laundry/update/courier/assign/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/laundry/update/courier/assign/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'assigned',
@@ -94,7 +93,7 @@ export const reAssignCourierToOrder = createAsyncThunk('orders/reAssignCourierTo
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/courier/re-assign/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/update/courier/re-assign/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       ...orderData
@@ -116,7 +115,7 @@ export const confirmRegularOrderPickUp = createAsyncThunk('orders/confirmRegular
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/regular/update/confirm-pickup/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/regular/update/confirm-pickup/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'pickedUp',
@@ -140,7 +139,7 @@ export const confirmLaundryOrderPickUp = createAsyncThunk('orders/confirmLaundry
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/laundry/update/confirm-pickup/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/laundry/update/confirm-pickup/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'pickedUp',
@@ -167,7 +166,7 @@ export const confirmShoppingOrderPickUp = createAsyncThunk('orders/confirmShoppi
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/shopping/update/confirm-pickup/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/shopping/update/confirm-pickup/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'pickedUp',
@@ -190,7 +189,7 @@ export const confirmLaundryOrderServicing = createAsyncThunk('orders/confirmLaun
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/laundry/update/servicing/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/laundry/update/servicing/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'servicing',
@@ -214,7 +213,7 @@ export const confirmLaundryOrderDroppingOff = createAsyncThunk('orders/confirmLa
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/laundry/update/dropping-off/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/laundry/update/dropping-off/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'droppingOff',
@@ -237,7 +236,7 @@ export const confirmOrderdelivery = createAsyncThunk('orders/confirmOrderdeliver
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/confirm-delivery/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/update/confirm-delivery/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'delivered',
@@ -260,7 +259,7 @@ export const rejectOrder = createAsyncThunk('orders/rejectOrder', async (data, t
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/reject/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/update/reject/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'rejected',
@@ -283,7 +282,7 @@ export const cancelOrder = createAsyncThunk('orders/cancelOrder', async (data, t
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/update/approve/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/update/approve/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       status: 'cancelled',
@@ -303,7 +302,7 @@ export const deleteOrder = createAsyncThunk('orders/deleteOrder', async (data, t
   try {
     const id = data.id;
 
-    await axios.delete(`${ordersurl}/delete/${id}/?env=${env}`);
+    await API.delete(`${ordersurl}/delete/${id}/?host=admin&env=${env}`);
     return id;
   } catch (error) {
     const customAxiosError = formatError(error);
@@ -324,7 +323,7 @@ export const toggleOrderPaymentStatus = createAsyncThunk('orders/toggleOrderPaym
       updatedBy: auth.currentUser.uid,
       updatedAt: new Date().toISOString()
     };
-    await axios.put(`${ordersurl}/payment-status/toggle/${id}/?env=${env}`, orderData);
+    await API.put(`${ordersurl}/payment-status/toggle/${id}/?host=admin&env=${env}`, orderData);
     return {
       id: data.id,
       isFullyPaid: isFullyPaid,

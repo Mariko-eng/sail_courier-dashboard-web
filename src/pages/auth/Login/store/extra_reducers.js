@@ -4,6 +4,8 @@ import { auth, db } from '../../../../config/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { query, collection, where, doc, getDocs, getDoc } from 'firebase/firestore';
 
+const adminsCollection = "admins";
+
 // First, create the thunk
 export const loginUser = createAsyncThunk(
   'users/login',
@@ -12,7 +14,7 @@ export const loginUser = createAsyncThunk(
     // Take two parameters
     try {
       // Check if the email exists in the admins collection
-      const q = query(collection(db, 'admins'), where('email', '==', email));
+      const q = query(collection(db, adminsCollection), where('email', '==', email));
       const querySnapshot = await getDocs(q);
       
       if (querySnapshot.empty) {
@@ -20,20 +22,16 @@ export const loginUser = createAsyncThunk(
       }
 
       const response = await signInWithEmailAndPassword(auth, email, password);
-      // console.log(response.user)
-      // console.log(response.user.uid);
-      // console.log(response.user.accessToken);
 
-      // window.localStorage.setItem('accessToken', response.user.accessToken);
-      // window.localStorage.setItem('user', JSON.stringify(userData));
+      // Get user data after successful login
+      const userData = await getUserData(response.user.uid);
 
-      // const data = {
-      //   accessToken: response.user.accessToken,
-      //   user: userData
-      // };
+      return { 
+        message: 'Logged In Successfully', 
+        accessToken: response.user.accessToken, 
+        user: userData 
+      };
 
-      // return data;
-      return { message: 'Logged In Successfully' };
     } catch (error) {
       // You should handle errors here
       console.log("Error", error);
@@ -60,9 +58,28 @@ export const logOutUser = createAsyncThunk(
   }
 );
 
+export const refreshAccessToken = async () => {
+
+  // console.log("auth.currentUser", auth.currentUser);
+
+  const user = auth.currentUser;
+  if (user) {
+    try {
+      // Get a new token
+      const token = await user.getIdToken(true);
+      localStorage.setItem('accessToken', token); // Store new token
+      return token;
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      throw error; // Handle errors as needed
+    }
+  }
+  throw new Error('User not authenticated');
+};
+
 export const getUserData = async (userId) => {
   try {
-    const docRef = doc(db, 'admins', userId);
+    const docRef = doc(db, adminsCollection, userId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {

@@ -22,6 +22,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 const columns = [
+    {
+        id: 'createdAt', label: 'Date', minWidth: 100,
+        format: (value) => prettyDate(value),
+    },
     { id: 'orderNo', label: 'N0', minWidth: 100 },
     { id: 'orderTrackerNo', label: 'Tracker ID', minWidth: 170 },
     { id: 'status', label: 'Status', minWidth: 100 },
@@ -32,11 +36,7 @@ const columns = [
     { id: 'clientAccountType', label: 'Client Type', minWidth: 100 },
     { id: 'totalCharges', label: 'Total Cost', minWidth: 100 },
     { id: 'isFullyPaid', label: 'is Fully Paid', minWidth: 100 },
-
-    {
-        id: 'createdAt', label: 'Created At', minWidth: 100,
-        format: (value) => prettyDate(value),
-    },
+    { id: 'createdByEmail', label: 'Created By', minWidth: 100 },
     { id: 'actions', label: 'Actions', minWidth: 100 }, // Add action column
 ];
 
@@ -44,10 +44,12 @@ const columns = [
 function processData(dataList, query) {
     let newData = [];
     for (var i = 0; i < dataList.length; i++) {
+        const createdByEmail = dataList[i].createdByDetails?.email || '';
         var cords = `${dataList[i].companyAddressCordinatesLat} , ${dataList[i].companyAddressCordinatesLng}`;
         newData.push({
             ...dataList[i],
             companyAddressCordinates: cords,
+            createdByEmail: createdByEmail,
             action: 'Actions' // Example value for action button
         })
     }

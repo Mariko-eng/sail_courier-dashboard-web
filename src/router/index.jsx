@@ -1,24 +1,21 @@
 import BlankLayout from '../components/layout/blank/BlankLayout';
-import { Navigate, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import Login from '../pages/Auth/Login';
 import PageNotFound from '../pages/Auth/NotFound';
 import GetRoutes from './routes';
-import { getHomeRoute } from '../utils/getHomeRoute';
+import ProtectedLayout from '../components/layout/protected';
 
 const Router = () => {
-  // console.log(GetRoutes());
   const HomeRoutes = GetRoutes();
 
   const routes = useRoutes([
     {
       path: '/',
-      index: true,
-      element: <Navigate replace to={getHomeRoute()} />
-    },
-    {
-      path: '/login',
-      element: <BlankLayout />,
-      children: [{ path: '/login', element: <Login /> }]
+      element: <ProtectedLayout />,
+      children: [
+        { path: '', element: <Login /> },
+        { path: 'login', element: <Login /> }
+      ]
     },
     {
       path: '*',

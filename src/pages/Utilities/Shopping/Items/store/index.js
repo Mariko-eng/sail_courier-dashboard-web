@@ -1,13 +1,15 @@
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { baseUrl } from '../../../../../config/axios';
+import { API } from '../../../../../utils/api';
 
 
 export const fetchShoppingItems = createAsyncThunk('item/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/shopping-items/`;
-    const response = await axios.get(url);
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/main/shopping-items/?host=admin&env=${env}`;
+
+    const response = await API.get(url);
 
     const items = response.data;
     return items; 
@@ -18,9 +20,11 @@ export const fetchShoppingItems = createAsyncThunk('item/fetchAll', async (_, th
 
 export const addShoppingItem = createAsyncThunk('item/addItem', async (data, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/shopping-items/new`;
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/main/shopping-items/new/?host=admin&env=${env}`;
 
-    const response = await axios.post(url, data);
+    const response = await API.post(url, data);
 
     return {
       id: response.data.id,
@@ -33,8 +37,11 @@ export const addShoppingItem = createAsyncThunk('item/addItem', async (data, thu
 
 export const deleteShoppingItem = createAsyncThunk('item/deleteItem', async (id, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/shopping-items/delete/${id}`;
-    const response = await axios.delete(url);
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/main/shopping-items/delete/${id}/?host=admin&env=${env}`;
+
+    const response = await API.delete(url);
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);

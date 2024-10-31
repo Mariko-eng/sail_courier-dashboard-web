@@ -1,14 +1,16 @@
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { auth } from '../../../../config/firebase';
-import { baseUrl } from '../../../../config/axios';
 import { formatError } from '../../../../utils/axios-error';
+import { API } from '../../../../utils/api';
 
 export const fetchAdmins = createAsyncThunk('admin/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/admins/?env=dev` : `${baseUrl}/users/admins/?env=prod`;
-    const response = await axios.get(url);
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/users/admins/?host=admin&env=${env}`;
+
+    const response = await API.get(url);
 
     const admins = response.data;
     return admins;
@@ -23,7 +25,9 @@ export const fetchAdmins = createAsyncThunk('admin/fetchAll', async (_, thunkAPI
 
 export const addAdmin = createAsyncThunk('admin/addNew', async (data, thunkAPI) => {
   try {
-    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/admins/new/?env=dev` : `${baseUrl}/users/admins/new/?env=prod`;
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/users/admins/new/?host=admin&env=${env}`;
 
     const timestamp = Date.now().toString();
     const uniqueNo = timestamp.substring(4, 12);
@@ -43,7 +47,7 @@ export const addAdmin = createAsyncThunk('admin/addNew', async (data, thunkAPI) 
       updatedAt: new Date().toISOString()
     };
 
-    const response = await axios.post(url, adminData);
+    const response = await API.post(url, adminData);
 
     return {
       id: response.data.id,
@@ -60,8 +64,11 @@ export const addAdmin = createAsyncThunk('admin/addNew', async (data, thunkAPI) 
 
 export const deleteAdmin = createAsyncThunk('admin/delete', async (id, thunkAPI) => {
   try {
-    const url = import.meta.env.VITE_ENV === "DEV" ? `${baseUrl}/users/admins/delete/${id}/?env=dev` : `${baseUrl}/users/admins/delete/${id}/?env=prod`;
-    await axios.delete(url);
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/users/admins/delete/${id}/?host=admin&env=${env}`;
+
+    await API.delete(url);
     return id;
   } catch (error) {
     // Format and reject with the formatted error

@@ -1,12 +1,14 @@
-import axios from 'axios';
 import toast from 'react-hot-toast';
-import { baseUrl } from '../../../../../config/axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { API } from '../../../../../utils/api';
 
 export const fetchLaundryItems = createAsyncThunk('item/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/laundry-items/`;
-    const response = await axios.get(url);
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/main/laundry-items/?host=admin&env=${env}`;
+
+    const response = await API.get(url);
 
     // console.log(response);
     const items = response.data;
@@ -18,9 +20,11 @@ export const fetchLaundryItems = createAsyncThunk('item/fetchAll', async (_, thu
 
 export const addLaundryItem = createAsyncThunk('item/addItem', async (data, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/laundry-items/new`;
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/main/laundry-items/new/?host=admin&env=${env}`;
 
-    const response = await axios.post(url, data);
+    const response = await API.post(url, data);
 
     return {
       id: response.data.id,
@@ -33,8 +37,11 @@ export const addLaundryItem = createAsyncThunk('item/addItem', async (data, thun
 
 export const deleteLaundryItem = createAsyncThunk('item/deleteItem', async (id, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/laundry-items/delete/${id}`;
-    const response = await axios.delete(url);
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/main/laundry-items/delete/${id}/?host=admin&env=${env}`;
+
+    const response = await API.delete(url);
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);

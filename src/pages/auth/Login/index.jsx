@@ -1,12 +1,10 @@
-// import React from 'react'
-import { useEffect, useState } from "react";
 import "./index.css";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "./store/extra_reducers";
 import { useNavigate } from "react-router-dom";
-import { getHomeRoute } from '../../../utils/getHomeRoute';
 import logo from '../../../assets/images/logo.jpg'
-
+import LoadingWidget from "../../../components/loading";
 
 const Login = () => {
 
@@ -20,26 +18,33 @@ const Login = () => {
 
   // console.log(store)
 
-
   const submitData = (event) => {
     event.preventDefault();
     dispatch(loginUser({ email: email, password: password }));
   }
 
   useEffect(() => {
-    if (store.user === undefined || store.user === null) {
+    if (store.isLoading || store.user === undefined || store.user === null) {
       console.log("The user is not yet loaded!.");
     } else {
       if (Object.keys(store.user).length > 0) {
         console.log("The user is loaded successfully.");
-        navigate(getHomeRoute());
+        navigate("/home");
       }
     }
   }, [store, navigate])
 
 
   return (
-    <div className="d-flex align-items-center py-4 bg-body-tertiary">
+    <div className="container-fluid p-0">
+      {store.isLoading ? (
+        <div className="w-100 d-flex bg-white justify-content-center align-items-center"
+        style={{height:"100vh"}}
+        >
+          <LoadingWidget />
+        </div>
+      ) :
+    (<div className="d-flex align-items-center py-4 bg-body-tertiary">
       <main className="form-signin w-100 m-auto">
         <form onSubmit={submitData}>
           <div className="d-flex justify-content-center">
@@ -98,6 +103,7 @@ const Login = () => {
 
         </form>
       </main>
+    </div>)}
     </div>
   );
 };

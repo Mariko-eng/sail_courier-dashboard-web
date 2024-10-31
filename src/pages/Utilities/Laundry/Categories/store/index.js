@@ -1,12 +1,14 @@
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { baseUrl } from '../../../../../config/axios';
+import { API } from '../../../../../utils/api';
 
 export const fetchLaundryCategories = createAsyncThunk('category/fetchAll', async (_, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/laundry-categories/`;
-    const response = await axios.get(url);
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/main/laundry-categories/?host=admin&env=${env}`;
+
+    const response = await API.get(url);
 
     const categories = response.data;
     return categories;
@@ -17,16 +19,15 @@ export const fetchLaundryCategories = createAsyncThunk('category/fetchAll', asyn
 
 export const addLaundryCategory = createAsyncThunk('category/addCategory', async (data, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/laundry-categories/new`;
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/main/laundry-categories/new/?host=admin&env=${env}`;
 
     const newCategory = {
       name: data.name
     };
 
-    const response = await axios.post(url, newCategory);
-
-    // console.log(response)
-    // console.log(response.data);
+    const response = await API.post(url, newCategory);
 
     return {
       id: response.data.id,
@@ -40,8 +41,11 @@ export const addLaundryCategory = createAsyncThunk('category/addCategory', async
 
 export const deleteLaundryCategory = createAsyncThunk('category/deleteCategory', async (id, thunkAPI) => {
   try {
-    const url = `${baseUrl}/main/laundry-categories/delete/${id}`;
-    const response = await axios.delete(url);
+    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
+    
+    const url = `/main/laundry-categories/delete/${id}/?host=admin&env=${env}`;
+
+    const response = await API.delete(url);
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
