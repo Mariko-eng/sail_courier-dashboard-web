@@ -20,7 +20,7 @@ const columns = [
     id: 'createdAt', label: 'Date', minWidth: 170,
     format: (value) => prettyDate(value),
   },
-  { id: 'orderNo', label: 'N0', minWidth: 100 },
+  // { id: 'orderNo', label: 'N0', minWidth: 100 },
   { id: 'orderTrackerNo', label: 'Tracker ID', minWidth: 170 },
   { id: 'status', label: 'Status', minWidth: 100 },
   { id: 'parcelSenderName', label: 'Sender Name', minWidth: 100 },
@@ -28,8 +28,8 @@ const columns = [
   { id: 'parcelReceiverName', label: 'Receiver Name', minWidth: 100 },
   { id: 'parcelReceiverPhone', label: 'Receiver Phone', minWidth: 100 },
   { id: 'clientAccountType', label: 'Client Type', minWidth: 100 },
-  { id: 'totalCharges', label: 'Total Cost', minWidth: 100 },
-  { id: 'isFullyPaid', label: 'is Fully Paid', minWidth: 100 },
+  // { id: 'totalCharges', label: 'Total Cost', minWidth: 100 },
+  // { id: 'isFullyPaid', label: 'is Fully Paid', minWidth: 100 },
 ];
 
 
