@@ -8,8 +8,9 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import PropTypes from 'prop-types';
-import { Chip, IconButton } from '@mui/material';
-import { Menu, MenuItem } from '@mui/material';
+import { IconButton, TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import { Menu, MenuItem, Chip } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { prettyDate } from '../../../../utils/app-functions';
 import { useDispatch } from 'react-redux';
@@ -33,7 +34,8 @@ const columns = [
     { id: 'actions', label: 'Actions', minWidth: 100 }, // Add action column
 ];
 
-function processData(dataList) {
+
+function processData(dataList, query) {
     let newData = [];
     for (var i = 0; i < dataList.length; i++) {
         var cname = `${dataList[i].company.companyName}`;
@@ -52,7 +54,14 @@ function processData(dataList) {
         })
     }
 
-    return newData;
+    if (!query) return newData;
+
+    return newData.filter(item => {
+        return Object.values(item).some(val =>
+            val.toString().toLowerCase().includes(query.toLowerCase())
+        );
+    });
+
 }
 
 export default function ClientsCorporateTable({ clients }) {
@@ -61,6 +70,11 @@ export default function ClientsCorporateTable({ clients }) {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
+    const [searchQuery, setSearchQuery] = React.useState('');
+
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
 
     const dispatch = useDispatch();
 
@@ -115,11 +129,27 @@ export default function ClientsCorporateTable({ clients }) {
 
     const open = Boolean(anchorEl);
 
-    const rows = processData(clients)
+    const rows = processData(clients, searchQuery);
 
     return (
         <>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+            <TextField
+                placeholder="Search..."
+                variant="outlined"
+                fullWidth
+                value={searchQuery}
+                onChange={handleSearchChange}
+                InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    ),
+                }}
+                sx={{ mb: 2, p: 2 }}
+            />
+
             <TableContainer sx={{ minHeight: 240 }}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>

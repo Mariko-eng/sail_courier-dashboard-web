@@ -44,7 +44,7 @@ function processData(dataList, query) {
             val.toString().toLowerCase().includes(query.toLowerCase())
         );
     });
-}
+} 
 
 export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerPage }) {
     const [page, setPage] = React.useState(0);

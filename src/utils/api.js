@@ -8,10 +8,10 @@ const prodBaseUrl = 'https://us-central1-sail-courier.cloudfunctions.net/courier
 const baseUrl = import.meta.env.VITE_ENV === "DEV" ? devBaseUrl : prodBaseUrl;
 
 export const API = axios.create({
-  baseURL: baseUrl,
+  baseURL: baseUrl + "/admin",
   headers: {
     Accept: "application/json",
-    "Content-Type": "application/json",
+    "Content-Type": "application/json", 
   },
   timeout: 50000 // 5 minutes
 });
