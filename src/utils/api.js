@@ -53,7 +53,8 @@ API.interceptors.response.use(
 
         // console.log("newAccessToken" , newAccessToken);
 
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`; // Update the header with new token
+        API.defaults.headers.Authorization = `Bearer ${newAccessToken}`; // Update the new token to be used for all future requests across the app
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`; // Update the current request header with new token
         return API(originalRequest); // Retry the original request
       } catch (err) {
         console.error('Failed to refresh token:', err);
