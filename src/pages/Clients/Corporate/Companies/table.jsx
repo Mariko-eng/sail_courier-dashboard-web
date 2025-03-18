@@ -15,6 +15,7 @@ import { ToggleOn, ToggleOff } from '@mui/icons-material'; // Example icons
 import { prettyDate } from '../../../../utils/app-functions';
 import { useDispatch } from 'react-redux';
 import { deleteCorporateCompany } from '../../store/reducers/extra_reducers';
+import { useNavigate } from 'react-router-dom';
 
 
 const columns = [
@@ -55,6 +56,7 @@ export default function StickyHeadTable({ companies }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [toggledRows, setToggledRows] = React.useState(new Set());
@@ -183,8 +185,11 @@ export default function StickyHeadTable({ companies }) {
                 open={open}
                 onClose={handleClose}
             >
-                {/* <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem> */}
-                <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem>
+                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow.id}/user-accounts/`)}>User Accounts</MenuItem>
+                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow.id}/warehouses`)}>Warehouses</MenuItem>
+                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow.id}/orders-regular`)}>Orders:Regular</MenuItem>
+                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow.id}/orders-waybill`)}>Orders:Waybil</MenuItem>
+                <MenuItem onClick={() => handleAction('Delete')}>Delete Company</MenuItem>
             </Menu>
         </>
     );

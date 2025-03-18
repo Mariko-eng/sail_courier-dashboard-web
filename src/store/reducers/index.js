@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
-import customizationReducer from "./app";
-import authReducer from "../../pages/Auth/Login/store";
+import customizationReducer from "./theme";
+import sidebarReducer from "./sidebar";
+import authReducer from "../../pages/Auth/store";
 import dashboardReducer from '../../pages/Dashboard/store';
 import allOrdersReducer from '../../pages/Orders/store/slices/index';
 import regularOrdersReducer from '../../pages/Orders/store/slices/regular';
@@ -20,6 +21,7 @@ import corporateCompaniesReducer from '../../pages/Clients/store/slices/companie
 
 export const rootReducer = combineReducers({
   customization: customizationReducer,
+  sidebar: sidebarReducer,
   auth: authReducer,
   dashboard: dashboardReducer,
   allOrders: allOrdersReducer,

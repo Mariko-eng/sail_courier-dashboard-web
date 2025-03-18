@@ -1,5 +1,4 @@
 import axios from "axios";
-import { refreshAccessToken } from "../pages/Auth/Login/store/extra_reducers";
 
 const devBaseUrl = 'http://127.0.0.1:3000';
 
@@ -26,7 +25,9 @@ API.interceptors.request.use(
     } else {
       console.log("User Token not Found!");
       console.log("Logout");
-      window.location.reload();
+      
+      localStorage.clear();
+      window.location.href = '/login';
     }
     return config;
   },
@@ -45,23 +46,23 @@ API.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response && error.response.status === 401) {
-      try {
-        console.log("Not Authorized");
+    // if (error.response && error.response.status === 401) {
+    //   try {
+    //     console.log("Not Authorized");
 
-        const newAccessToken = await refreshAccessToken(); // Get a new token
+    //     const newAccessToken = await refreshAccessToken(); // Get a new token
 
-        // console.log("newAccessToken" , newAccessToken);
+    //     // console.log("newAccessToken" , newAccessToken);
 
-        API.defaults.headers.Authorization = `Bearer ${newAccessToken}`; // Update the new token to be used for all future requests across the app
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`; // Update the current request header with new token
-        return API(originalRequest); // Retry the original request
-      } catch (err) {
-        console.error('Failed to refresh token:', err);
-        // Optionally, handle logout or redirection here
-        // window.location.reload(); // or redirect to login
-      }
-    }
+    //     API.defaults.headers.Authorization = `Bearer ${newAccessToken}`; // Update the new token to be used for all future requests across the app
+    //     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`; // Update the current request header with new token
+    //     return API(originalRequest); // Retry the original request
+    //   } catch (err) {
+    //     console.error('Failed to refresh token:', err);
+    //     // Optionally, handle logout or redirection here
+    //     // window.location.reload(); // or redirect to login
+    //   }
+    // }
 
     return Promise.reject(error); // If it's not a 401 or another error occurs
   }

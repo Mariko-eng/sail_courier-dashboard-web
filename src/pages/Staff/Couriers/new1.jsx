@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useScriptRef from '../../../hooks/useScriptRef';
+import useScriptRef from '../../../utils/hooks/useScriptRef';
 
 // third party
 import * as Yup from 'yup';

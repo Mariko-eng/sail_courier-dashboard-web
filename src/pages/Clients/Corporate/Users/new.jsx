@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import useScriptRef from '../../../../hooks/useScriptRef';
+import useScriptRef from '../../../../utils/hooks/useScriptRef';
 
 // third party
 import * as Yup from 'yup';

@@ -76,6 +76,7 @@ export const addCorporateCompany = createAsyncThunk('client/corporate/companies/
   }
 });
 
+
 export const deleteCorporateCompany = createAsyncThunk('client/corporate/companies/delete', async (id, thunkAPI) => {
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';

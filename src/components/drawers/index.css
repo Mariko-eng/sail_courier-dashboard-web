@@ -1,0 +1,17 @@
+.sidebar-modal {
+  width: 400px;
+  right: 0;
+  top: 0;
+  height: 100%;
+  transform: translateX(100%);
+  position: fixed;
+  background-color: white;
+  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  z-index: 999999; /* Set a high z-index to make the sidebar appear on top */
+}
+
+.sidebar-modal.show {
+  transform: translateX(0);
+}
+

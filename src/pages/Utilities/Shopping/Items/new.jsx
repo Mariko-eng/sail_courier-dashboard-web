@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useScriptRef from '../../../../hooks/useScriptRef';
+import useScriptRef from '../../../../utils/hooks/useScriptRef';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchShoppingCategories } from '../Categories/store';

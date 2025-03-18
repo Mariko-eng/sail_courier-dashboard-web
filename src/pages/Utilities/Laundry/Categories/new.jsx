@@ -1,6 +1,6 @@
 // import React from 'react'
 
-import useScriptRef from '../../../../hooks/useScriptRef';
+import useScriptRef from '../../../../utils/hooks/useScriptRef';
 
 import { addLaundryCategory } from './store';
 import { useDispatch , useSelector } from 'react-redux';

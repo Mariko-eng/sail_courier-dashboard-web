@@ -1,7 +1,7 @@
 import "./index.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "./store/extra_reducers";
+import { loginUser } from "./../store/extra_reducers";
 import { useNavigate } from "react-router-dom";
 import logo from '../../../assets/images/logo.jpg'
 import LoadingWidget from "../../../components/loading";
@@ -28,6 +28,7 @@ const Login = () => {
       console.log("The user is not yet loaded!.");
     } else {
       if (Object.keys(store.user).length > 0) {
+        console.log(store.user)
         console.log("The user is loaded successfully.");
         navigate("/home");
       }

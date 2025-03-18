@@ -155,15 +155,7 @@ export default function RegularOrdersTable({ orders, rowsPerPage, setRowsPerPage
   const closeSidebar = () => {
     setShowSidebar(false);
   };
-
-  // const handleAction = (action) => {
-  //   if (selectedRow) {
-  //     // Perform action based on the selectedRow
-  //     console.log(`Performing ${action} on row`, selectedRow);
-  //     handleCloseMenuActions();
-  //   }
-  // };
-
+  
   const open = Boolean(anchorEl);
 
   const rows = processData(orders, searchQuery);
@@ -424,7 +416,6 @@ export default function RegularOrdersTable({ orders, rowsPerPage, setRowsPerPage
           }}
         />
       )}
-
 
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
         {sidebarType === 'courier' ? (

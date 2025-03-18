@@ -3,7 +3,6 @@ import { useRoutes } from 'react-router-dom';
 import Login from '../pages/Auth/Login';
 import PageNotFound from '../pages/Auth/NotFound';
 import GetRoutes from './routes';
-import ProtectedLayout from '../components/layout/protected';
 
 const Router = () => {
   const HomeRoutes = GetRoutes();
@@ -11,7 +10,7 @@ const Router = () => {
   const routes = useRoutes([
     {
       path: '/',
-      element: <ProtectedLayout />,
+      element: <BlankLayout />,
       children: [
         { path: '', element: <Login /> },
         { path: 'login', element: <Login /> }

@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
 import { styled } from '@mui/material/styles';
-import { gridSpacing } from '../../../store/reducers/app';
+import { gridSpacing } from '../../../store/reducers/theme';
 import { Typography } from '@mui/material';
 import ReactApexChart from 'react-apexcharts';
 import { useDispatch, useSelector } from 'react-redux';

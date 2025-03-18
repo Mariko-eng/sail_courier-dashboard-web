@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useScriptRef from '../../../../hooks/useScriptRef';
+import useScriptRef from '../../../../utils/hooks/useScriptRef';
 
 import { fetchLaundryCategories } from '../Categories/store';
 import { addLaundryItem } from './store';

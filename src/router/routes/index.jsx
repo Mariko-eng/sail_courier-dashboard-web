@@ -1,7 +1,7 @@
-import VerticalLayout from "../../components/layout/vertical/VerticalLayout";
+import MainLayout from "../../components/layout/MainLayout";
 import PrivateRoute from "../access_control/PrivateRoute";
 import PublicRoute from "../access_control/PublicRoute";
-import { AppRoutes } from './appRoutes';
+import { AppRoutes } from './app';
 
 const GetRoutes = () => {
   // const appRoutes = [];
@@ -24,7 +24,7 @@ const GetRoutes = () => {
 
     allRoutes.push({
       path: "/",
-      element: <VerticalLayout />,
+      element: <MainLayout />,
       children: processedRoutes,
     });
 
