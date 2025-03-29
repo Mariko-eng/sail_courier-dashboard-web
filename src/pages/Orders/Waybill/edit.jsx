@@ -204,7 +204,7 @@ const updateWaybillOrder = async (prevData, newData) => {
 
 const DownloadPdfButton = ({ orderId }) => {
     const devBaseUrl = 'http://127.0.0.1:3000';
-    const prodBaseUrl = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi';
+    const prodBaseUrl = 'https://us-central1-sail-courier.cloudfunctions.net/api';
   
     // Determine the environment dynamically
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';

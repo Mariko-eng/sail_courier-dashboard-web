@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { auth, db } from '../../../config/firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { query, collection, where, doc, getDocs, getDoc } from 'firebase/firestore';
 
 const adminsCollection = "admins";
@@ -16,7 +16,7 @@ export const loginUser = createAsyncThunk(
       // Check if the email exists in the admins collection
       const q = query(collection(db, adminsCollection), where('email', '==', email));
       const querySnapshot = await getDocs(q);
-      
+
       if (querySnapshot.empty) {
         return thunkAPI.rejectWithValue({ message: 'Sorry, Account does not exist' });
       }
@@ -26,10 +26,10 @@ export const loginUser = createAsyncThunk(
       // Get user data after successful login
       const userData = await getUserData(response.user.uid);
 
-      return { 
-        message: 'Logged In Successfully', 
-        accessToken: response.user.accessToken, 
-        user: userData 
+      return {
+        message: 'Logged In Successfully',
+        accessToken: response.user.accessToken,
+        user: userData
       };
 
     } catch (error) {
@@ -49,7 +49,7 @@ export const logOutUser = createAsyncThunk(
     try {
       await signOut(auth);
       localStorage.clear();
-      return { message : "Signed Out Successfully!"};
+      return { message: "Signed Out Successfully!" };
     } catch (error) {
       // You should handle errors here
       //   console.log("Error", error);
@@ -114,3 +114,23 @@ export const getUserData = async (userId) => {
     throw error;
   }
 };
+
+export const resetUserPassword = async (email) => {
+  try {
+    // Check if the email exists in the admins collection
+    const q = query(collection(db, adminsCollection), where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      throw `Error sending the reset link. Admin account with email *${email}* was not found!`;
+    } else {
+      // If the email exists, proceed with sending the password reset email
+      await sendPasswordResetEmail(auth, email);
+      console.log('Password reset email sent!');
+      return "success";
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

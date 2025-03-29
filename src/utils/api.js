@@ -2,7 +2,7 @@ import axios from "axios";
 
 const devBaseUrl = 'http://127.0.0.1:3000';
 
-const prodBaseUrl = 'https://us-central1-sail-courier.cloudfunctions.net/courierApi';
+const prodBaseUrl = 'https://us-central1-sail-courier.cloudfunctions.net/api';
 
 const baseUrl = import.meta.env.VITE_ENV === "DEV" ? devBaseUrl : prodBaseUrl;
 
