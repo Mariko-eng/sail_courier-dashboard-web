@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
-// ** Store & Actions
-import { useDispatch, useSelector } from 'react-redux';
-import { Box, FormControl, InputLabel, MenuItem, Card, Select, TextField } from '@mui/material';
-import UiLoadingOverlay from '../../../components/overlay';
-import WaybillOrdersTable from './table';
-import MainCard from '../../../ui-component/cards/MainCard';
-// import NewWaybillOrderFormModal from './_components/new_order_form_modal';
 import { API } from '../../../utils/api';
 import { formatError } from '../../../utils/axios-error';
-import { useCallback } from 'react';
+
+// ** Store & Actions
+import { Box, FormControl, InputLabel } from '@mui/material';
+import { MenuItem, Select, TextField } from '@mui/material';
+import UiLoadingOverlay from '../../../components/overlay';
+import MainCard from '../../../ui-component/cards/MainCard';
+import WaybillOrdersTable from './table';
+
 
 // Utility function to format date in YYYY-MM-DD
 const formatDate = (date) => {
@@ -21,7 +21,7 @@ const formatDate = (date) => {
 
 const WaybillOrdersList = () => {
     const today = new Date();
-    const now = new Date();
+    const now = new Date(); 
     const start_date = new Date(now.setDate(now.getDate() - 7));
 
     const [status, setStatus] = useState('all');
@@ -115,7 +115,6 @@ const WaybillOrdersList = () => {
             <MainCard title="Waybill Orders" 
             // secondary={<NewWaybillOrderFormModal/>}
             >
-                <Card sx={{ overflow: 'hidden' }}>
                     <Box px={'10px'} py={'20px'} display={'flex'} justifyContent={'space-between'}>
                         <FormControl style={{ minWidth: 150 }}>
                             <InputLabel id="status-label">Order Status</InputLabel>
@@ -182,7 +181,6 @@ const WaybillOrdersList = () => {
                     <div style={{ overflowX: 'auto' }}>
                         <WaybillOrdersTable orders={orders} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage} />
                     </div>
-                </Card>
             </MainCard>
         </UiLoadingOverlay>
     );

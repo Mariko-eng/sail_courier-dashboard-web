@@ -2,6 +2,7 @@
 import { Fragment } from 'react';
 // import { useState, useEffect } from 'react';
 import './index.css'; // Import your CSS file
+import { CircularProgress } from '@mui/material';
 
 function UiLoadingOverlay({ children ,loading }) {
 //   const [loading, setLoading] = useState(true);
@@ -18,8 +19,8 @@ function UiLoadingOverlay({ children ,loading }) {
       {children}
       {loading ? (
         <Fragment>
-          <div
-            className="overlay">
+          <div className="overlay">
+          <CircularProgress className="circular-progress" color="secondary" />
           </div>
         </Fragment>
       ) : null}

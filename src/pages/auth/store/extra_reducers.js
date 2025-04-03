@@ -134,3 +134,20 @@ export const resetUserPassword = async (email) => {
     throw error;
   }
 }
+
+
+// Function to handle the user authentication state
+export const checkAuthState = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        // If the user is authenticated, resolve the promise with the user info
+        resolve(user);
+      } else {
+        // If the user is not authenticated, resolve with null or reject
+        resolve(null);
+      }
+      unsubscribe(); // Unsubscribe after getting the result
+    });
+  });
+};

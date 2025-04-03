@@ -1,6 +1,9 @@
 import axios from "axios";
+import { checkAuthState } from "../pages/Auth/store/extra_reducers";
 
 const devBaseUrl = 'http://127.0.0.1:3000';
+
+// const devBaseUrl = 'http://127.0.0.1:5001/sail-courier/us-central1/api';
 
 const prodBaseUrl = 'https://us-central1-sail-courier.cloudfunctions.net/api';
 
@@ -17,23 +20,33 @@ export const API = axios.create({
 
 API.interceptors.request.use(
   async function (config) {
-    // Do something before request is sent
-    // console.log(config);
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    } else {
-      console.log("User Token not Found!");
-      console.log("Logout");
-      
-      localStorage.clear();
-      window.location.href = '/login';
+    try {
+      // Check if user is authenticated and get the token
+      const user = await checkAuthState(); // Wait until Firebase restores the user state
+
+      // console.log("user", user)
+
+      if (user) {
+        const userToken = await user.getIdToken(true); // Get a fresh token
+
+        config.headers.Authorization = `Bearer ${userToken}`;
+      } else {
+        console.log("User Token not Found!");
+        // Log the user out if the token is missing
+        //localStorage.clear();
+        // window.location.href = '/login'; // Redirect to login page
+      }
+    } catch (error) {
+      console.error("Error getting user token: ", error);
+      // Handle error fetching token
+      // localStorage.clear();
+      //window.location.href = '/login'; // Redirect to login page if token fetch fails
     }
+    
     return config;
   },
   function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
+    // Handle any error before the request is sent
     return Promise.reject(error);
   }
 );

@@ -26,16 +26,16 @@ function App() {
     loader.importLibrary('places')
 
     // Call refreshAccessToken on mount
-    const refreshToken = async () => {
-      try {
-        const token = await refreshAccessToken(); // Assuming refreshAccessToken is working as intended
-        console.log('Access token refreshed!');
-      } catch (error) {
-        console.error('Error refreshing token:', error);
-      }
-    };
+    // const refreshToken = async () => {
+    //   try {
+    //     const token = await refreshAccessToken(); // Assuming refreshAccessToken is working as intended
+    //     console.log('Access token refreshed!');
+    //   } catch (error) {
+    //     console.error('Error refreshing token:', error);
+    //   }
+    // };
 
-    refreshToken();
+    // refreshToken();
   }, [])
 
   return (

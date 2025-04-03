@@ -47,50 +47,50 @@ const orders = {
         },
       ]
     },
-    {
-      id: 'Laundry',
-      title: 'Laundry',
-      type: 'collapse',
-      icon: icons.IconTruckDelivery,
-      children: [
-        {
-          id: 'Laundry_list',
-          title: 'List',
-          type: 'item',
-          url: '/orders/laundry',
-          target: false
-        },
-        // {
-        //   id: 'Laundry_add',
-        //   title: 'Add',
-        //   type: 'item',
-        //   url: '/orders/laundry/new',
-        //   target: false
-        // }
-      ]
-    },
-    {
-      id: 'Shopping',
-      title: 'Shopping',
-      type: 'collapse',
-      icon: icons.IconTruckDelivery,
-      children: [
-        {
-          id: 'Shopping_list',
-          title: 'List',
-          type: 'item',
-          url: '/orders/shopping',
-          target: false
-        },
-        // {
-        //   id: 'Shopping_add',
-        //   title: 'Add',
-        //   type: 'item',
-        //   url: '/orders/shopping/new',
-        //   target: false
-        // }
-      ]
-    }
+    // {
+    //   id: 'Laundry',
+    //   title: 'Laundry',
+    //   type: 'collapse',
+    //   icon: icons.IconTruckDelivery,
+    //   children: [
+    //     {
+    //       id: 'Laundry_list',
+    //       title: 'List',
+    //       type: 'item',
+    //       url: '/orders/laundry',
+    //       target: false
+    //     },
+    //     // {
+    //     //   id: 'Laundry_add',
+    //     //   title: 'Add',
+    //     //   type: 'item',
+    //     //   url: '/orders/laundry/new',
+    //     //   target: false
+    //     // }
+    //   ]
+    // },
+    // {
+    //   id: 'Shopping',
+    //   title: 'Shopping',
+    //   type: 'collapse',
+    //   icon: icons.IconTruckDelivery,
+    //   children: [
+    //     {
+    //       id: 'Shopping_list',
+    //       title: 'List',
+    //       type: 'item',
+    //       url: '/orders/shopping',
+    //       target: false
+    //     },
+    //     // {
+    //     //   id: 'Shopping_add',
+    //     //   title: 'Add',
+    //     //   type: 'item',
+    //     //   url: '/orders/shopping/new',
+    //     //   target: false
+    //     // }
+    //   ]
+    // }
   ]
 };
 

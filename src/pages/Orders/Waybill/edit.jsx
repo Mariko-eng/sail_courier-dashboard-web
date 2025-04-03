@@ -25,7 +25,7 @@ const WaybillOrdersEdit = () => {
     const fetchData = useCallback(async () => {
         console.log("Fetching Data")
         try {
-            const order = await getWaybillOrder(id);
+            const order = await getOrderDetail(id);
             setOrderData(order); // Store the fetched data
             setLoading(false); // Set loading to false once the data is fetched
         } catch (error) {
@@ -134,7 +134,7 @@ const OrderForm = ({ orderDetails, onRefresh }) => {
     );
 };
 
-const getWaybillOrder = async (id) => {
+const getOrderDetail = async (id) => {
     try {
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
         const url = `/main/orders/detail/${id}/?host=admin&env=${env}`;

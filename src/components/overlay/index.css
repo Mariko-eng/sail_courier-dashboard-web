@@ -13,3 +13,11 @@
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   z-index: 1; /* Displayed above component content */
 }
+
+.overlay .circular-progress {
+  position: absolute;
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Offset to exactly center */
+  z-index: 2; /* Make sure it appears above the overlay */
+}

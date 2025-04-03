@@ -7,10 +7,13 @@ import Loadable from '../../ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('../../pages/Dashboard')));
 
 // Orders
-const RegularOrdersList = Loadable(lazy(() => import('../../pages/Orders/Regular')));
+const RegularOrdersList = Loadable(lazy(() => import('../../pages/Orders/Regular/list')));
 const RegularOrdersNew = Loadable(lazy(() => import('../../pages/Orders/Regular/new')));
+const RegularOrdersDetail = Loadable(lazy(() => import('../../pages/Orders/Regular/detail')));
+
 const WaybillOrdersList = Loadable(lazy(() => import('../../pages/Orders/Waybill')));
 const WaybillOrdersEdit = Loadable(lazy(() => import('../../pages/Orders/Waybill/edit')));
+
 const LaundryOrdersList = Loadable(lazy(() => import('../../pages/Orders/Laundry')));
 const ShoppingOrdersList = Loadable(lazy(() => import('../../pages/Orders/Shopping')));
 
@@ -44,11 +47,16 @@ export const AppRoutes = [
     path: 'home',
     meta: { isPrivate: true },
     element: <DashboardDefault />
-  },
+  }, 
   {
     path: 'orders/regular',
     meta: { isPrivate: true },
     element: <RegularOrdersList />
+  },
+  {
+    path: 'orders/regular/detail/:id',
+    meta: { isPrivate: true },
+    element: <RegularOrdersDetail />
   },
   {
     path: 'orders/regular/new',
