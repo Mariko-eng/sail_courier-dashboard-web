@@ -310,7 +310,7 @@ const processOrderItem = (values) => {
 export const updateWaybillOrderItems = async (prevData, newData) => {
     try {
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/waybill/update/${prevData.id}/?host=admin&env=${env}`;
+        const url = `/main/orders/waybill/update/${prevData.id}/?env=${env}`;
 
         const { id, createdAt, createdBy, ...restPrevData } = prevData;
 

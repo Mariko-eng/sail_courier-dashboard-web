@@ -142,7 +142,7 @@ const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
                     toast.success('Finished', { position: 'top-right' });
                     onRefresh();
                 } catch (err) {
-                    toast.success('Failed', { position: 'bottom-right' });
+                    toast.error('Failed', { position: 'bottom-right' });
                 }
                 break;
             case 'confirm_pickup':
@@ -152,7 +152,7 @@ const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
                     toast.success('Finished', { position: 'top-right' });
                     onRefresh();
                 } catch (err) {
-                    toast.success('Failed', { position: 'bottom-right' });
+                    toast.error('Failed', { position: 'bottom-right' });
                 }
                 break;
             case 'confirm_delivery':
@@ -162,9 +162,9 @@ const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
                     toast.success('Finished', { position: 'top-right' });
                     onRefresh();
                 } catch (err) {
-                    toast.success('Failed', { position: 'bottom-right' });
+                    toast.error('Failed', { position: 'bottom-right' });
                 }
-                break;
+                break; 
             case 'reject':
                 try {
                     const response = await reject_order({ id: order.id });
@@ -172,7 +172,7 @@ const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
                     toast.success('Finished', { position: 'top-right' });
                     onRefresh();
                 } catch (err) {
-                    toast.success('Failed', { position: 'bottom-right' });
+                    toast.error('Failed', { position: 'bottom-right' });
                 }
                 break;
             case 'cancel':
@@ -182,7 +182,7 @@ const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
                     toast.success('Finished', { position: 'top-right' });
                     onRefresh();
                 } catch (err) {
-                    toast.success('Failed', { position: 'bottom-right' });
+                    toast.error('Failed', { position: 'bottom-right' });
                 }
                 break;
             case 're_publish':

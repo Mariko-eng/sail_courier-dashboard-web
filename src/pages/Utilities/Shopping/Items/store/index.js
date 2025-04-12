@@ -7,7 +7,7 @@ export const fetchShoppingItems = createAsyncThunk('item/fetchAll', async (_, th
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/shopping-items/?host=admin&env=${env}`;
+    const url = `/main/shopping-items/?env=${env}`;
 
     const response = await API.get(url);
 
@@ -22,7 +22,7 @@ export const addShoppingItem = createAsyncThunk('item/addItem', async (data, thu
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/shopping-items/new/?host=admin&env=${env}`;
+    const url = `/main/shopping-items/new/?env=${env}`;
 
     const response = await API.post(url, data);
 
@@ -39,7 +39,7 @@ export const deleteShoppingItem = createAsyncThunk('item/deleteItem', async (id,
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/shopping-items/delete/${id}/?host=admin&env=${env}`;
+    const url = `/main/shopping-items/delete/${id}/?env=${env}`;
 
     const response = await API.delete(url);
     return response.data;

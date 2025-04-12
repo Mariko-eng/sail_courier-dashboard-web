@@ -8,7 +8,7 @@ export const fetchAdmins = createAsyncThunk('admin/fetchAll', async (_, thunkAPI
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/admins/?host=admin&env=${env}`;
+    const url = `/users/admins/?env=${env}`;
 
     const response = await API.get(url);
 
@@ -27,7 +27,7 @@ export const addAdmin = createAsyncThunk('admin/addNew', async (data, thunkAPI) 
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/admins/new/?host=admin&env=${env}`;
+    const url = `/users/admins/new/?env=${env}`;
 
     const timestamp = Date.now().toString();
     const uniqueNo = timestamp.substring(4, 12);
@@ -66,7 +66,7 @@ export const deleteAdmin = createAsyncThunk('admin/delete', async (id, thunkAPI)
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/admins/delete/${id}/?host=admin&env=${env}`;
+    const url = `/users/admins/delete/${id}/?env=${env}`;
 
     await API.delete(url);
     return id;

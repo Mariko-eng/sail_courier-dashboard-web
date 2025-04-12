@@ -83,7 +83,7 @@ export default CorporateCompanyUserAccountsList;
 const getData = async (query) => {
     try {
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/users/clients/corporate/?${query}&host=admin&env=${env}`;
+        const url = `/users/clients/corporate/?${query}&env=${env}`;
 
         const response = await API.get(url);
 

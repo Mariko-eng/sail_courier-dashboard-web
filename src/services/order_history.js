@@ -2,14 +2,14 @@ import { auth } from '../config/firebase';
 import { API } from "../utils/api";
 import { formatError } from "../utils/axios-error";
 
+const env = import.meta.env.VITE_ENV === "PROD" ? 'prod' : 'dev';
+
 //// Order History
 export const fetch_order_history = async (data) => {
     try {
-        const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-
         const id = data.id;
 
-        const url = `/main/orders/history/list/${id}/?host=admin&env=${env}`;
+        const url = `/main/orders/history/list/${id}/?env=${env}`;
 
         const response = await API.get(url);
         // console.log(response);
@@ -24,9 +24,7 @@ export const fetch_order_history = async (data) => {
 
 export const add_order_history = async (data) => {
     try {
-        const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-
-        const url = `/main/orders/history/add/?host=admin&env=${env}`;
+        const url = `/main/orders/history/add/?env=${env}`;
 
         const payload = {
             order: data.order,

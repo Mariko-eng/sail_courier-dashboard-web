@@ -8,7 +8,7 @@ export const fetchCouriers = createAsyncThunk('courier/fetchAll', async (_, thun
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/couriers/?host=admin&env=${env}`;
+    const url = `/users/couriers/?env=${env}`;
 
     const response = await API.get(url);
 
@@ -26,7 +26,7 @@ export const addCourier = createAsyncThunk('courier/addNew', async (data, thunkA
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/couriers/new/?host=admin&env=${env}`;
+    const url = `/users/couriers/new/?env=${env}`;
 
     const timestamp = Date.now().toString();
     const uniqueNo = timestamp.substring(4, 12);
@@ -85,7 +85,7 @@ export const deleteCourier = createAsyncThunk('courier/delete', async (id, thunk
   try {    
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/couriers/delete/${id}/?host=admin&env=${env}`;
+    const url = `/users/couriers/delete/${id}/?env=${env}`;
 
     await API.delete(url)
     return id;

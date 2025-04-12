@@ -58,7 +58,7 @@ export default CorporateCompanyWarehousesList;
 const getData = async (query) => {
     try {
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/users/client-corporate-companies/warehouses/?${query}&host=admin&env=${env}`;
+        const url = `/users/client-corporate-companies/warehouses/?${query}&env=${env}`;
 
         const response = await API.get(url);
 

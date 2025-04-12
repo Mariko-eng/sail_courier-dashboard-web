@@ -7,7 +7,7 @@ export const fetchAllOrders = createAsyncThunk('orders/fetchAllOrders', async (q
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/orders/?host=admin&env=${env}&${query}`;
+    const url = `/main/orders/?env=${env}&${query}`;
 
     const response = await API.get(url);
     return response.data;
@@ -22,7 +22,7 @@ export const fetchOrdersToday = createAsyncThunk('orders/fetchOrdersToday', asyn
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/orders/?host=admin&env=${env}&${query}`;
+    const url = `/main/orders/?env=${env}&${query}`;
 
     const response = await API.get(url);
     // console.log(response.data);
@@ -39,7 +39,7 @@ export const fetchOrdersLatest = createAsyncThunk('orders/fetchOrdersLatest', as
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/orders/?host=admin&env=${env}&${query}`;
+    const url = `/main/orders/?env=${env}&${query}`;
 
     const response = await API.get(url);
     return response.data;
@@ -55,7 +55,7 @@ export const fetchRegularOrders = createAsyncThunk('orders/fetchRegular', async 
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/orders/regular/?host=admin&env=${env}&${query}`;
+    const url = `/main/orders/regular/?env=${env}&${query}`;
 
     const response = await API.get(url);
     // console.log(response.data);
@@ -72,7 +72,7 @@ export const fetchLaundryOrders = createAsyncThunk('orders/fetchLaundry', async 
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/orders/laundry/?host=admin&env=${env}&${query}`;
+    const url = `/main/orders/laundry/?env=${env}&${query}`;
 
     const response = await API.get(url);
     return response.data;
@@ -88,7 +88,7 @@ export const fetchShoppingOrders = createAsyncThunk('orders/fetchShopping', asyn
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/orders/shopping/?host=admin&env=${env}&${query}`;
+    const url = `/main/orders/shopping/?env=${env}&${query}`;
 
     const response = await API.get(url);
     return response.data;
@@ -103,7 +103,7 @@ export const getOrderDetail = createAsyncThunk('orders/getDetail', async (id, th
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/orders/detail/${id}/?host=admin&env=${env}`;
+    const url = `/main/orders/detail/${id}/?env=${env}`;
 
     const response = await API.get(url);
     return response.data;
@@ -150,7 +150,7 @@ export const fetchOrderHistory = createAsyncThunk('orders/fetchOrderHistory', as
     
     const id = data.id;
 
-    const url = `/main/orders/history/list/${id}/?host=admin&env=${env}`;
+    const url = `/main/orders/history/list/${id}/?env=${env}`;
 
     const response = await API.get(url);
     // console.log(response);
@@ -167,7 +167,7 @@ export const addOrderHistory = createAsyncThunk('orders/addOrderHistory', async 
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/orders/history/add/?host=admin&env=${env}`;
+    const url = `/main/orders/history/add/?env=${env}`;
 
     const payload = {
       order: data.order,

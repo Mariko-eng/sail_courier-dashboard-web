@@ -195,7 +195,7 @@ export default CorporateCompanyRegularOrdersList;
 const fetchOrders = async (query) => {
     try {
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/regular?${query}&host=admin&env=${env}`;
+        const url = `/main/orders/regular?${query}&env=${env}`;
 
         const response = await API.get(url);
 

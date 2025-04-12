@@ -3,17 +3,19 @@ import { checkAuthState } from "../pages/Auth/store/extra_reducers";
 
 const devBaseUrl = 'http://127.0.0.1:3000';
 
-// const devBaseUrl = 'http://127.0.0.1:5001/sail-courier/us-central1/api';
+const stagingBaseUrl = 'http://127.0.0.1:5001/sail-courier/us-central1/api';
 
-const prodBaseUrl = 'https://us-central1-sail-courier.cloudfunctions.net/api';
+const prodBaseUrl = 'https://api.sailcourier.com/api';
+// const prodBaseUrl = 'https://us-central1-sail-courier.cloudfunctions.net/api';
 
-const baseUrl = import.meta.env.VITE_ENV === "DEV" ? devBaseUrl : prodBaseUrl;
+const baseUrl = import.meta.env.VITE_ENV === "DEV" ? devBaseUrl :
+  import.meta.env.VITE_ENV === "STAGING" ? stagingBaseUrl : prodBaseUrl;
 
 export const API = axios.create({
   baseURL: baseUrl + "/admin",
   headers: {
     Accept: "application/json",
-    "Content-Type": "application/json", 
+    "Content-Type": "application/json",
   },
   timeout: 50000 // 5 minutes
 });
@@ -24,6 +26,7 @@ API.interceptors.request.use(
       // Check if user is authenticated and get the token
       const user = await checkAuthState(); // Wait until Firebase restores the user state
 
+      // console.log("checkAuthState")
       // console.log("user", user)
 
       if (user) {
@@ -33,16 +36,17 @@ API.interceptors.request.use(
       } else {
         console.log("User Token not Found!");
         // Log the user out if the token is missing
-        //localStorage.clear();
-        // window.location.href = '/login'; // Redirect to login page
+        localStorage.clear();
+        window.location.href = '/login'; // Redirect to login page
       }
     } catch (error) {
       console.error("Error getting user token: ", error);
       // Handle error fetching token
-      // localStorage.clear();
-      //window.location.href = '/login'; // Redirect to login page if token fetch fails
+      localStorage.clear();
+      window.location.href = '/login'; // Redirect to login page if token fetch fails
     }
     
+    console.log(config)
     return config;
   },
   function (error) {
@@ -54,6 +58,7 @@ API.interceptors.request.use(
 API.interceptors.response.use(
   (response) => {
     // If the response is successful, simply return it
+    console.log(response)
     return response;
   },
   async (error) => {

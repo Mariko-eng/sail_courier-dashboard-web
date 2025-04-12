@@ -64,7 +64,7 @@ const Login = () => {
       console.log("The user is not yet loaded!.");
     } else {
       if (Object.keys(store.user).length > 0) {
-        console.log(store.user)
+        // console.log(store.user)
         console.log("The user is loaded successfully.");
         navigate("/home");
       }

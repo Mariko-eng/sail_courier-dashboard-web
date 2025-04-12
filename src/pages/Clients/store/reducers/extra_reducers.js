@@ -9,7 +9,7 @@ export const fetchCorporateCompanies = createAsyncThunk('client/corporate/compan
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/corporate/companies/?host=admin&env=${env}`;
+    const url = `/users/corporate/companies/?env=${env}`;
     
     const response = await API.get(url);
 
@@ -29,7 +29,7 @@ export const addCorporateCompany = createAsyncThunk('client/corporate/companies/
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const url = `/users/corporate/companies/new/?host=admin&env=${env}`;
+    const url = `/users/corporate/companies/new/?env=${env}`;
 
     const companyData = {
       companyName: data.companyName,
@@ -81,7 +81,7 @@ export const deleteCorporateCompany = createAsyncThunk('client/corporate/compani
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const url = `/users/corporate/companies/delete/${id}/?host=admin&env=${env}`;
+    const url = `/users/corporate/companies/delete/${id}/?env=${env}`;
 
     await API.delete(url);
     return id;
@@ -100,7 +100,7 @@ export const fetchClientsCorporate = createAsyncThunk('client/corporate/fetch/al
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const url = `/users/clients/corporate/?host=admin&env=${env}`;
+    const url = `/users/clients/corporate/?env=${env}`;
 
     const response = await API.get(url);
 
@@ -120,7 +120,7 @@ export const addClientCorporate = createAsyncThunk('client/corporate/add/new', a
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const url = `/users/clients/corporate/new/?host=admin&env=${env}`;
+    const url = `/users/clients/corporate/new/?env=${env}`;
 
     const clientData = {
       companyId: data.company.id,
@@ -157,7 +157,7 @@ export const fetchClientsPersonal = createAsyncThunk('client/personal/fetch/all'
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const url = `/users/clients/personal/?host=admin&env=${env}`;
+    const url = `/users/clients/personal/?env=${env}`;
 
     const response = await API.get(url);
 
@@ -176,7 +176,7 @@ export const activateClient = createAsyncThunk('client/activateClient', async (i
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const url = `/users/clients/activate/${id}/?host=admin&env=${env}`;
+    const url = `/users/clients/activate/${id}/?env=${env}`;
 
     await API.put(url);
     return id;
@@ -192,7 +192,7 @@ export const deactivateClient = createAsyncThunk('client/deactivateClient', asyn
   try {    
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const url = `/users/clients/deactivate/${id}/?host=admin&env=${env}`;
+    const url = `/users/clients/deactivate/${id}/?env=${env}`;
 
     await API.put(url);
     return id;
@@ -208,7 +208,7 @@ export const deleteClient = createAsyncThunk('client/delete', async (id, thunkAP
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const url = `/users/clients/delete/${id}/?host=admin&env=${env}`;
+    const url = `/users/clients/delete/${id}/?env=${env}`;
 
     await API.delete(url);
     return id;

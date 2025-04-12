@@ -6,7 +6,7 @@ export const fetchLaundryCategories = createAsyncThunk('category/fetchAll', asyn
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/laundry-categories/?host=admin&env=${env}`;
+    const url = `/main/laundry-categories/?env=${env}`;
 
     const response = await API.get(url);
 
@@ -21,7 +21,7 @@ export const addLaundryCategory = createAsyncThunk('category/addCategory', async
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/laundry-categories/new/?host=admin&env=${env}`;
+    const url = `/main/laundry-categories/new/?env=${env}`;
 
     const newCategory = {
       name: data.name
@@ -43,7 +43,7 @@ export const deleteLaundryCategory = createAsyncThunk('category/deleteCategory',
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/laundry-categories/delete/${id}/?host=admin&env=${env}`;
+    const url = `/main/laundry-categories/delete/${id}/?env=${env}`;
 
     const response = await API.delete(url);
     return response.data;

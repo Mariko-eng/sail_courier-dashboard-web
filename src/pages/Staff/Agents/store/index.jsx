@@ -8,7 +8,7 @@ export const fetchAgents = createAsyncThunk('agent/fetchAll', async (_, thunkAPI
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/agents/?host=admin&env=${env}`;
+    const url = `/users/agents/?env=${env}`;
     
     const response = await API.get(url);
 
@@ -27,7 +27,7 @@ export const addAgent = createAsyncThunk('agent/addNew', async (data, thunkAPI) 
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/agents/new/?host=admin&env=${env}`;
+    const url = `/users/agents/new/?env=${env}`;
     
     const timestamp = Date.now().toString();
     const uniqueNo = timestamp.substring(4, 12);
@@ -69,7 +69,7 @@ export const deleteAgent = createAsyncThunk('agent/delete', async (id, thunkAPI)
   try {    
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/users/agents/delete/${id}/?host=admin&env=${env}`;
+    const url = `/users/agents/delete/${id}/?env=${env}`;
 
     await API.delete(url);
     return id;

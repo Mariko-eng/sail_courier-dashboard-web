@@ -59,9 +59,6 @@ export const logOutUser = createAsyncThunk(
 );
 
 // export const refreshAccessToken = async () => {
-
-//   // console.log("auth.currentUser", auth.currentUser);
-
 //   const user = auth.currentUser;
 //   if (user) {
 //     try {

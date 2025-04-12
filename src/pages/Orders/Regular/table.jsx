@@ -35,7 +35,7 @@ const columns = [
   { id: 'clientAccountType', label: 'Client Type', align: 'right', minWidth: 100 },
   // { id: 'totalCharges', label: 'Total Cost',align: 'center', minWidth: 100 },
   // { id: 'isFullyPaid', label: 'is Fully Paid', align: 'center', minWidth: 100 },
-  { id: 'createdByEmail', label: 'Client Account', align: 'center', minWidth: 100 },
+  // { id: 'createdByEmail', label: 'Client Account', align: 'center', minWidth: 100 },
   { id: 'action', label: 'Action', align: 'center', minWidth: 100 }, // Add action column
   // { id: 'actions', label: 'Actions', align: 'center', minWidth: 100 }, // Add action column
 ];

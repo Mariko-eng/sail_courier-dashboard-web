@@ -137,7 +137,7 @@ const OrderForm = ({ orderDetails, onRefresh }) => {
 const getOrderDetail = async (id) => {
     try {
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/detail/${id}/?host=admin&env=${env}`;
+        const url = `/main/orders/detail/${id}/?env=${env}`;
 
         const response = await API.get(url);
 
@@ -156,7 +156,7 @@ const printPdf = async (id) => {
         console.log("Printing PDF ...");
 
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/waybill/download-pdf/${id}/?host=admin&env=${env}`;
+        const url = `/main/orders/waybill/download-pdf/${id}/?env=${env}`;
 
         await API.get(url);
     } catch (error) {
@@ -169,7 +169,7 @@ const printPdf = async (id) => {
 const updateWaybillOrder = async (prevData, newData) => {
     try {
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/waybill/update/${prevData.id}/?host=admin&env=${env}`;
+        const url = `/main/orders/waybill/update/${prevData.id}/?env=${env}`;
 
         const { id, createdAt, createdBy, ...restPrevData } = prevData;
 
@@ -211,7 +211,7 @@ const DownloadPdfButton = ({ orderId }) => {
     const baseUrl = import.meta.env.VITE_ENV === "DEV" ? devBaseUrl : prodBaseUrl;
   
     // Construct the full URL to the download endpoint
-    const link = `${baseUrl}/extra/orders/waybill/download-pdf/${orderId}?host=admin&env=${env}`;
+    const link = `${baseUrl}/extra/orders/waybill/download-pdf/${orderId}?env=${env}`;
   
     return (
       <div>

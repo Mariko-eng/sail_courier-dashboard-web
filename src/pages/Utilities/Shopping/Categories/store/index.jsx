@@ -6,7 +6,7 @@ export const fetchShoppingCategories = createAsyncThunk('category/fetchAll', asy
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/shopping-categories/?host=admin&env=${env}`;
+    const url = `/main/shopping-categories/?env=${env}`;
 
     const response = await API.get(url);
 
@@ -21,7 +21,7 @@ export const addShoppingCategory = createAsyncThunk('category/addCategory', asyn
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/shopping-categories/new/?host=admin&env=${env}`;
+    const url = `/main/shopping-categories/new/?env=${env}`;
 
     const newCategory = {
       name: data.name
@@ -42,7 +42,7 @@ export const deleteShoppingCategory = createAsyncThunk('category/deleteCategory'
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
     
-    const url = `/main/shopping-categories/delete/${id}/?host=admin&env=${env}`;
+    const url = `/main/shopping-categories/delete/${id}/?env=${env}`;
 
     const response = await API.delete(url);
     return response.data;

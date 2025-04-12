@@ -24,7 +24,7 @@ const AssignCourierToOrderBtn = ({ order, onRefresh }) => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, []); 
 
     const handleSelect = async (courier) => {
         const data = {

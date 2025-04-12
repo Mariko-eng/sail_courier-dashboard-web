@@ -174,7 +174,7 @@ export default NewWaybillOrderFormModal
 const addWaybillOrder = async (data) => {
     try {
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/waybill/new/?host=admin&env=${env}`;
+        const url = `/main/orders/waybill/new/?env=${env}`;
 
         const payload = {
             companyId: data.company.id,

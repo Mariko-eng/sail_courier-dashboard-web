@@ -30,8 +30,8 @@ const RegularOrdersDetail = () => {
     const loggedInUser = store.user;
 
     const [loading, setLoading] = useState(false);
-    const [orderData, setOrderData] = useState(null);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [orderData, setOrderData] = useState(null);
 
     const fetchData = useCallback(async () => {
         // console.log("Fetching Data");
@@ -392,7 +392,7 @@ export default RegularOrdersDetail
 const getOrderDetail = async (id) => {
     try {
         const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/detail/${id}/?host=admin&env=${env}`;
+        const url = `/main/orders/detail/${id}/?env=${env}`;
 
         const response = await API.get(url);
 

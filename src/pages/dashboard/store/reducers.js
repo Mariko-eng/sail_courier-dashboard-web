@@ -7,7 +7,7 @@ export const fetchDashboardData = createAsyncThunk('orders/fetchDashboardData', 
   try {
     const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
 
-    const url = `/dashboard/summary/?host=admin&env=${env}`;
+    const url = `/dashboard/summary/?env=${env}`;
 
     const response = await API.get(url)
     return response.data;
