@@ -28,23 +28,28 @@ const columns = [
 ];
 
 function processData(dataList, query) {
-    let newData = [];
-    for (var i = 0; i < dataList.length; i++) {
-        newData.push({
-            index: i + 1,
-            ...dataList[i],
-            action: 'Actions' // Example value for action button
-        })
-    }
+    let newData = dataList.map((item, idx) => {
+        const userProfile = item.user?.userprofile || {};
+        return {
+            index: idx + 1,
+            id: item.id,
+            username: userProfile.username || '',
+            phone: userProfile.phone || '',
+            email: item.user?.email || '',
+            createdAt: userProfile.created_at || '',
+            raw: item, // keep raw object for actions
+        };
+    });
 
     if (!query) return newData;
 
-    return newData.filter(item => {
-        return Object.values(item).some(val =>
-            val.toString().toLowerCase().includes(query.toLowerCase())
-        );
-    });
-} 
+    return newData.filter(item =>
+        Object.entries(item).some(([key, val]) =>
+            key !== 'index' &&
+            val?.toString().toLowerCase().includes(query.toLowerCase())
+        )
+    );
+}
 
 export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerPage }) {
     const [page, setPage] = React.useState(0);
@@ -109,7 +114,7 @@ export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerP
             <TableContainer sx={{ minHeight: 240 }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
-                    <TableRow>
+                        <TableRow>
                             <TableCell />
                             {columns.map((column, index) => (
                                 <React.Fragment key={index}>
@@ -182,10 +187,16 @@ ClientsPersonalTable.propTypes = {
     clients: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            username: PropTypes.string.isRequired,
-            phone: PropTypes.string.isRequired,
-            email: PropTypes.string.isRequired,
-            createdAt: PropTypes.string.isRequired,
+            user: PropTypes.shape({
+                email: PropTypes.string.isRequired,
+                userprofile: PropTypes.shape({
+                    username: PropTypes.string.isRequired,
+                    phone: PropTypes.string.isRequired,
+                    created_at: PropTypes.string.isRequired,
+                }).isRequired,
+            }).isRequired,
         })
     ).isRequired,
+    rowsPerPage: PropTypes.number.isRequired,
+    setRowsPerPage: PropTypes.func.isRequired,
 };

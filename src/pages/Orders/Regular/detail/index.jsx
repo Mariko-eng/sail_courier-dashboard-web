@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux';
 import RegularOrderActionsMenuButton from './actions';
 import ViewOrderHistoryBtn from '../../history/OrderHistory';
 import AssignCourierToOrderBtn from '../../actions/AssignCourier';
+import { fetch_regular_order_detail } from '../../../../services/orders';
 
 
 const RegularOrdersDetail = () => {
@@ -36,7 +37,7 @@ const RegularOrdersDetail = () => {
     const fetchData = useCallback(async () => {
         // console.log("Fetching Data");
         try {
-            const order = await getOrderDetail(id);
+            const order = await fetch_regular_order_detail(id);
             setOrderData(order); // Store the fetched data
             setLoading(false); // Set loading to false once the data is fetched
             setIsRefreshing(false); // Stop showing the refresh banner
@@ -84,6 +85,8 @@ const RegularOrdersDetail = () => {
 
     const orderDetails = orderData;
 
+    console.log("orderDetails" , orderDetails)
+
     return (
         <>
             {/* Update Banner for refresh */}
@@ -94,6 +97,7 @@ const RegularOrdersDetail = () => {
             )}
 
             <Box sx={{ width: '100%' }}>
+
                 {/* Buttons for actions */}
                 <Box display={"flex"} justifyContent={"end"} sx={{ my: 2 }}>
                     <Grid container spacing={2}>
@@ -126,20 +130,17 @@ const RegularOrdersDetail = () => {
                 <Card sx={{ my: 1 }}>
                     <CardContent sx={{ backgroundColor: '#F8FAFC' }}>
                         <Box sx={{ mb: 2, p: 1 }}>
-                            {/* Created At Timestamp */}
-                            <Box display={"flex"} justifyContent={"end"}>
+                            <Box display="flex" justifyContent="flex-end">
                                 <Typography variant="body2" sx={{ color: 'gray' }}>
-                                    {orderDetails?.createdAt
-                                        ? moment.utc(orderDetails.createdAt).local().format('MMMM Do YYYY, h:mm:ss a')
+                                    {orderDetails.created_at
+                                        ? moment.utc(orderDetails.created_at).local().format('MMMM Do YYYY, h:mm:ss a')
                                         : 'Not Available'}
                                 </Typography>
                             </Box>
-
-                            {/* Created By Email */}
-                            {orderDetails?.createdByDetails?.email && orderDetails?.createdByDetails?.email !== "" && (
-                                <Box display={"flex"} justifyContent={"end"}>
+                            {orderDetails.createdByDetails?.email && (
+                                <Box display="flex" justifyContent="flex-end">
                                     <Typography variant="body2" sx={{ color: 'gray' }}>
-                                        {orderDetails?.createdByDetails?.email}
+                                        {orderDetails.createdByDetails.email}
                                     </Typography>
                                 </Box>
                             )}
@@ -148,36 +149,20 @@ const RegularOrdersDetail = () => {
                         <Grid container spacing={2}>
                             <Grid xs={12}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Order Number:</Typography>
-                                <Typography variant="body2">{orderDetails?.orderNo || 'Not Available'}</Typography>
+                                <Typography variant="body2">{orderDetails.regular_order?.order?.order_no || 'Not Available'}</Typography>
                             </Grid>
                             <Grid xs={12}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Order Tracker Number:</Typography>
-                                <Typography variant="body2">{orderDetails?.orderTrackerNo || 'Not Available'}</Typography>
+                                <Typography variant="body2">{orderDetails.regular_order?.order?.order_tracker_no || 'Not Available'}</Typography>
                             </Grid>
                             <Grid xs={12}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Order Type</Typography>
-                                <Typography variant="body2">{orderDetails?.orderType?.toUpperCase() || 'Not Available'}</Typography>
+                                <Typography variant="body2">{orderDetails.regular_order?.order?.order_type?.toUpperCase() || 'Not Available'}</Typography>
                             </Grid>
-
                             <Grid xs={12}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>ORDER STATUS</Typography>
-                                {orderDetails?.status === 'pending' ? (
-                                    <Chip label="Pending" color="primary" variant="outlined" />
-                                ) : orderDetails?.status === 'approved' ? (
-                                    <Chip label="Approved" color="primary" variant="contained" />
-                                ) : orderDetails?.status === 'assigned' ? (
-                                    <Chip label="Assigned" color="secondary" variant="outlined" />
-                                ) : orderDetails?.status === 'pickedUp' ? (
-                                    <Chip label="PickedUp" color="secondary" variant="contained" />
-                                ) : orderDetails?.status === 'delivered' ? (
-                                    <Chip label="Delivered" color="success" variant="contained" />
-                                ) : orderDetails?.status === 'cancelled' || orderDetails?.status === 'rejected' ? (
-                                    <Chip label={capitalize(orderDetails?.status)} color="error" variant="contained" />
-                                ) : (
-                                    <Chip label={capitalize(orderDetails?.status)} variant="outlined" />
-                                )}
+                                <Chip label={orderDetails?.status.toUpperCase()}  color="primary" variant="outlined" />
                             </Grid>
-
                         </Grid>
                     </CardContent>
                 </Card>
@@ -191,22 +176,22 @@ const RegularOrdersDetail = () => {
                         <Box sx={{ mt: 2, backgroundColor: '#FFFFFF', p: 2 }}>
                             <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Parcel Content:</Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.orderDetails?.parcelItems[0] || 'Not Available'}
+                                {orderDetails?.item_name || 'Not Available'}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>Parcel Description:</Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.orderDetails?.parcelDesc || 'Not Available'}
+                                {orderDetails?.item_description || 'Not Available'}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>Parcel Weight:</Typography>
                             <Typography variant="body2" sx={{ color: '#00796B' }}>
-                                {orderDetails?.orderDetails?.parcelWeight || 'Not Available'} kg
+                                {orderDetails?.parcel_weight || 'Not Available'} kg
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>Parcel Risk:</Typography>
                             <Typography variant="body2" sx={{ color: '#00796B' }}>
-                                {orderDetails?.orderDetails?.parcelRisk || 'Not Available'}
+                                {orderDetails?.parcel_risk || 'Not Available'}
                             </Typography>
                         </Box>
                     </CardContent>
@@ -224,14 +209,14 @@ const RegularOrdersDetail = () => {
                                 Sender Name:
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.orderDetails?.parcelSenderName || 'Not Available'}
+                                {orderDetails?.parcel_sender_name || 'Not Available'}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>
                                 Sender Phone:
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.orderDetails?.parcelSenderPhone || 'Not Available'}
+                                {orderDetails?.parcel_sender_phone || 'Not Available'}
                             </Typography>
 
                             {/* Receiver Info */}
@@ -239,14 +224,14 @@ const RegularOrdersDetail = () => {
                                 Receiver Name:
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.orderDetails?.parcelReceiverName || 'Not Available'}
+                                {orderDetails?.parcel_receiver_name || 'Not Available'}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>
                                 Receiver Phone:
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.orderDetails?.parcelReceiverPhone || 'Not Available'}
+                                {orderDetails?.parcel_receiver_phone || 'Not Available'}
                             </Typography>
                         </Box>
                     </CardContent>
@@ -263,22 +248,22 @@ const RegularOrdersDetail = () => {
                                 Pickup Location:
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.pickName || 'Not Available'}
+                                {orderDetails?.regular_order?.pick_up_point?.google_place_name || 'Not Available'}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>
                                 Dropoff Location:
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.dropName || 'Not Available'}
+                                {orderDetails?.drop_off_point?.google_place_name || 'Not Available'}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>
                                 Scheduled Delivery Time:
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.scheduledDeliveryDateTime
-                                    ? moment.utc(orderDetails.scheduledDeliveryDateTime).local().format('MMMM Do YYYY, h:mm:ss a')
+                                {orderDetails?.regular_order?.order?.scheduled_pickup_datetime
+                                    ? moment.utc(orderDetails.regular_order?.order?.scheduled_pickup_datetime).local().format('MMMM Do YYYY, h:mm:ss a')
                                     : 'Not Available'}
                             </Typography>
 
@@ -286,14 +271,14 @@ const RegularOrdersDetail = () => {
                                 Trip Duration:
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.tripDuration || 'Not Available'}
+                                {orderDetails?.trip_duration || 'Not Available'}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>
                                 Distance:
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'gray' }}>
-                                {orderDetails?.distanceStr || 'Not Available'}
+                                {orderDetails?.distance_str || 'Not Available'}
                             </Typography>
                         </Box>
                     </CardContent>
@@ -310,14 +295,14 @@ const RegularOrdersDetail = () => {
                                 Total Charges:
                             </Typography>
                             <Typography variant="body2" sx={{ color: '#00796B' }}>
-                                {orderDetails?.totalCharges ? orderDetails.totalCharges : 'Not Available'}
+                                {orderDetails?.total_charges ? orderDetails.total_charges : 'Not Available'}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>
                                 Amount Paid:
                             </Typography>
                             <Typography variant="body2" sx={{ color: '#00796B' }}>
-                                {orderDetails?.amountPaid ? orderDetails.amountPaid : 'Not Available'}
+                                {orderDetails?.amount_paid ? orderDetails.amount_paid : 'Not Available'}
                             </Typography>
                         </Box>
                     </CardContent>
@@ -387,21 +372,3 @@ const RegularOrdersDetail = () => {
 };
 
 export default RegularOrdersDetail
-
-
-const getOrderDetail = async (id) => {
-    try {
-        const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/detail/${id}/?env=${env}`;
-
-        const response = await API.get(url);
-
-        // console.log("response.data", response.data);
-
-        return response.data;
-    } catch (error) {
-        const customAxiosError = formatError(error);
-        // console.log(customAxiosError);
-        throw error;
-    }
-};

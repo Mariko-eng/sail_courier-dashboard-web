@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Button, Card } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import CorporateCompaniesNew from './new';
@@ -7,12 +7,17 @@ import UiLoadingOverlay from '../../../../components/overlay';
 import MainCard from '../../../../ui-component/cards/MainCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCorporateCompanies } from './../../store/reducers/extra_reducers';
-import StickyHeadTable from './table';
+import CorporateCompanniesTable from './table';
 import CustomGoogleMap from '../../../../components/google-maps';
+import { fetch_corporate_companies } from '../../../../services/clients';
 
 
 const CorporateCompanies = () => {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
+
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
 
   const openSidebar = () => {
     setShowSidebar(true);
@@ -22,23 +27,27 @@ const CorporateCompanies = () => {
     setShowSidebar(false);
   };
 
-  const dispatch = useDispatch();
-  const store = useSelector((state) => state.corporateCompanies);
+  // Memoize fetchData function to prevent unnecessary rerenders
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { results } = await fetch_corporate_companies();
+      setLoading(false);
+      setData(results);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error fetching data: ', error);
+    }
+  }, [rowsPerPage]);
 
-    const data = store.data;
 
-    const newLoadList = data;
-    // const newLoadList = structuredClone(data);
-
-    useEffect(() => {
-      dispatch(fetchCorporateCompanies());
-    }, [dispatch]);
-
-    const markerLocation = { lat: 0.3, lng: 32 };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <>
-      <UiLoadingOverlay loading={store.loading}>
+      <UiLoadingOverlay loading={loading}>
         <MainCard
           title="Corporate Companies"
           secondary={
@@ -50,7 +59,7 @@ const CorporateCompanies = () => {
           <Card sx={{ overflow: 'hidden' }}>
             <div style={{ overflowX: 'auto' }}>
 
-            <StickyHeadTable companies={newLoadList} />
+              <CorporateCompanniesTable companies={data} />
 
             </div>
           </Card>

@@ -1,10 +1,17 @@
 /* eslint-disable no-unused-vars */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { auth, db } from '../../../config/firebase';
+import { auth } from '../../../config/firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
-import { query, collection, where, doc, getDocs, getDoc } from 'firebase/firestore';
+import axios from 'axios';
+import { API } from '../../../utils/api';
 
-const adminsCollection = "admins";
+let backendUrl = import.meta.env.VITE_BACKEND_DEV_URL;
+
+if (import.meta.env.VITE_ENV === "STAGING") {
+  backendUrl = import.meta.env.VITE_BACKEND_STAGING_URL;
+} else if (import.meta.env.VITE_ENV === "PROD") {
+  backendUrl = import.meta.env.VITE_BACKEND_PROD_URL;
+}
 
 // First, create the thunk
 export const loginUser = createAsyncThunk(
@@ -13,11 +20,9 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }, thunkAPI) => {
     // Take two parameters
     try {
-      // Check if the email exists in the admins collection
-      const q = query(collection(db, adminsCollection), where('email', '==', email));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
+      // Check if the email exists
+      var exists = await CheckIfUserIsAdmin(email)
+      if (exists == false) {
         return thunkAPI.rejectWithValue({ message: 'Sorry, Account does not exist' });
       }
 
@@ -26,12 +31,13 @@ export const loginUser = createAsyncThunk(
       // Get user data after successful login
       const userData = await getUserData(response.user.uid);
 
+      console.log("userData" , userData);
+
       return {
         message: 'Logged In Successfully',
         accessToken: response.user.accessToken,
         user: userData
       };
-
     } catch (error) {
       // You should handle errors here
       console.log("Error", error);
@@ -58,21 +64,6 @@ export const logOutUser = createAsyncThunk(
   }
 );
 
-// export const refreshAccessToken = async () => {
-//   const user = auth.currentUser;
-//   if (user) {
-//     try {
-//       // Get a new token
-//       const token = await user.getIdToken(true);
-//       localStorage.setItem('accessToken', token); // Store new token
-//       return token;
-//     } catch (error) {
-//       console.error('Error refreshing token:', error);
-//       throw error; // Handle errors as needed
-//     }
-//   }
-//   throw new Error('User not authenticated');
-// };
 
 export const refreshAccessToken = () => {
   return new Promise((resolve, reject) => {
@@ -93,19 +84,14 @@ export const refreshAccessToken = () => {
   });
 };
 
-export const getUserData = async (userId) => {
+export const getUserData = async () => {
   try {
-    const docRef = doc(db, adminsCollection, userId);
-    const docSnap = await getDoc(docRef);
+    const url = `${backendUrl}/api/accounts/user-admin/signin/`
 
-    if (docSnap.exists()) {
-      // console.log('Document data:', docSnap.data());
-      return docSnap.data();
-    } else {
-      // docSnap.data() will be undefined in this case
-      console.log('No such document!');
-      throw 'Document not found!';
-    }
+    const response = await API.post(url);
+
+    const {user} = response.data;
+    return user;
   } catch (error) {
     console.log(error);
     throw error;
@@ -114,11 +100,9 @@ export const getUserData = async (userId) => {
 
 export const resetUserPassword = async (email) => {
   try {
-    // Check if the email exists in the admins collection
-    const q = query(collection(db, adminsCollection), where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
+    // Check if the email exists
+    var exists = await CheckIfUserIsAdmin(email)
+    if (exists == false) {
       throw `Error sending the reset link. Admin account with email *${email}* was not found!`;
     } else {
       // If the email exists, proceed with sending the password reset email
@@ -148,3 +132,35 @@ export const checkAuthState = () => {
     });
   });
 };
+
+
+export const CheckIfUserIsAdmin = async (email) => {
+  try {
+
+    const url = `${backendUrl}/api/accounts/user-admin/check/`
+
+    const data = {
+      "email": email
+    };
+
+    const response = await axios.post(url, data);
+
+    const { status, roles } = response.data;
+
+    if (status == false) {
+      throw "User is not an admin";
+    } else {
+      // roles is an array of strings
+      if (roles.includes("app_admin")) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error("User is not an admin");
+    // throw error;
+  }
+
+} 

@@ -10,6 +10,7 @@ import UiLoadingOverlay from '../../../../components/overlay';
 import MainCard from '../../../../ui-component/cards/MainCard';
 
 import RegularOrdersTable from './../table';
+import { fetch_regular_orders } from '../../../../services/orders';
 
 // Utility function to format date in YYYY-MM-DD
 const formatDate = (date) => {
@@ -19,7 +20,7 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-const Regular = () => {
+const Regular = () => { 
   const today = new Date();
   const now = new Date();
   const start_date = new Date(now.setDate(now.getDate() - 7));
@@ -98,9 +99,11 @@ const Regular = () => {
 
     try {
       setLoading(true);
-      const results = await fetchRegularOrders(queryParams.toString());
+      const {results} = await fetch_regular_orders();
+      // const results = await fetchRegularOrders(queryParams.toString());
       setLoading(false);
-      setOrderData(results.entries);
+      setOrderData(results);
+      // setOrderData(results.entries);
     } catch (error) {
       setLoading(false);
       console.error('Error fetching data: ', error);
@@ -191,21 +194,3 @@ const Regular = () => {
 };
 
 export default Regular;
-
-
-const fetchRegularOrders = async (query) => {
-  try {
-    const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-    const url = `/main/orders/regular/?${query}&env=${env}`;
-
-    const response = await API.get(url);
-
-    // console.log(response.data)
-
-    return response.data;
-  } catch (error) {
-    const customAxiosError = formatError(error);
-    // console.log(customAxiosError);
-    throw customAxiosError;
-  }
-};

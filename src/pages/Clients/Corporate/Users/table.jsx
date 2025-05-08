@@ -34,34 +34,37 @@ const columns = [
     { id: 'actions', label: 'Actions', minWidth: 100 }, // Add action column
 ];
 
-
 function processData(dataList, query) {
-    let newData = [];
-    for (var i = 0; i < dataList.length; i++) {
-        var cname = `${dataList[i].company.companyName}`;
-        var caddr = `${dataList[i].company.companyAddressPlaceName}`;
+    let newData = dataList.map((item, i) => {
+        const user = item.user.userprofile;
+        const company = item.corporate_company;
 
-        var account_type = dataList[i].corporate_account_type == "standard" ? "Standard" : "ADMIN";
+        const account_type = item.corporate_account_type === "standard" ? "Standard" : "ADMIN";
+        const companyName = company.name || '';
+        const companyAddress = company.address_place_name || '';
 
-
-        newData.push({
+        return {
             index: i + 1,
-            ...dataList[i],
-            account_type: account_type,
-            companyName: cname,
-            companyAddress: caddr,
-            action: 'Actions' // Example value for action button
-        })
-    }
+            ...item,
+            account_type,
+            username: user.username,
+            phone: user.phone,
+            email: item.email,
+            companyName,
+            companyAddress,
+            isActive: item.is_active,
+            createdAt: item.created_at,
+            action: 'Actions' // Placeholder for actions
+        };
+    });
 
     if (!query) return newData;
 
-    return newData.filter(item => {
-        return Object.values(item).some(val =>
-            val.toString().toLowerCase().includes(query.toLowerCase())
-        );
-    });
-
+    return newData.filter(item =>
+        Object.values(item).some(val =>
+            val?.toString().toLowerCase().includes(query.toLowerCase())
+        )
+    );
 }
 
 export default function ClientsCorporateTable({ clients }) {
@@ -99,9 +102,6 @@ export default function ClientsCorporateTable({ clients }) {
 
     const handleAction = (action) => {
         if (selectedRow) {
-            // Perform action based on the selectedRow
-            // console.log(`Performing ${action} on row`, selectedRow);
-
             if (action === "Activate") {
                 var result = confirm('You want to activate this client? ' + selectedRow.username);
                 if (result === true) {
@@ -134,23 +134,23 @@ export default function ClientsCorporateTable({ clients }) {
     return (
         <>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-            <TextField
-                placeholder="Search..."
-                variant="outlined"
-                fullWidth
-                value={searchQuery}
-                onChange={handleSearchChange}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    ),
-                }}
-                sx={{ mb: 2, p: 2 }}
-            />
+                <TextField
+                    placeholder="Search..."
+                    variant="outlined"
+                    fullWidth
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                    sx={{ mb: 2, p: 2 }}
+                />
 
-            <TableContainer sx={{ minHeight: 240 }}>
+                <TableContainer sx={{ minHeight: 240 }}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
@@ -188,8 +188,8 @@ export default function ClientsCorporateTable({ clients }) {
                                                                 <MoreVertIcon />
                                                             </IconButton>
                                                             : column.id === 'isActive' ? <div>
-                                                                {value === true ? <Chip label="YES" color="primary" variant="contained" /> : 
-                                                                <Chip label="NO" color="danger" variant="contained" />
+                                                                {value === true ? <Chip label="YES" color="success" variant="outlined" /> : 
+                                                                <Chip label="NO" color="error" variant="outlined" />
                                                                 }
                                                             </div>
                                                             : column.format ? (column.format(value)) :
@@ -205,6 +205,7 @@ export default function ClientsCorporateTable({ clients }) {
                         </TableBody>
                     </Table>
                 </TableContainer>
+
                 <TablePagination
                     rowsPerPageOptions={[10, 25, 100]}
                     component="div"
@@ -215,6 +216,7 @@ export default function ClientsCorporateTable({ clients }) {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
+
             {selectedRow !== null &&
                 <Menu
                     anchorEl={anchorEl}
@@ -235,12 +237,20 @@ ClientsCorporateTable.propTypes = {
     clients: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            company: PropTypes.object.isRequired,
-            username: PropTypes.string.isRequired,
-            phone: PropTypes.string.isRequired,
-            email: PropTypes.string.isRequired,
-            isActive: PropTypes.bool,
-            createdAt: PropTypes.string.isRequired,
+            user: PropTypes.shape({
+                userprofile: PropTypes.shape({
+                    username: PropTypes.string.isRequired,
+                    phone: PropTypes.string.isRequired,
+                    email: PropTypes.string.isRequired,
+                }).isRequired,
+            }).isRequired,
+            corporate_company: PropTypes.shape({
+                name: PropTypes.string.isRequired,
+                address_place_name: PropTypes.string.isRequired,
+            }).isRequired,
+            corporate_account_type: PropTypes.string.isRequired,
+            is_active: PropTypes.bool.isRequired,
+            created_at: PropTypes.string.isRequired,
         })
     ).isRequired,
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card } from 'react-bootstrap';
 import MainCard from '../../../ui-component/cards/MainCard';
 
@@ -7,31 +7,42 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchClientsPersonal } from './../store/reducers/extra_reducers'
 import UiLoadingOverlay from '../../../components/overlay';
 import ClientsPersonalTable from './table';
+import { fetch_clients_personal } from '../../../services/clients';
 
 
 const ClientsPersonal = () => {
   const [rowsPerPage, setRowsPerPage] = useState(50);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
 
-  const dispatch = useDispatch();
-  const store = useSelector((state) => state.personalClients);
 
-  const data = store.data; 
-
-  const newLoadList = structuredClone(data);
-
-  // console.log(newLoadList);
-
-  useEffect(() => {
-    dispatch(fetchClientsPersonal());
-  }, [dispatch]);
+    // Memoize fetchData function to prevent unnecessary rerenders
+    const fetchData = useCallback(async () => {
+      try {
+        setLoading(true);
+        const {results} = await fetch_clients_personal();
+        // const results = await fetchRegularOrders(queryParams.toString());
+        setLoading(false);
+        setData(results);
+        // setOrderData(results.entries);
+      } catch (error) {
+        setLoading(false);
+        console.error('Error fetching data: ', error);
+      }
+    }, [rowsPerPage]);
+  
+  
+    useEffect(() => {
+      fetchData();
+    }, [fetchData]);
 
   return (
     <>
-      <UiLoadingOverlay loading={store.loading}>
+      <UiLoadingOverlay loading={loading}>
         <MainCard title="Clients - Personal">
           <Card sx={{ overflow: 'hidden' }}>
             <div style={{ overflowX: 'auto' }}>
-              <ClientsPersonalTable clients={newLoadList}
+              <ClientsPersonalTable clients={data}
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
               />

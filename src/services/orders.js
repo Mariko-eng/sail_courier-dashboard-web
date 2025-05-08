@@ -2,7 +2,47 @@ import { auth } from '../config/firebase';
 import { API } from '../utils/api';
 import { formatError } from '../utils/axios-error';
 
-const env = import.meta.env.VITE_ENV === "PROD" ? 'prod' : 'dev';
+let backendUrl = import.meta.env.VITE_BACKEND_DEV_URL;
+
+if (import.meta.env.VITE_ENV === "STAGING") {
+  backendUrl = import.meta.env.VITE_BACKEND_STAGING_URL;
+} else if (import.meta.env.VITE_ENV === "PROD") {
+  backendUrl = import.meta.env.VITE_BACKEND_PROD_URL;
+}
+
+
+export const fetch_regular_orders = async (query) => {
+  try {
+    const url = `${backendUrl}/api/main/order-items-regular/`
+
+    const response = await API.get(url);
+
+    console.log("response.data", response.data)
+
+    return response.data;
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    // console.log(customAxiosError);
+    throw customAxiosError;
+  }
+};
+
+export const fetch_regular_order_detail = async (id) => {
+  try {
+    const url = `${backendUrl}/api/main/order-items-regular/${id}/`
+
+    const response = await API.get(url);
+
+    console.log("response.data", response.data);
+
+    return response.data;
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    // console.log(customAxiosError);
+    throw error;
+  }
+};
+
 
 const ordersurl = `/main/orders`;
 
@@ -15,8 +55,8 @@ export const approve_order = async (data) => {
     };
     await API.put(`${ordersurl}/update/approve/${id}/?env=${env}`, orderData);
     return {
-      id:data.id,
-      status:"approved",
+      id: data.id,
+      status: "approved",
       ...orderData
     };
   } catch (error) {
@@ -279,7 +319,7 @@ export const delete_order = async (data) => {
     console.log(customAxiosError)
 
     throw customAxiosError;
-    }
+  }
 };
 
 export const toggle_order_payment_status = async (data) => {
