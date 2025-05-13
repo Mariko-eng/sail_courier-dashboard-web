@@ -1,74 +1,60 @@
 import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import PropTypes from 'prop-types';
-import { IconButton, TextField, InputAdornment } from '@mui/material';
+import {
+    Paper, Table, TableBody, TableCell, TableContainer,
+    TableHead, TablePagination, TableRow, TextField,
+    InputAdornment, IconButton, Menu, MenuItem
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { Menu, MenuItem } from '@mui/material';
-import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { prettyDate } from '../../../utils/app-functions';
 import { deleteCourier } from './store';
-import { useDispatch } from 'react-redux';
-
 
 const columns = [
-    { id: 'index', label: 'Index', minWidth: 70 },
-    { id: 'courierNo', label: 'Unique No', minWidth: 100 },
-    { id: 'firstName', label: 'Username', minWidth: 100 },
-    { id: 'surName', label: 'Full Names', minWidth: 170 },
+    { id: 'index', label: '#', minWidth: 50 },
+    { id: 'username', label: 'Username', minWidth: 100 },
     { id: 'email', label: 'Email', minWidth: 170 },
-    { id: 'phone', label: 'Phone', minWidth: 100 },
+    { id: 'phone', label: 'Phone', minWidth: 120 },
     {
-        id: 'createdAt', label: 'Created At', minWidth: 100,
-        format: (value) => prettyDate(value),
+        id: 'createdAt',
+        label: 'Created At',
+        minWidth: 150,
+        format: (value) => prettyDate(value)
     },
-    { id: 'actions', label: 'Actions', minWidth: 100 }, // Add action column
+    { id: 'actions', label: 'Actions', minWidth: 80 }
 ];
 
 function processData(dataList, query) {
-    let newData = [];
-    for (var i = 0; i < dataList.length; i++) {
-        newData.push({
-            index: i + 1,
-            ...dataList[i],
-            action: 'Actions' // Example value for action button
-        })
-    }
+    const formatted = dataList.map((item, index) => ({
+        id: item.id,
+        index: index + 1,
+        username: item.user?.userprofile?.username || '',
+        email: item.user?.email || '',
+        phone: item.user?.userprofile?.phone || '',
+        createdAt: item.user?.userprofile?.created_at || ''
+    }));
 
-    if (!query) return newData;
+    if (!query) return formatted;
 
-    return newData.filter(item => {
-        return Object.values(item).some(val =>
+    return formatted.filter(item =>
+        Object.values(item).some(val =>
             val.toString().toLowerCase().includes(query.toLowerCase())
-        );
-    });
+        )
+    );
 }
 
-export default function CouriersTable({ clients, rowsPerPage, setRowsPerPage }) {
+export default function CouriersTable({ couriers, rowsPerPage, setRowsPerPage }) {
+    const dispatch = useDispatch();
     const [page, setPage] = React.useState(0);
-
+    const [searchQuery, setSearchQuery] = React.useState('');
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
-    const [searchQuery, setSearchQuery] = React.useState('');
 
-    const dispatch = useDispatch();
-
-    const handleSearchChange = (event) => {
-        setSearchQuery(event.target.value);
-    };
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
+    const handleChangePage = (_, newPage) => setPage(newPage);
+    const handleSearchChange = (e) => setSearchQuery(e.target.value);
+    const handleChangeRowsPerPage = (e) => {
+        setRowsPerPage(+e.target.value);
         setPage(0);
     };
 
@@ -83,29 +69,22 @@ export default function CouriersTable({ clients, rowsPerPage, setRowsPerPage }) 
     };
 
     const handleAction = (action) => {
-        if (selectedRow) {
-            // Perform action based on the selectedRow
-            // console.log(`Performing ${action} on row`, selectedRow);
-            
-            if (action === "Delete") {
-                var result = confirm('You want to delete this courier? ' + selectedRow.firstName);
-                if (result === true) {
-                  dispatch(deleteCourier(selectedRow.id));
-                }
+        if (action === 'Delete' && selectedRow) {
+            const confirmDelete = window.confirm(`You want to delete courier "${selectedRow.username}"?`);
+            if (confirmDelete) {
+                dispatch(deleteCourier(selectedRow.id));
             }
-
-                handleClose();
-            }
+        }
+        handleClose();
     };
 
     const open = Boolean(anchorEl);
-
-    const rows = processData(clients, searchQuery);
+    const rows = processData(couriers, searchQuery);
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TextField
-                placeholder="Search..."
+                placeholder="Search couriers..."
                 variant="outlined"
                 fullWidth
                 value={searchQuery}
@@ -115,60 +94,48 @@ export default function CouriersTable({ clients, rowsPerPage, setRowsPerPage }) 
                         <InputAdornment position="start">
                             <SearchIcon />
                         </InputAdornment>
-                    ),
+                    )
                 }}
                 sx={{ mb: 2, p: 2 }}
             />
 
             <TableContainer sx={{ minHeight: 240 }}>
-                <Table stickyHeader aria-label="sticky table">
+                <Table stickyHeader>
                     <TableHead>
                         <TableRow>
-                            <TableCell />
-                            {columns.map((column, index) => (
-                                <React.Fragment key={index}>
-                                    {
-                                        column.label !== "Index" && (
-                                            <TableCell
-                                                key={index}
-                                                align={column.align}
-                                                style={{ minWidth: column.minWidth }}
-                                            >
-                                                {column.label}
-                                            </TableCell>
-                                        )
-                                    }
-                                </React.Fragment>
+                            {columns.map((column) => (
+                                <TableCell
+                                    key={column.id}
+                                    style={{ minWidth: column.minWidth }}
+                                >
+                                    {column.label}
+                                </TableCell>
                             ))}
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
-                                return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {column.id === 'actions' ?
-                                                        <IconButton onClick={(event) => handleClick(event, row)}>
-                                                            <MoreVertIcon />
-                                                        </IconButton>
-                                                        :
-                                                        (<>
-                                                            {column.format ? column.format(value) : value}
-                                                        </>)}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
+                        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                            <TableRow hover key={row.id}>
+                                {columns.map((column) => {
+                                    const value = row[column.id];
+                                    return (
+                                        <TableCell key={column.id}>
+                                            {column.id === 'actions' ? (
+                                                <IconButton onClick={(e) => handleClick(e, row)}>
+                                                    <MoreVertIcon />
+                                                </IconButton>
+                                            ) : (
+                                                column.format ? column.format(value) : value
+                                            )}
+                                        </TableCell>
+                                    );
+                                })}
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+
             <TablePagination
                 rowsPerPageOptions={[50, 100, 150]}
                 component="div"
@@ -178,29 +145,28 @@ export default function CouriersTable({ clients, rowsPerPage, setRowsPerPage }) 
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-            >
-                {/* <MenuItem onClick={() => handleAction('Approve')}>Approve</MenuItem> */}
+
+            <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                 <MenuItem onClick={() => handleAction('Delete')}>Delete</MenuItem>
             </Menu>
         </Paper>
     );
 }
 
-// Define PropTypes for the Table component
 CouriersTable.propTypes = {
-    clients: PropTypes.arrayOf(
+    couriers: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            courierNo: PropTypes.string.isRequired,
-            firstName: PropTypes.string.isRequired,
-            surName: PropTypes.string.isRequired,
-            email: PropTypes.string.isRequired,
-            phone: PropTypes.string.isRequired,
-            createdAt: PropTypes.string.isRequired,
+            user: PropTypes.shape({
+                email: PropTypes.string,
+                userprofile: PropTypes.shape({
+                    username: PropTypes.string,
+                    phone: PropTypes.string,
+                    created_at: PropTypes.string
+                })
+            })
         })
     ).isRequired,
+    rowsPerPage: PropTypes.number.isRequired,
+    setRowsPerPage: PropTypes.func.isRequired
 };

@@ -131,7 +131,7 @@ const Row = ({ row, handleClick }) => (
       if (column.id === 'action') {
         return (
           <TableCell key={column.id} align={column.align}>
-            <Button onClick={(event) => handleClick(event, row)}>VIEW</Button>
+            <Button onClick={(event) => handleClick(event, row)}>Manage</Button>
           </TableCell>
         );
       }

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import { useEffect, useState } from 'react'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -8,7 +8,7 @@ import { gridSpacing } from '../../../store/reducers/theme';
 import { Typography } from '@mui/material';
 import ReactApexChart from 'react-apexcharts';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDashboardData } from '../store/reducers';
+import { fetch_dashboard_analytics } from '../../../services/dashboard';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
@@ -22,70 +22,83 @@ const Item = styled(Paper)(({ theme }) => ({
     }),
   }));
 
-const DashboardSummary = () => {
-  const dispatch = useDispatch()
+const DashboardSummary = () => { 
+  const [stats, setStatsData] = useState({});
+  const [loading, setLoading] = useState(false);
 
- useEffect(() => {
-    dispatch(fetchDashboardData());
-}, [dispatch]);
-
- 
-const store = useSelector((state) => state.dashboard);
-
-// console.log(store)
-
-const chartData = useMemo(() => {
-  // Ensure monthlyOrders is available and is an array
-
-  if (!store.monthlyOrders || !Array.isArray(store.monthlyOrders)) {
-    return { series: [], options: {} };
-  }
-
-  // Extract data for the chart
-  const data = store.monthlyOrders.map(item => item.count);
-
-  const chartOptions = {
-    series: [{
-      name: "Number of Deliveries",
-      data: data
-    }],
-    options: {
-      chart: {
-        height: 350,
-        type: 'line',
-        zoom: {
-          enabled: false
-        }
-      },
-      stroke: {
-        curve: "smooth"
-      },
-      title: {
-        text: 'Number of Deliveries per Month',
-        align: 'left'
-      },
-      xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      },
-      yaxis: {
-        title: {
-          text: 'Number of Deliveries'
-        }
-      },
-      tooltip: {
-        shared: true,
-        intersect: false
-      }
+  // Memoize fetchData function to prevent unnecessary rerenders
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await fetch_dashboard_analytics();
+      setLoading(false);
+      setStatsData(response);
+      // setOrderData(results.entries);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error fetching data: ', error);
     }
-  };
+  }, []);
 
-  return chartOptions;
-}, [store.monthlyOrders]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  console.log("stats" , stats)
+
+  const chartData = useMemo(() => {
+    // Ensure monthlyOrders is available and is an array
+  
+    if (!stats.monthlyOrders || !Array.isArray(stats.monthlyOrders)) {
+      return { series: [], options: {} };
+    }
+  
+    // Extract data for the chart
+    const data = stats.monthlyOrders.map(item => item.count);
+  
+    const chartOptions = {
+      series: [{
+        name: "Number of Deliveries",
+        data: data
+      }],
+      options: {
+        chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false
+          }
+        },
+        stroke: {
+          curve: "smooth"
+        },
+        title: {
+          text: 'Number of Deliveries per Month',
+          align: 'left'
+        },
+        xaxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        },
+        yaxis: {
+          title: {
+            text: 'Number of Deliveries'
+          }
+        },
+        tooltip: {
+          shared: true,
+          intersect: false
+        }
+      }
+    };
+  
+    return chartOptions;
+  }, [stats]);
 
 
   return ( 
     <>
-    { store.loading ? <Box display={"flex"} alignItems={"center"} justifyContent={"center"} minHeight={400}>
+    { loading ? <Box display={"flex"} alignItems={"center"} justifyContent={"center"} minHeight={400}>
       ...loading...
     </Box> :  
     <Box sx={{ flexGrow: 1 }}>
@@ -93,7 +106,7 @@ const chartData = useMemo(() => {
         <Grid size={3}>
           <Paper>
             <Box height={"150px"} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
-              <Typography variant='h2' color='primary'>{store.todayOrdersCount}</Typography>
+              <Typography variant='h2' color='primary'>{stats.todayOrdersCount}</Typography>
               <Typography variant='h6'>Today's Orders</Typography>
             </Box>
           </Paper>
@@ -101,7 +114,7 @@ const chartData = useMemo(() => {
         <Grid size={3}>
           <Paper>
             <Box height={"150px"} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
-              <Typography variant='h2' color='primary'>{store.last7DaysOrdersCount}</Typography>
+              <Typography variant='h2' color='primary'>{stats.last7DaysOrdersCount}</Typography>
               <Typography variant='h6'>This Week's Orders</Typography>
             </Box>
           </Paper>
@@ -109,7 +122,7 @@ const chartData = useMemo(() => {
         <Grid size={3}>
           <Paper>
             <Box height={"150px"} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
-              <Typography variant='h2' color='primary'>{store.last30DaysOrdersCount}</Typography>
+              <Typography variant='h2' color='primary'>{stats.last30DaysOrdersCount}</Typography>
               <Typography variant='h6'>This Month's Orders</Typography>
             </Box>
           </Paper>
@@ -117,7 +130,7 @@ const chartData = useMemo(() => {
         <Grid size={3}>
           <Paper>
             <Box height={"150px"} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
-              <Typography variant='h2' color='primary'>{store.totalYearlyCount}</Typography>
+              <Typography variant='h2' color='primary'>{stats.totalYearlyCount}</Typography>
               <Typography variant='h6'>This Year's Orders</Typography>
             </Box>
           </Paper>
@@ -150,25 +163,25 @@ const chartData = useMemo(() => {
           <Box display={"flex"} mt={"10px"} py={"10px"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
               <Typography variant='h6'>Revenue Information</Typography>
               <Typography variant='h6'>Today</Typography>
-              <Typography variant='h2' color='primary'>{store.todayRevenue}</Typography>
+              <Typography variant='h2' color='primary'>{stats.todayRevenue}</Typography>
               <Typography variant='h6'>This Week</Typography>
-              <Typography variant='h2' color='primary'>{store.last7DaysRevenue}</Typography>
+              <Typography variant='h2' color='primary'>{stats.last7DaysRevenue}</Typography>
               <Typography variant='h6'>This Month</Typography>
-              <Typography variant='h2' color='primary'>{store.last30DaysRevenue}</Typography>
+              <Typography variant='h2' color='primary'>{stats.last30DaysRevenue}</Typography>
               <Typography variant='h6'>This Year</Typography>
-              <Typography variant='h2' color='primary'>{store.totalYearlyRevenue}</Typography>
+              <Typography variant='h2' color='primary'>{stats.totalYearlyRevenue}</Typography>
             </Box>
           </Paper>
           <Paper>
           <Box display={"flex"} mt={"10px"} py={"10px"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
               <Typography variant='h6'>Clients</Typography>
-              <Typography variant='h2' color='primary'>{store.clientsCount}</Typography>
+              <Typography variant='h2' color='primary'>{stats.clientsCount}</Typography>
             </Box>
           </Paper>
           <Paper>
           <Box display={"flex"} mt={"10px"} py={"10px"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
               <Typography variant='h6'>Couriers</Typography>
-              <Typography variant='h2' color='primary'>{store.couriersCount}</Typography>
+              <Typography variant='h2' color='primary'>{stats.couriersCount}</Typography>
             </Box>
           </Paper>
         </Grid>

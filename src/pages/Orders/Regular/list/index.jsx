@@ -30,8 +30,8 @@ const Regular = () => {
   const [startDate, setStartDate] = useState(formatDate(start_date));
   const [endDate, setEndDate] = useState(formatDate(today));
   const [rowsPerPage, setRowsPerPage] = useState(50);
-  const [orders, setOrderData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [orders, setOrderData] = useState([]);
 
   // Function to handle filter changes
   const handleFilter = (event) => {

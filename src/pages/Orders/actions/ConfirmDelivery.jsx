@@ -2,11 +2,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Box, Button, CircularProgress, Paper, Typography } from '@mui/material';
 import { fetch_courier_users } from '../../../services/couriers';
-import { assign_courier_to_regular_order } from '../../../services/orders';
+import { confirm_regular_order_delivery } from '../../../services/orders';
 import SideNav from '../../../components/sidenav/SideNav';
 
 
-const AssignCourierToOrderBtn = ({ order, onRefresh }) => {
+const ConfirmRegularOrderDeliveryBtn = ({ order, onRefresh }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [couriers, setCouriers] = useState([]);
@@ -35,7 +35,7 @@ const AssignCourierToOrderBtn = ({ order, onRefresh }) => {
         setSubmitting(true);
 
         try {
-            await assign_courier_to_regular_order(data);
+            await confirm_regular_order_delivery(data);
             setIsSidebarOpen(false);
             onRefresh();  // Re-fetch data after submitting new history
         } catch (error) {
@@ -61,7 +61,7 @@ const AssignCourierToOrderBtn = ({ order, onRefresh }) => {
                 sx={{ backgroundColor: "#651fff" }}
                 onClick={handleOpenSidebar}  // Trigger data load and sidebar toggle
             >
-                {order.status === "approved" ? "Assign Courier" : "Reassign Courier"}
+                Confirm Delivery
             </Button>
 
             <SideNav showSidebar={isSidebarOpen} closeSidebar={() => setIsSidebarOpen(false)}>
@@ -112,4 +112,4 @@ const AssignCourierToOrderBtn = ({ order, onRefresh }) => {
     );
 };
 
-export default AssignCourierToOrderBtn;
+export default ConfirmRegularOrderDeliveryBtn;

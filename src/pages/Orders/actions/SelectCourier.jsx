@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useCallback } from 'react';
 import { Box, Button, CircularProgress, Paper, Typography } from '@mui/material';
-import { fetch_couriers } from '../../../services/couriers';
+import { fetch_courier_users } from '../../../services/couriers';
 
 const SelectCourier = ({ selectedCourier, setSelectedCourier, onSelect }) => {
   const [loading, setLoading] = useState(false);
@@ -11,7 +11,7 @@ const SelectCourier = ({ selectedCourier, setSelectedCourier, onSelect }) => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const results = await fetch_couriers();
+      const {results} = await fetch_courier_users();
       setCouriers(results);
     } catch (error) {
       console.error('Error fetching data: ', error);

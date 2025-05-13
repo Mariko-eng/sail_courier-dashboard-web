@@ -10,9 +10,9 @@ if (import.meta.env.VITE_ENV === "STAGING") {
   backendUrl = import.meta.env.VITE_BACKEND_PROD_URL;
 }
 
-export const fetch_courier_users = async () => {
+export const fetch_admin_users = async () => {
   try {
-    const url = `${backendUrl}/api/accounts/couriers/`
+    const url = `${backendUrl}/api/accounts/admins/`
 
     const response = await API.get(url);
 
@@ -28,12 +28,12 @@ export const fetch_courier_users = async () => {
 
 
 
-export const add_courier_user = async (data) => {
+export const add_admin_user = async (data) => {
   try {    
-    const url = `${backendUrl}/api/accounts/couriers/create/`
+    const url = `${backendUrl}/api/accounts/admins/create/`
 
     const requestData = {
-      username: data.username,
+      userName: data.firstName,
       phone: data.phone,
       email: data.email,
       password: data.password,

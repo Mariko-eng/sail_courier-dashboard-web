@@ -222,83 +222,6 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-
-        {/* {selectedRow !== null &&
-          <>
-            <Menu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleCloseMenuActions}
-            >
-              <MenuItem
-                onClick={() => {
-                  // console.log("tracking")
-                  handleCloseMenuActions();
-                  // Navigate to the order edit page
-                  navigate(`/orders/waybill/edit/${selectedRow.id}`);
-                }}
-              >
-                View Order
-              </MenuItem>
-
-              {selectedRow.status === 'cancelled' ? (
-                <div>
-                  <MenuItem
-                    onClick={() => {
-                      // console.log("tracking")
-                      handleCloseMenuActions();
-                      openSidebar('track');
-                    }}
-                  >
-                    Track Order
-                  </MenuItem>
-
-                  {loggedInUser.isSuperAdmin &&
-                    <MenuItem onClick={() => handleOpenDialog('delete_order', 'Are You sure You Want To Delete This Order')}>
-                      Delete Order
-                    </MenuItem>}
-
-                </div>
-              ) : selectedRow.status === 'rejected' ? (
-                <div>
-                  <MenuItem
-                    onClick={() => {
-                      // console.log("tracking")
-                      handleCloseMenuActions();
-                      openSidebar('track');
-                    }}
-                  >
-                    Track Order
-                  </MenuItem>
-                </div>
-              ) : selectedRow.status === 'pending' ? (
-                <div>
-                  <MenuItem onClick={() => handleOpenDialog('cancel', 'Are You sure You Want To Cancel This Order')}>Cancel Order </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      // console.log("tracking")
-                      handleCloseMenuActions();
-                      openSidebar('track');
-                    }}
-                  >
-                    Track Order
-                  </MenuItem>
-                </div>
-              ) : (
-                <div>
-                  <MenuItem
-                    onClick={() => {
-                      // console.log("tracking")
-                      handleCloseMenuActions();
-                      openSidebar('track');
-                    }}
-                  >
-                    Track Order
-                  </MenuItem>
-                </div>
-              )}
-            </Menu>
-          </>} */}
       </Paper>
 
       {selectedRow !== null &&
@@ -316,7 +239,7 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
                 navigate(`/orders/waybill/edit/${selectedRow.id}`);
               }}
             >
-              View Order
+              Manage
             </MenuItem>
 
             {selectedRow.status === 'cancelled' || selectedRow.status === 'delivered' ? (

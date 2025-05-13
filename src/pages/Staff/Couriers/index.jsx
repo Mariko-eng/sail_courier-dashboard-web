@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import MainCard from '../../../ui-component/cards/MainCard';
 import { Button, Card } from '@mui/material';
 import SideNav from '../../../components/sidenav/SideNav';
@@ -11,10 +11,13 @@ import { fetchCouriers, deleteCourier } from './store';
 // import MaterialTable from 'material-table';
 import UiLoadingOverlay from '../../../components/overlay';
 import CouriersTable from './table';
+import { fetch_courier_users } from '../../../services/couriers';
 
 const Couriers = () => {
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
 
   const openSidebar = () => {
     setShowSidebar(true);
@@ -24,24 +27,29 @@ const Couriers = () => {
     setShowSidebar(false);
   };
 
-  const dispatch = useDispatch();
-  const store = useSelector((state) => state.couriers);
+  // Memoize fetchData function to prevent unnecessary rerenders
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { results } = await fetch_courier_users();
+      // const results = await fetchRegularOrders(queryParams.toString());
+      setLoading(false);
+      setData(results);
+      // setOrderData(results.entries);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error fetching data: ', error);
+    }
+  }, [rowsPerPage]);
 
-  const data = store.data;
-
-  // console.log(data)
-
-  const newLoadList = structuredClone(data);
-
-  // console.log(newLoadList);
 
   useEffect(() => {
-    dispatch(fetchCouriers());
-  }, [dispatch]);
+    fetchData();
+  }, [fetchData]);
 
   return (
     <>
-      <UiLoadingOverlay loading={store.loading}>
+      <UiLoadingOverlay loading={loading}>
         <MainCard
           title="Staff - Couriers"
           secondary={
@@ -51,8 +59,9 @@ const Couriers = () => {
           }
         >
           <Card sx={{ overflow: 'hidden' }}>
-          <div style={{ overflowX: 'auto' }}>
-              <CouriersTable clients={newLoadList}
+            <div style={{ overflowX: 'auto' }}>
+              <CouriersTable
+                couriers={data}
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
               />
@@ -62,7 +71,7 @@ const Couriers = () => {
       </UiLoadingOverlay>
 
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-        <CouriersNew />
+        <CouriersNew onRefresh={fetchData} />
       </SideNav>
     </>
   );

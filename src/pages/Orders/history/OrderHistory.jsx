@@ -17,7 +17,7 @@ const ViewOrderHistoryBtn = ({ order }) => {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const results = await fetch_order_history({ id: order.id });
+            const {results} = await fetch_order_history({ id: order.id });
             setOrderHistoryData(results);
         } catch (error) {
             console.error('Error fetching data: ', error);
@@ -77,7 +77,8 @@ const ViewOrderHistoryBtn = ({ order }) => {
                         id="outlined-multiline-flexible"
                         label="Update Tracking Information"
                         multiline
-                        maxRows={4}
+                        minRows={4}
+                        maxRows={10}
                         value={desc}
                         onChange={(e) => setDesc(e.target.value)}
                     />
@@ -107,7 +108,7 @@ const ViewOrderHistoryBtn = ({ order }) => {
                         <Box key={index} mb={2} p={2} sx={{ background: 'blue', borderRadius: '10px' }}>
                             <Box mt={1} color={"white"}>{item.description}</Box>
                             <Box mt={2} display={'flex'} justifyContent={'end'} color={'cornsilk'}>
-                                {prettyDate(item.createdAt)}
+                                {prettyDate(item.created_at)}
                             </Box>
                         </Box>
                     ))}

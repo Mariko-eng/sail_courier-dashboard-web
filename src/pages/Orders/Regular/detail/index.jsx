@@ -22,6 +22,7 @@ import RegularOrderActionsMenuButton from './actions';
 import ViewOrderHistoryBtn from '../../history/OrderHistory';
 import AssignCourierToOrderBtn from '../../actions/AssignCourier';
 import { fetch_regular_order_detail } from '../../../../services/orders';
+import ConfirmRegularOrderDeliveryBtn from '../../actions/ConfirmDelivery';
 
 
 const RegularOrdersDetail = () => {
@@ -85,7 +86,7 @@ const RegularOrdersDetail = () => {
 
     const orderDetails = orderData;
 
-    console.log("orderDetails" , orderDetails)
+    // console.log("orderDetails", orderDetails)
 
     return (
         <>
@@ -101,18 +102,26 @@ const RegularOrdersDetail = () => {
                 {/* Buttons for actions */}
                 <Box display={"flex"} justifyContent={"end"} sx={{ my: 2 }}>
                     <Grid container spacing={2}>
+                        {/* {!["cancelled", "rejected"].includes(orderDetails.status) && (
+                            <Grid xs={4}>
+                                <RegularOrderActionsMenuButton order={orderDetails} onRefresh={handleRefresh} />
+                            </Grid>
+                        )} */}
+
                         <Grid xs={4}>
                             <RegularOrderActionsMenuButton order={orderDetails} onRefresh={handleRefresh} />
                         </Grid>
-                        {
-                            (orderDetails.status !== "pending" || orderDetails.status !== "delivered" ||
-                                orderDetails.status !== "cancelled" || orderDetails.status !== "rejected"
-                            ) && (
-                                <Grid xs={4}>
-                                    <AssignCourierToOrderBtn order={orderDetails} onRefresh={handleRefresh} />
-                                </Grid>
-                            )
-                        }
+
+                        {!["pending", "delivered", "cancelled", "rejected"].includes(orderDetails.status) && (
+                            <Grid xs={4}>
+                                <AssignCourierToOrderBtn order={orderDetails} onRefresh={handleRefresh} />
+                            </Grid>
+                        )}
+                        {!["pending", "delivered", "cancelled", "rejected"].includes(orderDetails.status) && (
+                            <Grid xs={4}>
+                                <ConfirmRegularOrderDeliveryBtn order={orderDetails} onRefresh={handleRefresh} />
+                            </Grid>
+                        )}
                         <Grid xs={4}>
                             <ViewOrderHistoryBtn order={orderDetails} />
                         </Grid>
@@ -161,7 +170,7 @@ const RegularOrdersDetail = () => {
                             </Grid>
                             <Grid xs={12}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>ORDER STATUS</Typography>
-                                <Chip label={orderDetails?.status.toUpperCase()}  color="primary" variant="outlined" />
+                                <Chip label={orderDetails?.status.toUpperCase()} color="primary" variant="outlined" />
                             </Grid>
                         </Grid>
                     </CardContent>
@@ -341,30 +350,67 @@ const RegularOrdersDetail = () => {
                 )}
 
                 {/* Courier Info (Conditional Rendering) */}
-                {orderDetails?.courierId && orderDetails?.courierId !== "" && (
-                    <Card sx={{ my: 1 }}>
-                        <CardContent sx={{ backgroundColor: '#E0F2F1' }}>
-                            <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
-                                Courier Information
-                            </Typography>
-                            <Box sx={{ mt: 2, backgroundColor: '#FFFFFF', p: 2 }}>
-                                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                                    Courier Name:
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: 'gray' }}>
-                                    {orderDetails?.courierName || 'Not Available'}
-                                </Typography>
+                {
+                    ['assigned', 'picked_up', 'in_transit'].includes(orderDetails.status) && (
+                        <>
+                            {orderDetails?.pickedup_by && orderDetails?.pickedup_by?.id !== "" && (
+                                <Card sx={{ my: 1 }}>
+                                    <CardContent sx={{ backgroundColor: '#E0F2F1' }}>
+                                        <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+                                            Pickup Courier Information
+                                        </Typography>
+                                        <Box sx={{ mt: 2, backgroundColor: '#FFFFFF', p: 2 }}>
+                                            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                                                Courier Name:
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ color: 'gray' }}>
+                                                {orderDetails?.pickedup_by?.user?.userprofile?.username || 'Not Available'}
+                                            </Typography>
 
-                                <Typography variant="body1" sx={{ mt: 2 }}>
-                                    Courier Phone:
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: 'gray' }}>
-                                    {orderDetails?.courierPhone || 'Not Available'}
-                                </Typography>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                )}
+                                            <Typography variant="body1" sx={{ mt: 2 }}>
+                                                Courier Phone:
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ color: 'gray' }}>
+                                                {orderDetails?.pickedup_by?.user?.userprofile?.phone || 'Not Available'}
+                                            </Typography>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </>
+                    )
+                }
+
+                {
+                    ['delivered'].includes(orderDetails.status) && (
+                        <>
+                            {orderDetails?.delivered_by && orderDetails?.delivered_by.id !== "" && (
+                                <Card sx={{ my: 1 }}>
+                                    <CardContent sx={{ backgroundColor: '#E0F2F1' }}>
+                                        <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+                                            Delivery Courier Information
+                                        </Typography>
+                                        <Box sx={{ mt: 2, backgroundColor: '#FFFFFF', p: 2 }}>
+                                            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                                                Courier Name:
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ color: 'gray' }}>
+                                                {orderDetails?.delivered_by?.user?.userprofile?.username || 'Not Available'}
+                                            </Typography>
+
+                                            <Typography variant="body1" sx={{ mt: 2 }}>
+                                                Courier Phone:
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ color: 'gray' }}>
+                                                {orderDetails?.delivered_by?.user?.userprofile?.phone || 'Not Available'}
+                                            </Typography>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </>
+                    )
+                }
 
             </Box>
         </>

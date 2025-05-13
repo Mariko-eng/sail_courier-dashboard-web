@@ -4,7 +4,6 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import DashboardSummary from './summary';
-import DashboardRecentOrders from './RecentOrders';
 
 function a11yProps(index) {
   return {
@@ -25,14 +24,10 @@ export default function DashboardTabs() {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Summary" {...a11yProps(0)} />
-          <Tab label="Recent Orders" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <DashboardSummary />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        <DashboardRecentOrders />
       </CustomTabPanel>
     </Box>
   );
