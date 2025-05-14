@@ -10,13 +10,13 @@ if (import.meta.env.VITE_ENV === "STAGING") {
 }
 
 
-export const fetch_dashboard_analytics = async (query) => {
+export const fetch_dashboard_analytics = async (queryString) => {
   try {
-    const url = `${backendUrl}/api/main/dashboard-analytics/`
+    const url = `${backendUrl}/api/main/dashboard-analytics/?${queryString}`
 
     const response = await API.get(url);
 
-    console.log("response.data", response.data)
+    // console.log("response.data", response.data)
 
     return response.data;
   } catch (error) {

@@ -39,7 +39,6 @@ const OrderHistory = ({ order }) => {
       description: desc
     };
 
-    console.log(data)
     dispatch(addOrderHistory(data));
     setSubmitting(false);
     setDesc("");

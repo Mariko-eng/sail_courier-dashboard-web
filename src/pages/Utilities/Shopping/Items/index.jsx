@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AddCircle } from '@mui/icons-material';
-import SideNav from '../../../../components/sidenav/SideNav';
+import SideNav from '../../../../components/SideNav';
 import ShoppingItemsNew from './new';
 import {Grid, Button, Card, CardMedia, CardContent, CardActions, Typography } from '@mui/material';
 // import { IconButton } from '@mui/material';

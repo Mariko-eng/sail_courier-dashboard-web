@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Box, Button, CircularProgress, Paper, Typography } from '@mui/material';
 import { fetch_courier_users } from '../../../services/couriers';
 import { assign_courier_to_regular_order } from '../../../services/orders';
-import SideNav from '../../../components/sidenav/SideNav';
+import SideNav from '../../../components/SideNav';
 
 
 const AssignCourierToOrderBtn = ({ order, onRefresh }) => {

@@ -1,196 +1,199 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Box, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 
-import { API } from '../../../../utils/api';
-import { formatError } from '../../../../utils/axios-error';
-
-import { Box, FormControl, InputLabel } from '@mui/material';
-import { MenuItem, Select, TextField } from '@mui/material';
-
+import { fetch_regular_orders } from '../../../../services/orders';
 import UiLoadingOverlay from '../../../../components/overlay';
 import MainCard from '../../../../ui-component/cards/MainCard';
+import RegularOrdersTable from './table';
 
-import RegularOrdersTable from './../table';
-import { fetch_regular_orders } from '../../../../services/orders';
-
-// Utility function to format date in YYYY-MM-DD
+// Utility to format date as YYYY-MM-DD
 const formatDate = (date) => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
-
-const Regular = () => { 
+ 
+const RegularOrdersList = () => {
   const today = new Date();
-  const now = new Date();
-  const start_date = new Date(now.setDate(now.getDate() - 7));
+  const lastWeek = new Date(today);
+  lastWeek.setDate(today.getDate() - 7);
 
   const [status, setStatus] = useState('all');
   const [timePeriod, setTimePeriod] = useState('last7days');
-  const [startDate, setStartDate] = useState(formatDate(start_date));
+  const [startDate, setStartDate] = useState(formatDate(lastWeek));
   const [endDate, setEndDate] = useState(formatDate(today));
-  const [rowsPerPage, setRowsPerPage] = useState(50);
   const [loading, setLoading] = useState(false);
-  const [orders, setOrderData] = useState([]);
+ 
+  const [orders, setOrders] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPageNo, setCurrentPageNo] = useState(1);
+  const [currentPageSize, setCurrentPageSize] = useState(50);
 
-  // Function to handle filter changes
-  const handleFilter = (event) => {
-    const { name, value } = event.target;
-    if (name === 'timePeriod') {
-      setTimePeriod(value);
-      updateDates(value);  // Update dates when time period changes
-    } else {
-      if (name === 'startDate') setStartDate(value);
-      if (name === 'endDate') setEndDate(value);
-      if (name === 'status') setStatus(value);
-    }
-  };
-
-  // Function to update startDate and endDate based on time period
   const updateDates = (period) => {
     const today = new Date();
-    let start, end;
+    let start, end = new Date();
+
     switch (period) {
       case 'today':
-        start = end = new Date(today);
+        start = new Date();
         break;
       case 'yesterday':
-        start = end = new Date(today.setDate(today.getDate() - 1));
+        start = new Date(today.setDate(today.getDate() - 1));
+        end = new Date(start);
         break;
       case 'last7days':
-        start = new Date(today.setDate(today.getDate() - 7));
-        end = new Date();
+        start = new Date();
+        start.setDate(today.getDate() - 7);
         break;
       case 'last14days':
-        start = new Date(today.setDate(today.getDate() - 14));
-        end = new Date();
+        start = new Date();
+        start.setDate(today.getDate() - 14);
         break;
       case 'last30days':
-        start = new Date(today.setDate(today.getDate() - 30));
-        end = new Date();
+        start = new Date();
+        start.setDate(today.getDate() - 30);
         break;
       case 'last3months':
-        start = new Date(today.setMonth(today.getMonth() - 3));
-        end = new Date();
+        start = new Date();
+        start.setMonth(today.getMonth() - 3);
         break;
       case 'last6months':
-        start = new Date(today.setMonth(today.getMonth() - 6));
-        end = new Date();
+        start = new Date();
+        start.setMonth(today.getMonth() - 6);
         break;
       case 'last12months':
-        start = new Date(today.setFullYear(today.getFullYear() - 1));
-        end = new Date();
+        start = new Date();
+        start.setFullYear(today.getFullYear() - 1);
         break;
       default:
-        start = end = new Date(today);
+        start = new Date();
+        break;
     }
+
     setStartDate(formatDate(start));
     setEndDate(formatDate(end));
   };
 
+  const handleFilter = (event) => {
+    const { name, value } = event.target;
 
-  // Memoize fetchData function to prevent unnecessary rerenders
+    if (name === 'timePeriod') {
+      setTimePeriod(value);
+      updateDates(value);
+    } else if (name === 'status') {
+      setStatus(value);
+    } else if (name === 'startDate') {
+      setStartDate(value);
+    } else if (name === 'endDate') {
+      setEndDate(value);
+    }
+  };
+
   const fetchData = useCallback(async () => {
-    const queryParams = new URLSearchParams();
-    queryParams.append('limit', rowsPerPage);
-    if (status !== 'all') queryParams.append('status', status);
-    if (startDate) queryParams.append('startDate', new Date(startDate).toISOString());
-    if (endDate) queryParams.append('endDate', new Date(endDate).toISOString());
+    const queryParams = new URLSearchParams({
+      page: currentPageNo.toString(),
+      page_size: currentPageSize.toString(),
+      startDate: new Date(startDate).toISOString(),
+      endDate: new Date(endDate).toISOString(),
+      status,
+    });
 
     try {
       setLoading(true);
-      const {results} = await fetch_regular_orders();
-      // const results = await fetchRegularOrders(queryParams.toString());
-      setLoading(false);
-      setOrderData(results);
-      // setOrderData(results.entries);
+      const {count, results } = await fetch_regular_orders(queryParams.toString());
+      setTotalCount(count);
+      setOrders(results);
     } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
       setLoading(false);
-      console.error('Error fetching data: ', error);
     }
-  }, [rowsPerPage, status, startDate, endDate]);
-
+  }, 
+  [currentPageNo, currentPageSize, status, startDate, endDate]
+);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-
   return (
-    <>
-      <UiLoadingOverlay loading={loading}>
-        <MainCard title="Regular Orders"
-        >
-          <Box px={'10px'} py={'20px'} display={'flex'} justifyContent={'space-between'}>
-            <FormControl style={{ minWidth: 150 }}>
-              <InputLabel id="status-label">Order Status</InputLabel>
-              <Select
-                labelId="status-label"
-                label="Order Status"
-                value={status}
-                name="status"
-                onChange={handleFilter}
-              >
-                <MenuItem value="all">All</MenuItem>
-                <MenuItem value="pending">Pending</MenuItem>
-                <MenuItem value="approved">Approved</MenuItem>
-                <MenuItem value="pickedUp">PickedUp</MenuItem>
-                <MenuItem value="delivered">Delivered</MenuItem>
-              </Select>
-            </FormControl>
+    <UiLoadingOverlay loading={loading}>
+      <MainCard title="Regular Orders">
+        <Box px={2} py={3} display="flex" justifyContent="space-between" flexWrap="wrap" gap={2}>
+          <FormControl style={{ minWidth: 150 }}>
+            <InputLabel id="status-label">Order Status</InputLabel>
+            <Select
+              labelId="status-label"
+              label="Order Status"
+              value={status}
+              name="status"
+              onChange={handleFilter}
+            >
+              <MenuItem value="all">All</MenuItem>
+              <MenuItem value="pending">Pending</MenuItem>
+              <MenuItem value="approved">Approved</MenuItem>
+              <MenuItem value="pickedUp">PickedUp</MenuItem>
+              <MenuItem value="delivered">Delivered</MenuItem>
+            </Select>
+          </FormControl>
 
-            <Box ml={'20px'} display={'flex'}>
-              <FormControl style={{ minWidth: 150 }}>
-                <InputLabel id="period-label">Period</InputLabel>
-                <Select
-                  labelId="period-label"
-                  label="Period"
-                  value={timePeriod}
-                  name="timePeriod"
-                  onChange={handleFilter}
-                  style={{ minWidth: 120 }}
-                >
-                  <MenuItem value="today">Today</MenuItem>
-                  <MenuItem value="yesterday">Yesterday</MenuItem>
-                  <MenuItem value="last7days">Last 7 Days</MenuItem>
-                  <MenuItem value="last14days">Last 14 Days</MenuItem>
-                  <MenuItem value="last30days">Last 30 Days</MenuItem>
-                  <MenuItem value="last3months">Last 3 Months</MenuItem>
-                  <MenuItem value="last6months">Last 6 Months</MenuItem>
-                  <MenuItem value="last12months">Last 12 Months</MenuItem>
-                </Select>
-              </FormControl>
-              <Box width={'20px'} />
-              <TextField
-                id="start-date"
-                label="Start Date"
-                type="date"
-                name="startDate"
-                value={startDate}
-                onChange={handleFilter}
-                style={{ minWidth: 120 }}
-                InputLabelProps={{ shrink: true }}
-              />
-              <Box width={'20px'} />
-              <TextField
-                id="end-date"
-                label="End Date"
-                type="date"
-                name="endDate"
-                value={endDate}
-                onChange={handleFilter}
-                style={{ minWidth: 120 }}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Box>
-          </Box>
-          <div style={{ overflowX: 'auto' }}>
-            <RegularOrdersTable orders={orders} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage} />
-          </div>
-        </MainCard>
-      </UiLoadingOverlay>
-    </>
+          <FormControl style={{ minWidth: 150 }}>
+            <InputLabel id="period-label">Period</InputLabel>
+            <Select
+              labelId="period-label"
+              label="Period"
+              value={timePeriod}
+              name="timePeriod"
+              onChange={handleFilter}
+            >
+              <MenuItem value="today">Today</MenuItem>
+              <MenuItem value="yesterday">Yesterday</MenuItem>
+              <MenuItem value="last7days">Last 7 Days</MenuItem>
+              <MenuItem value="last14days">Last 14 Days</MenuItem>
+              <MenuItem value="last30days">Last 30 Days</MenuItem>
+              <MenuItem value="last3months">Last 3 Months</MenuItem>
+              <MenuItem value="last6months">Last 6 Months</MenuItem>
+              <MenuItem value="last12months">Last 12 Months</MenuItem>
+            </Select>
+          </FormControl>
+
+          <TextField
+            id="start-date"
+            label="Start Date"
+            type="date"
+            name="startDate"
+            value={startDate}
+            onChange={handleFilter}
+            InputLabelProps={{ shrink: true }}
+            style={{ minWidth: 150 }}
+          />
+
+          <TextField
+            id="end-date"
+            label="End Date"
+            type="date"
+            name="endDate"
+            value={endDate}
+            onChange={handleFilter}
+            InputLabelProps={{ shrink: true }}
+            style={{ minWidth: 150 }}
+          />
+        </Box>
+
+        <Box style={{ overflowX: 'auto' }}>
+          <RegularOrdersTable
+            orders={orders}
+            totalCount={totalCount}
+            currentPageSize={currentPageSize}
+            setCurrentPageSize={setCurrentPageSize}
+            currentPageNo={currentPageNo}
+            setCurrentPageNo={setCurrentPageNo}
+          />
+        </Box>
+      </MainCard>
+    </UiLoadingOverlay>
   );
 };
 
-export default Regular;
+export default RegularOrdersList;

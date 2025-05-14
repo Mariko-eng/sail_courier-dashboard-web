@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
-import useScriptRef from '../../../../utils/hooks/useScriptRef';
+import useScriptRef from '../../../../../utils/hooks/useScriptRef';
 
 // third party
 import * as Yup from 'yup';
@@ -11,29 +11,37 @@ import { Formik, Field } from 'formik';
 import { useTheme } from '@mui/material/styles';
 import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import AnimateButton from '../../../../ui-component/extended/AnimateButton';
+import AnimateButton from '../../../../../ui-component/extended/AnimateButton';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { addClientCorporate } from './../../store/reducers/extra_reducers';
-import { fetchCorporateCompanies } from './../../store/reducers/extra_reducers';
+import { add_client_corporate, fetch_corporate_companies } from '../../../../../services/clients';
 
-const CorporateNew = () => {
+const ClientsCorporateNew = ({ onRefresh }) => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();
 
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [companies, setCompanies] = useState([]);
 
-  const store = useSelector((store) => store.corporateCompanies);
-
-  const companies = store.data;
+  // Memoize fetchData function to prevent unnecessary rerenders
+  const fetchCompaniesData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { results } = await fetch_corporate_companies();
+      setCompanies(results);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error fetching data: ', error);
+    }
+  }, []);
 
   useEffect(() => {
-    dispatch(fetchCorporateCompanies());
-  }, [dispatch]);
+    fetchCompaniesData();
+  }, [fetchCompaniesData]);
 
   return (
     <>
-      {store.loading && companies.length === 0 ? (
+      {loading ? (
         <Box>
           <p>Loading Companies</p>
         </Box>
@@ -68,17 +76,21 @@ const CorporateNew = () => {
             onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
               try {
                 if (scriptedRef.current) {
+                  setSubmitting(true);
+
                   const company_obj = companies.find((itm) => itm.id == values.company);
                   const data = {
-                    company: company_obj,
-                    corporate_account_type: values.corporate_account_type,
+                    company_id: company_obj.id,
                     username: values.username,
                     phone: values.phone,
                     email: values.email,
                     password: values.password
                   };
-                  // console.log(data);
-                  dispatch(addClientCorporate(data));
+
+                  const response = await add_client_corporate(data)
+
+                  onRefresh()
+
                   setStatus({ success: true });
                   setSubmitting(false);
                   resetForm();
@@ -93,7 +105,7 @@ const CorporateNew = () => {
               }
             }}
           >
-            {({ errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
+            {({ isSubmitting, errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
               <form noValidate onSubmit={handleSubmit}>
                 <FormControl fullWidth error={Boolean(touched.company && errors.company)} sx={{ marginTop: 2 }}>
                   <InputLabel htmlFor="outlined-adornment-company">Company</InputLabel>
@@ -111,7 +123,7 @@ const CorporateNew = () => {
                     </MenuItem>
                     {companies.map((item) => (
                       <MenuItem key={item.id} value={item.id}>
-                        {item.companyName}
+                        {item.name}
                       </MenuItem>
                     ))}
                   </Field>
@@ -227,8 +239,8 @@ const CorporateNew = () => {
                   <AnimateButton>
                     <LoadingButton
                       disableElevation
-                      loading={store.loading}
-                      disabled={store.loading}
+                      loading={isSubmitting}
+                      disabled={isSubmitting}
                       fullWidth
                       size="large"
                       type="submit"
@@ -248,4 +260,4 @@ const CorporateNew = () => {
   );
 };
 
-export default CorporateNew;
+export default ClientsCorporateNew;

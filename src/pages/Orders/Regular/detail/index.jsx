@@ -36,7 +36,6 @@ const RegularOrdersDetail = () => {
     const [orderData, setOrderData] = useState(null);
 
     const fetchData = useCallback(async () => {
-        // console.log("Fetching Data");
         try {
             const order = await fetch_regular_order_detail(id);
             setOrderData(order); // Store the fetched data
@@ -85,8 +84,6 @@ const RegularOrdersDetail = () => {
     }
 
     const orderDetails = orderData;
-
-    // console.log("orderDetails", orderDetails)
 
     return (
         <>
@@ -170,7 +167,12 @@ const RegularOrdersDetail = () => {
                             </Grid>
                             <Grid xs={12}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>ORDER STATUS</Typography>
-                                <Chip label={orderDetails?.status.toUpperCase()} color="primary" variant="outlined" />
+                                <Chip label={orderDetails?.status.toUpperCase()}
+                                    color={orderDetails?.status === "cancelled" || orderDetails?.status === "rejected" ?
+                                        "error" : orderDetails?.status === "delivered" ? "success" :
+                                            orderDetails?.status === "pending" ? "primary" : "secondary"
+                                    }
+                                    variant="outlined" />
                             </Grid>
                         </Grid>
                     </CardContent>

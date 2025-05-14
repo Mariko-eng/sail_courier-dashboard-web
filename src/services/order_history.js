@@ -18,7 +18,7 @@ export const fetch_order_history = async (data) => {
 
         const response = await API.get(url);
 
-        console.log("response.data", response.data)
+        // console.log("response.data", response.data)
 
         return response.data;
     } catch (error) {

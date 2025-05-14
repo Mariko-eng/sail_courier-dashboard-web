@@ -22,7 +22,6 @@ const ResetPassword = () => {
     try {
       // Validate only email as we are resetting password based on email
       await validationSchema.validate({ email }, { abortEarly: false });
-      console.log('Validation successful!');
       setValidationErrors([]);
       return true;
     } catch (err) {
@@ -31,7 +30,6 @@ const ResetPassword = () => {
         message: item.message
       }));
 
-      console.log('Validation errors:', errors);
       setValidationErrors(errors);
       return false;
     }
@@ -46,7 +44,6 @@ const ResetPassword = () => {
         setSuccessMessage("A link has been sent to your email to reset your password."); // Set success message
         setEmail(""); // Clear email input on success
     } catch (err) {
-        console.log(err);
         setLoading(false);
         setErrorMessage(`${err}`); // Set error message
     }

@@ -1,18 +1,15 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
     Paper, Table, TableBody, TableCell, TableContainer,
     TableHead, TablePagination, TableRow, IconButton, Menu, MenuItem
 } from '@mui/material';
-import { MoreVert as MoreVertIcon, ToggleOn, ToggleOff } from '@mui/icons-material';
-import { prettyDate } from '../../../../utils/app-functions';
-import { useDispatch } from 'react-redux';
-import { deleteCorporateCompany } from '../../store/reducers/extra_reducers';
-import { useNavigate } from 'react-router-dom';
+import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import { prettyDate } from '../../../../../utils/app-functions';
 
 const columns = [
     { id: 'index', label: 'Index', minWidth: 70 },
-    { id: 'firebase_id', label: 'Firebase ID', minWidth: 100 },
     { id: 'name', label: 'Name', minWidth: 100 },
     { id: 'email', label: 'Email', minWidth: 100 },
     { id: 'phone', label: 'Phone', minWidth: 100 },
@@ -37,15 +34,19 @@ function processData(dataList) {
     });
 }
 
-export default function CorporateCompanniesTable({ companies }) {
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+export default function CorporateCompanniesTable({
+    companies,
+    totalCount,
+    currentPageSize,
+    setCurrentPageSize,
+    currentPageNo,
+    setCurrentPageNo,
+}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
     const [toggledRows, setToggledRows] = React.useState(new Set());
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const handleToggle = (id) => {
         setToggledRows(prev => {
@@ -55,11 +56,18 @@ export default function CorporateCompanniesTable({ companies }) {
         });
     };
 
-    const handleChangePage = (_, newPage) => setPage(newPage);
+    const handleChangePage = (event, newPage) => {
+        setCurrentPageNo(newPage + 1); // +1 because TablePagination is 0-indexed
+    };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
+        setCurrentPageSize(parseInt(event.target.value, 10));
+        setCurrentPageNo(1);
+    };
+
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+        setCurrentPageNo(1);
     };
 
     const handleClick = (event, row) => {
@@ -78,7 +86,7 @@ export default function CorporateCompanniesTable({ companies }) {
         if (action === "Delete") {
             const confirmed = window.confirm(`You want to delete this company? ${selectedRow.name}`);
             if (confirmed) {
-                dispatch(deleteCorporateCompany(selectedRow.id));
+                // continue
             }
         }
 
@@ -111,18 +119,13 @@ export default function CorporateCompanniesTable({ companies }) {
                         </TableHead>
                         <TableBody>
                             {rows
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row) => (
+                                 .map((row) => (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
                                                 <TableCell key={column.id} align={column.align}>
-                                                    {column.id === 'action' ? (
-                                                        <IconButton onClick={() => handleToggle(row.firebase_id)}>
-                                                            {toggledRows.has(row.firebase_id) ? <ToggleOn /> : <ToggleOff />}
-                                                        </IconButton>
-                                                    ) : column.id === 'action2' ? (
+                                                    {column.id === 'action2' ? (
                                                         <IconButton onClick={(event) => handleClick(event, row)}>
                                                             <MoreVertIcon />
                                                         </IconButton>
@@ -140,11 +143,11 @@ export default function CorporateCompanniesTable({ companies }) {
                     </Table>
                 </TableContainer>
                 <TablePagination
-                    rowsPerPageOptions={[10, 25, 100]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
+                    rowsPerPageOptions={[50, 100, 150]}
+                    count={totalCount} // from API: count
+                    rowsPerPage={currentPageSize}
+                    page={currentPageNo - 1}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
@@ -165,7 +168,6 @@ CorporateCompanniesTable.propTypes = {
     companies: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            firebase_id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
             email: PropTypes.string.isRequired,
             phone: PropTypes.string.isRequired,
@@ -178,4 +180,9 @@ CorporateCompanniesTable.propTypes = {
             contact_person_phone: PropTypes.string,
         })
     ).isRequired,
+    totalCount: PropTypes.number.isRequired,
+    currentPageSize: PropTypes.number.isRequired,
+    setCurrentPageSize: PropTypes.func.isRequired,
+    currentPageNo: PropTypes.number.isRequired,
+    setCurrentPageNo: PropTypes.func.isRequired,
 };

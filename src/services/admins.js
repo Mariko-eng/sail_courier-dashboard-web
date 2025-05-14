@@ -10,13 +10,13 @@ if (import.meta.env.VITE_ENV === "STAGING") {
   backendUrl = import.meta.env.VITE_BACKEND_PROD_URL;
 }
 
-export const fetch_admin_users = async () => {
+export const fetch_admin_users = async (queryString) => {
   try {
-    const url = `${backendUrl}/api/accounts/admins/`
+    const url = `${backendUrl}/api/accounts/admins/?${queryString}`
 
     const response = await API.get(url);
 
-    console.log("response.data", response.data)
+    // console.log("response.data", response.data)
 
     return response.data;
   } catch (error) {

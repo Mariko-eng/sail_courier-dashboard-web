@@ -22,8 +22,6 @@ const Login = () => {
 
   const navigate = useNavigate()
 
-  // console.log(store)
-
   const validateData = async () => {
     try {
       // Validate the email and password with the validation schema
@@ -31,17 +29,14 @@ const Login = () => {
         { email, password },
         { abortEarly: false } // Collect all errors
       );
-      console.log('Validation successful!');
       setValidationErrors([]);
       return true;
     } catch (err) {
-      // console.log('Error:', error.inner);
       const errors = err.inner.map((item) => ({
         name: item.path,
         message: item.message
       }));
 
-      console.log('Validation errors:', errors);
       setValidationErrors(errors);
       return false;
     }
@@ -61,11 +56,8 @@ const Login = () => {
 
   useEffect(() => {
     if (store.isLoading || store.user === undefined || store.user === null) {
-      console.log("The user is not yet loaded!.");
     } else {
       if (Object.keys(store.user).length > 0) {
-        // console.log(store.user)
-        console.log("The user is loaded successfully.");
         navigate("/home");
       }
     }

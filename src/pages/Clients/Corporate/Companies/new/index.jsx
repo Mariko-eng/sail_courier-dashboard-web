@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import useScriptRef from '../../../../utils/hooks/useScriptRef';
+import useScriptRef from '../../../../../utils/hooks/useScriptRef';
 
-// third party
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import { Marker, GoogleMap } from '@react-google-maps/api';
+
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
@@ -11,16 +13,12 @@ import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput } from '@mu
 
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import AnimateButton from '../../../../ui-component/extended/AnimateButton';
-import ImageDropZoneBase64 from '../../../../components/input/ImageDropZoneBase64';
+import AnimateButton from '../../../../../ui-component/extended/AnimateButton';
+import ImageDropZoneBase64 from '../../../../../components/input/ImageDropZoneBase64';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { addCorporateCompany } from './../../store/reducers/extra_reducers';
+import { add_corporate_company } from '../../../../../services/clients';
 
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { Marker, GoogleMap } from '@react-google-maps/api';
-
-const CorporateCompaniesNew = () => {
+const CorporateCompaniesNew = ({ onRefresh }) => {
   const [companyForm20FileBase64, setCompanyForm20FileBase64] = useState('');
   const [companyAddress, setCompanyAddress] = useState('');
   const [companyAddressPlaceId, setCompanyAddressPlaceId] = useState('');
@@ -54,10 +52,6 @@ const CorporateCompaniesNew = () => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();
 
-  const dispatch = useDispatch();
-
-  const store = useSelector((store) => store.corporateCompanies);
-  
 
   return (
     <div>
@@ -75,6 +69,7 @@ const CorporateCompaniesNew = () => {
           contactPersonName: '',
           contactPersonEmail: '',
           contactPersonPhone: '',
+          billingEmail: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
@@ -85,7 +80,8 @@ const CorporateCompaniesNew = () => {
           companyTinNumber: Yup.string(),
           contactPersonName: Yup.string().min(2).max(25).required('Contact Person Name is required'),
           contactPersonPhone: Yup.string().min(10).max(25).required('Contact Person PhoneNumber is required'),
-          contactPersonEmail: Yup.string().email('Invalid email').required('Contact Person Email Address is required')
+          contactPersonEmail: Yup.string().email('Invalid email').required('Contact Person Email Address is required'),
+          billingEmail: Yup.string().email('Invalid email').required('Company Billing Email Address is required')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
           try {
@@ -99,28 +95,27 @@ const CorporateCompaniesNew = () => {
               ...values,
               companyAddressPlaceId: companyAddressPlaceId,
               companyAddressPlaceName: companyAddress,
-              companyAddressCordinatesLat : companyAddressCordinates.lat,
-              companyAddressCordinatesLng : companyAddressCordinates.lng,
+              companyAddressCordinatesLat: companyAddressCordinates.lat,
+              companyAddressCordinatesLng: companyAddressCordinates.lng,
             };
 
             if (scriptedRef.current) {
               let companyForm20ImageFormat = "";
               let companyForm20ImageBase64 = "";
 
-              // let companyForm20 = {
-              //   imageFormat: '',
-              //   imageBase64: ''
-              // };
               if (companyForm20FileBase64 === '') {
                 data = {
                   ...data,
                   companyForm20ImageFormat,
                   companyForm20ImageBase64,
-
-                  // companyForm20: companyForm20
                 };
-                // console.log(data);
-                dispatch(addCorporateCompany(data));
+
+                setSubmitting(true);
+
+                const response = await add_corporate_company(data)
+
+                onRefresh()
+
                 setStatus({ success: true });
                 setSubmitting(false);
                 setCompanyAddress('');
@@ -134,20 +129,19 @@ const CorporateCompaniesNew = () => {
                   companyForm20ImageFormat = list[0];
                   companyForm20ImageBase64 = list[1];
 
-                  // companyForm20 = {
-                  //   imageFormat: list[0],
-                  //   imageBase64: list[1]
-                  // };
-
                   data = {
                     ...data,
                     companyForm20ImageFormat,
                     companyForm20ImageBase64,
-
-                    // companyForm20: companyForm20
                   };
-                  //   console.log(data);
-                  dispatch(addCorporateCompany(data));
+                  setSubmitting(true);
+
+                  setSubmitting(true);
+
+                  const response = await add_corporate_company(data)
+
+                  onRefresh()
+
                   setStatus({ success: true });
                   setSubmitting(false);
                   setCompanyAddress('');
@@ -168,7 +162,7 @@ const CorporateCompaniesNew = () => {
           }
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
+        {({ isSubmitting, errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <FormControl fullWidth error={Boolean(touched.companyName && errors.companyName)} sx={{ ...theme.typography.customInput }}>
               <InputLabel htmlFor="outlined-adornment-companyName">Company Name</InputLabel>
@@ -221,6 +215,24 @@ const CorporateCompaniesNew = () => {
               {touched.companyPhone && errors.companyPhone && (
                 <FormHelperText error id="standard-weight-helper-text-companyPhone-login">
                   {errors.companyPhone}
+                </FormHelperText>
+              )}
+            </FormControl>
+            <FormControl fullWidth error={Boolean(touched.billingEmail && errors.billingEmail)} sx={{ ...theme.typography.customInput }}>
+              <InputLabel htmlFor="outlined-adornment-billingEmail">Company Billing Email</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-billingEmail"
+                type="email"
+                value={values.billingEmail}
+                name="billingEmail"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                label="Billing Email"
+                inputProps={{}}
+              />
+              {touched.billingEmail && errors.billingEmail && (
+                <FormHelperText error id="standard-weight-helper-text-billingEmail-login">
+                  {errors.billingEmail}
                 </FormHelperText>
               )}
             </FormControl>
@@ -373,7 +385,7 @@ const CorporateCompaniesNew = () => {
             </Box>
 
             {Object.keys(companyAddressCordinates).length !== 0 && (
-              <GoogleMap center={companyAddressCordinates} zoom={14} mapContainerStyle={{ height: '200px', width: '100%', marginBottom:"10px" }}>
+              <GoogleMap center={companyAddressCordinates} zoom={14} mapContainerStyle={{ height: '200px', width: '100%', marginBottom: "10px" }}>
                 <Marker position={companyAddressCordinates} label={'Location'} />
               </GoogleMap>
             )}
@@ -394,8 +406,8 @@ const CorporateCompaniesNew = () => {
               <AnimateButton>
                 <LoadingButton
                   disableElevation
-                  loading={store.loading}
-                  disabled={store.loading}
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
                   fullWidth
                   size="large"
                   type="submit"

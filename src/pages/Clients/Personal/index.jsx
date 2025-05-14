@@ -3,38 +3,46 @@ import { Card } from 'react-bootstrap';
 import MainCard from '../../../ui-component/cards/MainCard';
 
 // ** Store & Actions
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchClientsPersonal } from './../store/reducers/extra_reducers'
 import UiLoadingOverlay from '../../../components/overlay';
 import ClientsPersonalTable from './table';
 import { fetch_clients_personal } from '../../../services/clients';
-
+ 
 
 const ClientsPersonal = () => {
-  const [rowsPerPage, setRowsPerPage] = useState(50);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+
+  const [clients, setClients] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPageNo, setCurrentPageNo] = useState(1);
+  const [currentPageSize, setCurrentPageSize] = useState(50);
 
 
-    // Memoize fetchData function to prevent unnecessary rerenders
-    const fetchData = useCallback(async () => {
-      try {
-        setLoading(true);
-        const {results} = await fetch_clients_personal();
-        // const results = await fetchRegularOrders(queryParams.toString());
-        setLoading(false);
-        setData(results);
-        // setOrderData(results.entries);
-      } catch (error) {
-        setLoading(false);
-        console.error('Error fetching data: ', error);
-      }
-    }, [rowsPerPage]);
-  
-  
-    useEffect(() => {
-      fetchData();
-    }, [fetchData]);
+  // Memoize fetchData function to prevent unnecessary rerenders
+  const fetchData = useCallback(async () => {
+    const queryParams = new URLSearchParams({
+      page: currentPageNo.toString(),
+      page_size: currentPageSize.toString(),
+    });
+
+    try {
+      setLoading(true);
+      const { count, results } = await fetch_clients_personal(queryParams.toString());
+      setLoading(false);
+      setTotalCount(count);
+      setClients(results);
+      // setOrderData(results.entries);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error fetching data: ', error);
+    }
+  },
+    [currentPageNo, currentPageSize]
+  );
+
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <>
@@ -42,9 +50,13 @@ const ClientsPersonal = () => {
         <MainCard title="Clients - Personal">
           <Card sx={{ overflow: 'hidden' }}>
             <div style={{ overflowX: 'auto' }}>
-              <ClientsPersonalTable clients={data}
-                rowsPerPage={rowsPerPage}
-                setRowsPerPage={setRowsPerPage}
+              <ClientsPersonalTable
+                clients={clients}
+                totalCount={totalCount}
+                currentPageSize={currentPageSize}
+                setCurrentPageSize={setCurrentPageSize}
+                currentPageNo={currentPageNo}
+                setCurrentPageNo={setCurrentPageNo}
               />
             </div>
           </Card>

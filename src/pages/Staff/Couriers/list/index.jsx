@@ -1,23 +1,24 @@
 import { useState, useEffect, useCallback } from 'react';
-import MainCard from '../../../ui-component/cards/MainCard';
 import { Button, Card } from '@mui/material';
-import SideNav from '../../../components/sidenav/SideNav';
 import { AddCircle } from '@mui/icons-material';
-import CouriersNew from './new';
+
+import MainCard from '../../../../ui-component/cards/MainCard';
+import SideNav from '../../../../components/SideNav';
 
 // ** Store & Actions
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCouriers, deleteCourier } from './store';
-// import MaterialTable from 'material-table';
-import UiLoadingOverlay from '../../../components/overlay';
+import UiLoadingOverlay from '../../../../components/overlay';
+import { fetch_courier_users } from '../../../../services/couriers';
 import CouriersTable from './table';
-import { fetch_courier_users } from '../../../services/couriers';
+import CouriersNew from './../new';
 
-const Couriers = () => {
-  const [rowsPerPage, setRowsPerPage] = useState(50);
-  const [showSidebar, setShowSidebar] = useState(false);
+const CouriersList = () => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  const [couriers, setCouriers] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPageNo, setCurrentPageNo] = useState(1);
+  const [currentPageSize, setCurrentPageSize] = useState(50);
 
   const openSidebar = () => {
     setShowSidebar(true);
@@ -29,18 +30,24 @@ const Couriers = () => {
 
   // Memoize fetchData function to prevent unnecessary rerenders
   const fetchData = useCallback(async () => {
+    const queryParams = new URLSearchParams({
+      page: currentPageNo.toString(),
+      page_size: currentPageSize.toString(),
+    });
+
     try {
       setLoading(true);
-      const { results } = await fetch_courier_users();
-      // const results = await fetchRegularOrders(queryParams.toString());
+      const { count, results } = await fetch_courier_users(queryParams.toString());
       setLoading(false);
-      setData(results);
-      // setOrderData(results.entries);
+      setTotalCount(count);
+      setCouriers(results);
     } catch (error) {
       setLoading(false);
       console.error('Error fetching data: ', error);
     }
-  }, [rowsPerPage]);
+  }, 
+  [currentPageNo, currentPageSize]
+);
 
 
   useEffect(() => {
@@ -61,9 +68,12 @@ const Couriers = () => {
           <Card sx={{ overflow: 'hidden' }}>
             <div style={{ overflowX: 'auto' }}>
               <CouriersTable
-                couriers={data}
-                rowsPerPage={rowsPerPage}
-                setRowsPerPage={setRowsPerPage}
+                couriers={couriers}
+                totalCount={totalCount}
+                currentPageSize={currentPageSize}
+                setCurrentPageSize={setCurrentPageSize}
+                currentPageNo={currentPageNo}
+                setCurrentPageNo={setCurrentPageNo}
               />
             </div>
           </Card>
@@ -77,4 +87,4 @@ const Couriers = () => {
   );
 };
 
-export default Couriers;
+export default CouriersList;

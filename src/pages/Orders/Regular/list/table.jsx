@@ -1,6 +1,5 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Paper, Button, Chip, TextField, InputAdornment,
   Table, TableBody, TableCell, TableContainer,
@@ -9,7 +8,7 @@ import {
 
 import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
-import { capitalize, prettyDate } from '../../../utils/app-functions';
+import { capitalize, prettyDate } from '../../../../utils/app-functions';
 
 // Column definitions
 const columns = [
@@ -55,22 +54,44 @@ function processData(dataList, query) {
   );
 }
 
-// Table Component
-export default function RegularOrdersTable({ orders, rowsPerPage, setRowsPerPage }) {
-  const [page, setPage] = React.useState(0);
-  const [searchQuery, setSearchQuery] = React.useState('');
+// Table component
+export default function RegularOrdersTable({
+  orders,
+  totalCount,
+  currentPageSize,
+  setCurrentPageSize, 
+  currentPageNo,
+  setCurrentPageNo,
+}) {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   const rows = processData(orders, searchQuery);
-  const paginatedRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const handleChangePage = (event, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+  // Optional: filter on client-side if necessary
+  const filteredOrders = rows.filter(order =>
+    Object.values(order).some(val =>
+      typeof val === 'string' && val.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
+
+  const handleChangePage = (event, newPage) => {
+    setCurrentPageNo(newPage + 1); // +1 because TablePagination is 0-indexed
   };
-  const handleSearchChange = (event) => setSearchQuery(event.target.value);
-  const handleClick = (event, row) => navigate(`/orders/regular/detail/${row.id}`);
+
+  const handleChangeRowsPerPage = (event) => {
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNo(1);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPageNo(1);
+  };
+
+  const handleClick = (event, row) => {
+    navigate(`/orders/regular/detail/${row.id}`);
+  };
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -94,27 +115,27 @@ export default function RegularOrdersTable({ orders, rowsPerPage, setRowsPerPage
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              {columns.map((column, index) => (
-                <TableCell key={index} align={column.align} style={{ minWidth: column.minWidth }}>
+              {columns.map((column) => (
+                <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
                   {column.label}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows.map((row) => (
-              <Row key={row.id} row={row} handleClick={handleClick} />
+            {filteredOrders.map((row) => (
+              <DataRow key={row.id} row={row} handleClick={handleClick} />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
       <TablePagination
-        rowsPerPageOptions={[50, 100, 150]}
         component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
+        rowsPerPageOptions={[50, 100, 150]}
+        count={totalCount} // from API: count
+        rowsPerPage={currentPageSize}
+        page={currentPageNo - 1}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
@@ -123,7 +144,7 @@ export default function RegularOrdersTable({ orders, rowsPerPage, setRowsPerPage
 }
 
 // Row Renderer
-const Row = ({ row, handleClick }) => (
+const DataRow = ({ row, handleClick }) => (
   <TableRow hover tabIndex={-1}>
     {columns.map((column) => {
       const value = row[column.id];
@@ -131,7 +152,7 @@ const Row = ({ row, handleClick }) => (
       if (column.id === 'action') {
         return (
           <TableCell key={column.id} align={column.align}>
-            <Button onClick={(event) => handleClick(event, row)}>Manage</Button>
+            <Button onClick={(e) => handleClick(e, row)}>Manage</Button>
           </TableCell>
         );
       }
@@ -148,7 +169,7 @@ const Row = ({ row, handleClick }) => (
         return (
           <TableCell key={column.id} align={column.align}>
             {value ? (
-              <Chip label="Fully Paid" color="success" variant="contained" />
+              <Chip label="Fully Paid" color="success" />
             ) : (
               <Chip label="Not Paid" color="secondary" variant="outlined" />
             )}
@@ -165,22 +186,22 @@ const Row = ({ row, handleClick }) => (
   </TableRow>
 );
 
-// Render chip for status
+// Status chip helper
 const renderStatusChip = (value) => {
   switch (value) {
     case 'pending':
       return <Chip label="Pending" color="primary" variant="outlined" />;
     case 'approved':
-      return <Chip label="Approved" color="primary" variant="contained" />;
+      return <Chip label="Approved" color="primary" />;
     case 'assigned':
-      return <Chip label="Assigned" color="secondary" variant="outlined" />;
+      return <Chip label="Assigned" color="secondary" />;
     case 'pickedUp':
-      return <Chip label="PickedUp" color="secondary" variant="contained" />;
+      return <Chip label="Picked Up" color="secondary" />;
     case 'delivered':
-      return <Chip label="Delivered" color="success" variant="contained" />;
+      return <Chip label="Delivered" color="success" />;
     case 'cancelled':
     case 'rejected':
-      return <Chip label={capitalize(value)} color="error" variant="contained" />;
+      return <Chip label={capitalize(value)} color="error" />; 
     default:
       return <Chip label={capitalize(value)} variant="outlined" />;
   }
@@ -188,6 +209,9 @@ const renderStatusChip = (value) => {
 
 RegularOrdersTable.propTypes = {
   orders: PropTypes.array.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-  setRowsPerPage: PropTypes.func.isRequired
+  totalCount: PropTypes.number.isRequired,
+  currentPageSize: PropTypes.number.isRequired,
+  setCurrentPageSize: PropTypes.func.isRequired,
+  currentPageNo: PropTypes.number.isRequired,
+  setCurrentPageNo: PropTypes.func.isRequired,
 };

@@ -9,9 +9,9 @@ import { Formik, Field } from 'formik';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, MenuItem } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
 
-const RegularOrderNew = () => {
+
+const RegularOrdersNew = () => {
   const [addressOrigin, setAddressOrigin] = useState('');
   const [addressOriginPlaceId, setAddressOriginPlaceId] = useState('');
   const [originCordinates, setOriginCordinates] = useState({});
@@ -392,23 +392,6 @@ const RegularOrderNew = () => {
                 <FormHelperText error>{errors.submit}</FormHelperText>
               </Box>
             )}
-            {/* 
-            <Box sx={{ mt: 2 }}>
-              <AnimateButton>
-                <LoadingButton
-                  disableElevation
-                  loading={shoppingItemsStore.loading}
-                  disabled={shoppingItemsStore.loading}
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                  color="secondary"
-                >
-                  ADD
-                </LoadingButton>
-              </AnimateButton>
-            </Box> */}
           </form>
         )}
       </Formik>
@@ -416,4 +399,4 @@ const RegularOrderNew = () => {
   );
 };
 
-export default RegularOrderNew
+export default RegularOrdersNew

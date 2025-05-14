@@ -9,7 +9,6 @@ import {
     confirm_regular_order_delivery,
     reject_regular_order,
     cancel_regular_order,
-    toggle_order_payment_status,
     reorder_regular_order
 } from '../../../../services/orders';
 
@@ -63,18 +62,10 @@ const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
         handleCloseMenu();
     };
 
-    const confirmPaymentMenuItem = (action, desc) => (
-        <MenuItem key={"payment"} onClick={() => handleOpenAlertDialog(action, desc)}>
-            {action === 'confirm_payment' ? 'Confirm Payment' : 'Cancel Payment'}
-        </MenuItem>
-    );
-
     const renderMenuItems = () => {
         if (!order) return null;
 
-        const { status, isFullyPaid } = order;
-        const paymentAction = isFullyPaid ? 'cancel_payment' : 'confirm_payment';
-        const paymentDesc = `Are you sure you want to ${isFullyPaid ? 'Cancel' : 'Confirm'} Payment of this order?`;
+        const { status } = order;
 
         const menuItems = {
             delivered: [
@@ -89,13 +80,13 @@ const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
             cancelled: [
                 <MenuItem key={"re-order1"} onClick={() => handleOpenAlertDialog('re_order', 'Are you sure you want to clone this order?')}>
                     Clone & Reorder
-                    </MenuItem>,
+                </MenuItem>,
                 // confirmPaymentMenuItem(paymentAction, paymentDesc)
             ],
             rejected: [
                 <MenuItem key={"re-order"} onClick={() => handleOpenAlertDialog('re_order', 'Are you sure you want to clone this order?')}>
                     Clone & Reorder
-                    </MenuItem>,
+                </MenuItem>,
                 // confirmPaymentMenuItem(paymentAction, paymentDesc)
             ],
             pending: [
@@ -159,16 +150,8 @@ const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
                 case 're_order':
                     response = await reorder_regular_order({ id: order.id });
                     break;
-                case 'confirm_payment':
-                case 'cancel_payment':
-                    response = await toggle_order_payment_status({
-                        id: order.id,
-                        isFullyPaid: actionType === 'confirm_payment'
-                    });
-                    break;
-
                 default:
-                    console.warn("Unknown action:", actionType);
+                    break;
             }
 
             if (response) {

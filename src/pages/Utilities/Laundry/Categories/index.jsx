@@ -4,7 +4,7 @@ import { AddCircle } from '@mui/icons-material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { capitalize } from '../../../../utils/app-functions';
-import SideNav from '../../../../components/sidenav/SideNav';
+import SideNav from '../../../../components/SideNav';
 import MainCard from '../../../../ui-component/cards/MainCard';
 import LaundryCategoriesNew from './new';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,13 +27,6 @@ const LaundryCategories = () => {
     const dispatch = useDispatch();
 
     const store = useSelector((store) => store.laundryCategories);
-
-    // console.log(store)
-
-  // const dispatch = useDispatch();
-  // const store = useSelector((state) => state.orders);
-
-  // console.log(store);
 
 
   useEffect(() => {

@@ -10,9 +10,9 @@ if (import.meta.env.VITE_ENV === "STAGING") {
   backendUrl = import.meta.env.VITE_BACKEND_PROD_URL;
 }
 
-export const fetch_regular_orders = async (query) => {
+export const fetch_regular_orders = async (queryString) => {
   try {
-    const url = `${backendUrl}/api/main/order-items-regular/`
+    const url = `${backendUrl}/api/main/order-items-regular/?${queryString}`
 
     const response = await API.get(url);
 

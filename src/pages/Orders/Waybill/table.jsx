@@ -24,7 +24,7 @@ import { cancelOrder, deleteOrder } from '../store/reducers/reducers';
 import RightDrawer from '../../../components/drawers/RightDrawer';
 import OrderHistory from '../history';
 import { useNavigate } from 'react-router-dom';
-import SideNav from '../../../components/sidenav/SideNav';
+import SideNav from '../../../components/SideNav';
 import SelectCourier from '../actions/SelectCourier';
 
 const columns = [
@@ -244,16 +244,6 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
 
             {selectedRow.status === 'cancelled' || selectedRow.status === 'delivered' ? (
               <div>
-                {selectedRow.isFullyPaid === false ? (
-                  <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
-                    Confirm Payment
-                  </MenuItem>
-                ) : (
-                  <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
-                    Cancel Payment
-                  </MenuItem>
-                )}
-
                 {loggedInUser.isSuperAdmin &&
                   <MenuItem onClick={() => handleOpenDialog('delete_order', 'Are You sure You Want To Delete This Order')}>
                     Delete Order
@@ -265,16 +255,6 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
                 <MenuItem onClick={() => handleOpenDialog('re_publish', 'Are You sure You Want To Re-publish Of This Order')}>
                   Republish Order
                 </MenuItem>
-                {selectedRow.isFullyPaid === false ? (
-                  <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
-                    Confirm Payment
-                  </MenuItem>
-                ) : (
-                  <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
-                    Cancel Payment
-                  </MenuItem>
-                )}
-
                 {loggedInUser.isSuperAdmin &&
                   <MenuItem onClick={() => handleOpenDialog('delete_order', 'Are You sure You Want To Delete This Order')}>
                     Delete Order
@@ -284,15 +264,6 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
               <div>
                 <MenuItem onClick={() => handleOpenDialog('approve', 'Are You sure You Want To Approve This Order')}>Approve Order</MenuItem>
                 <MenuItem onClick={() => handleOpenDialog('reject', 'Are You sure You Want To Reject This Order')}>Reject Order </MenuItem>
-                {selectedRow.isFullyPaid === false ? (
-                  <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
-                    Confirm Payment
-                  </MenuItem>
-                ) : (
-                  <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
-                    Cancel Payment
-                  </MenuItem>
-                )}
               </div>
             ) : (
               <div>
@@ -324,15 +295,6 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
                   Confirm Delivery
                 </MenuItem>
                 <MenuItem onClick={() => handleOpenDialog('cancel', 'Are You sure You Want To Cancel This Order')}>Cancel Order</MenuItem>
-                {selectedRow.isFullyPaid === false ? (
-                  <MenuItem onClick={() => handleOpenDialog('confirm_payment', 'Are You sure You Want To Confirm Payment Of This Order')}>
-                    Confirm Payment
-                  </MenuItem>
-                ) : (
-                  <MenuItem onClick={() => handleOpenDialog('cancel_payment', 'Are You sure You Want To Cancel Payment Of This Order')}>
-                    Cancel Payment
-                  </MenuItem>
-                )}
               </div>
             )}
 
@@ -386,14 +348,6 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
             if (actionType === 'cancel') {
               handleCloseDialog();
               dispatch(cancelOrder({ id: selectedRow.id }));
-            }
-            if (actionType === 'confirm_payment') {
-              handleCloseDialog();
-              dispatch(toggleOrderPaymentStatus({ id: selectedRow.id, isFullyPaid: true }));
-            }
-            if (actionType === 'cancel_payment') {
-              handleCloseDialog();
-              dispatch(toggleOrderPaymentStatus({ id: selectedRow.id, isFullyPaid: false }));
             }
             if (actionType === 're_publish') {
               handleCloseDialog();

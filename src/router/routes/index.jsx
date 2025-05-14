@@ -11,10 +11,6 @@ const GetRoutes = () => {
     AppRoutes.filter((route) => {
       let RouteTag = PrivateRoute;
 
-      // console.log(route)
-      // console.log(route.path);
-      // console.log(route.meta);
-
       RouteTag = route.meta.isPrivate ? PrivateRoute : PublicRoute;
 
       route.element = <RouteTag route={route}>{route.element}</RouteTag>;

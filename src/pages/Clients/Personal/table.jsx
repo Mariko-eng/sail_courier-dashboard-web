@@ -51,25 +51,32 @@ function processData(dataList, query) {
     );
 }
 
-export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerPage }) {
-    const [page, setPage] = React.useState(0);
-
+export default function ClientsPersonalTable({
+    clients,
+    totalCount,
+    currentPageSize,
+    setCurrentPageSize,
+    currentPageNo,
+    setCurrentPageNo,
+}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
     const [searchQuery, setSearchQuery] = React.useState('');
 
-    const handleSearchChange = (event) => {
-        setSearchQuery(event.target.value);
-    };
-
     const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+        setCurrentPageNo(newPage + 1); // +1 because TablePagination is 0-indexed
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
+        setCurrentPageSize(parseInt(event.target.value, 10));
+        setCurrentPageNo(1);
     };
+
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+        setCurrentPageNo(1);
+    };
+
 
     const handleClick = (event, row) => {
         setAnchorEl(event.currentTarget);
@@ -135,38 +142,36 @@ export default function ClientsPersonalTable({ clients, rowsPerPage, setRowsPerP
                     </TableHead>
 
                     <TableBody>
-                        {rows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
-                                return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {column.id === 'actions' ?
-                                                        <IconButton onClick={(event) => handleClick(event, row)}>
-                                                            <MoreVertIcon />
-                                                        </IconButton>
-                                                        :
-                                                        (<>
-                                                            {column.format ? column.format(value) : value}
-                                                        </>)}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
+                        {rows.map((row, index) => {
+                            return (
+                                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                                    {columns.map((column) => {
+                                        const value = row[column.id];
+                                        return (
+                                            <TableCell key={column.id} align={column.align}>
+                                                {column.id === 'actions' ?
+                                                    <IconButton onClick={(event) => handleClick(event, row)}>
+                                                        <MoreVertIcon />
+                                                    </IconButton>
+                                                    :
+                                                    (<>
+                                                        {column.format ? column.format(value) : value}
+                                                    </>)}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>
+                            );
+                        })}
                     </TableBody>
                 </Table>
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[50, 100, 150]}
                 component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
+                rowsPerPageOptions={[50, 100, 150]}
+                count={totalCount} // from API: count
+                rowsPerPage={currentPageSize}
+                page={currentPageNo - 1}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
@@ -197,6 +202,9 @@ ClientsPersonalTable.propTypes = {
             }).isRequired,
         })
     ).isRequired,
-    rowsPerPage: PropTypes.number.isRequired,
-    setRowsPerPage: PropTypes.func.isRequired,
+    totalCount: PropTypes.number.isRequired,
+    currentPageSize: PropTypes.number.isRequired,
+    setCurrentPageSize: PropTypes.func.isRequired,
+    currentPageNo: PropTypes.number.isRequired,
+    setCurrentPageNo: PropTypes.func.isRequired,
 };

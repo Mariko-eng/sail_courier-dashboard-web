@@ -1,23 +1,22 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Button, Card } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
-import CorporateCompaniesNew from './new';
-import SideNav from '../../../../components/sidenav/SideNav';
-import UiLoadingOverlay from '../../../../components/overlay';
-import MainCard from '../../../../ui-component/cards/MainCard';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCorporateCompanies } from './../../store/reducers/extra_reducers';
+import SideNav from '../../../../../components/SideNav';
+import UiLoadingOverlay from '../../../../../components/overlay';
+import MainCard from '../../../../../ui-component/cards/MainCard';
 import CorporateCompanniesTable from './table';
-import CustomGoogleMap from '../../../../components/google-maps';
-import { fetch_corporate_companies } from '../../../../services/clients';
+import CorporateCompaniesNew from './../new';
+import { fetch_corporate_companies } from '../../../../../services/clients';
 
 
-const CorporateCompanies = () => {
+const CorporateCompaniesList = () => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(50);
 
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPageNo, setCurrentPageNo] = useState(1);
+  const [currentPageSize, setCurrentPageSize] = useState(50);
 
   const openSidebar = () => {
     setShowSidebar(true);
@@ -30,15 +29,22 @@ const CorporateCompanies = () => {
   // Memoize fetchData function to prevent unnecessary rerenders
   const fetchData = useCallback(async () => {
     try {
+      const queryParams = new URLSearchParams({
+        page: currentPageNo.toString(),
+        page_size: currentPageSize.toString(),
+      });
       setLoading(true);
-      const { results } = await fetch_corporate_companies();
+      const { count, results } = await fetch_corporate_companies(queryParams.toString());
       setLoading(false);
-      setData(results);
+      setTotalCount(count);
+      setCompanies(results);
     } catch (error) {
       setLoading(false);
       console.error('Error fetching data: ', error);
     }
-  }, [rowsPerPage]);
+  }, 
+  [currentPageNo, currentPageSize]
+);
 
 
   useEffect(() => {
@@ -59,20 +65,26 @@ const CorporateCompanies = () => {
           <Card sx={{ overflow: 'hidden' }}>
             <div style={{ overflowX: 'auto' }}>
 
-              <CorporateCompanniesTable companies={data} />
-
+              <CorporateCompanniesTable
+                companies={companies}
+                totalCount={totalCount}
+                currentPageSize={currentPageSize}
+                setCurrentPageSize={setCurrentPageSize}
+                currentPageNo={currentPageNo}
+                setCurrentPageNo={setCurrentPageNo}
+              />
             </div>
           </Card>
         </MainCard>
       </UiLoadingOverlay>
 
       <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-        <CorporateCompaniesNew />
+        <CorporateCompaniesNew onRefresh={fetchData} />
       </SideNav>
     </>
   );
 };
 
-export default CorporateCompanies;
+export default CorporateCompaniesList;
 
 

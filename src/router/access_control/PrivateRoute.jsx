@@ -7,17 +7,8 @@ import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const PrivateRoute = ({ children, route }) => {
-  // ** Hooks & Vars
-//  const user = JSON.parse(localStorage.getItem("user"));
-//  console.log("user")
-//  console.log(user)
 
  const store = useSelector((state) => state.auth);
-// console.log('store');
-// console.log(store);
-
-  // console.log(route);
-  // console.log(route.meta);
 
   if (route) {
       if (store.isLoading === false) {

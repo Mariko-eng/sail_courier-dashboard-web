@@ -31,7 +31,7 @@ export const loginUser = createAsyncThunk(
       // Get user data after successful login
       const userData = await getUserData(response.user.uid);
 
-      console.log("userData" , userData);
+      // console.log("userData" , userData);
 
       return {
         message: 'Logged In Successfully',

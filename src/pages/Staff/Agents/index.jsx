@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import MainCard from '../../../ui-component/cards/MainCard';
 import { Button, Card } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
-import SideNav from '../../../components/sidenav/SideNav';
+import SideNav from '../../../components/SideNav';
 import AgentsNew from './new';
 import { columns } from './columns';
 import { materialTableIcons } from '../../../utils/material-table-icons';

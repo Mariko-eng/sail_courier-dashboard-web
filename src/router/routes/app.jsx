@@ -18,13 +18,13 @@ const LaundryOrdersList = Loadable(lazy(() => import('../../pages/Orders/Laundry
 const ShoppingOrdersList = Loadable(lazy(() => import('../../pages/Orders/Shopping')));
 
 // Clients - Corporate Accounts
-const CorporateCompaniesList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies')));
+const CorporateCompaniesList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/list')));
 const CorporateCompanyUserAccountsList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Users')));
 const CorporateCompanyWarehousesList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Warehouses')));
 const CorporateCompanyOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders')));
 const CorporateCompanyRegularOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders/Regular')));
 const CorporateCompanyWaybillOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders/Waybill')));
-const ClientsCorporate = Loadable(lazy(() => import('../../pages/Clients/Corporate/Users')));
+const ClientsCorporate = Loadable(lazy(() => import('../../pages/Clients/Corporate/Users/list')));
 
 // Clients - Personal Accounts
 const ClientsPersonal = Loadable(lazy(() => import('../../pages/Clients/Personal')));
@@ -40,7 +40,7 @@ const ShoppingItems = Loadable(lazy(() => import('../../pages/Utilities/Shopping
 // Staff
 const StaffAdmins = Loadable(lazy(() => import('../../pages/Staff/Admins')));
 const StaffAgents = Loadable(lazy(() => import('../../pages/Staff/Agents')));
-const StaffCouriers = Loadable(lazy(() => import('../../pages/Staff/Couriers')));
+const StaffCouriers = Loadable(lazy(() => import('../../pages/Staff/Couriers/list')));
 
 export const AppRoutes = [
   {

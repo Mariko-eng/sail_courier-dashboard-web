@@ -7,9 +7,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { prettyDate } from '../../../utils/app-functions';
-import { deleteCourier } from './store';
+import { prettyDate } from '../../../../utils/app-functions';
 
 const columns = [
     { id: 'index', label: '#', minWidth: 50 },
@@ -44,18 +42,30 @@ function processData(dataList, query) {
     );
 }
 
-export default function CouriersTable({ couriers, rowsPerPage, setRowsPerPage }) {
-    const dispatch = useDispatch();
-    const [page, setPage] = React.useState(0);
-    const [searchQuery, setSearchQuery] = React.useState('');
+export default function CouriersTable({ 
+    couriers, 
+    totalCount,
+    currentPageSize,
+    setCurrentPageSize,
+    currentPageNo,
+    setCurrentPageNo,
+ }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
+    const [searchQuery, setSearchQuery] = React.useState('');
 
-    const handleChangePage = (_, newPage) => setPage(newPage);
-    const handleSearchChange = (e) => setSearchQuery(e.target.value);
-    const handleChangeRowsPerPage = (e) => {
-        setRowsPerPage(+e.target.value);
-        setPage(0);
+    const handleChangePage = (event, newPage) => {
+        setCurrentPageNo(newPage + 1); // +1 because TablePagination is 0-indexed
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setCurrentPageSize(parseInt(event.target.value, 10));
+        setCurrentPageNo(1);
+    };
+
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+        setCurrentPageNo(1);
     };
 
     const handleClick = (event, row) => {
@@ -72,7 +82,7 @@ export default function CouriersTable({ couriers, rowsPerPage, setRowsPerPage })
         if (action === 'Delete' && selectedRow) {
             const confirmDelete = window.confirm(`You want to delete courier "${selectedRow.username}"?`);
             if (confirmDelete) {
-                dispatch(deleteCourier(selectedRow.id));
+                // continue
             }
         }
         handleClose();
@@ -114,7 +124,7 @@ export default function CouriersTable({ couriers, rowsPerPage, setRowsPerPage })
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                        {rows .map((row) => (
                             <TableRow hover key={row.id}>
                                 {columns.map((column) => {
                                     const value = row[column.id];
@@ -137,11 +147,11 @@ export default function CouriersTable({ couriers, rowsPerPage, setRowsPerPage })
             </TableContainer>
 
             <TablePagination
-                rowsPerPageOptions={[50, 100, 150]}
                 component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
+                rowsPerPageOptions={[50, 100, 150]}
+                count={totalCount} // from API: count
+                rowsPerPage={currentPageSize}
+                page={currentPageNo - 1}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
@@ -167,6 +177,9 @@ CouriersTable.propTypes = {
             })
         })
     ).isRequired,
-    rowsPerPage: PropTypes.number.isRequired,
-    setRowsPerPage: PropTypes.func.isRequired
+    totalCount: PropTypes.number.isRequired,
+    currentPageSize: PropTypes.number.isRequired,
+    setCurrentPageSize: PropTypes.func.isRequired,
+    currentPageNo: PropTypes.number.isRequired,
+    setCurrentPageNo: PropTypes.func.isRequired,
 };

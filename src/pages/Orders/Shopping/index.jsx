@@ -8,7 +8,7 @@ import { confirmOrderdelivery } from '../store/reducers/reducers';
 import { rejectOrder, cancelOrder } from '../store/reducers/reducers';
 import UiLoadingOverlay from '../../../components/overlay';
 import AlertConfrimationDialog from '../../../components/dailog/confirmDialog';
-import SideNav from '../../../components/sidenav/SideNav';
+import SideNav from '../../../components/SideNav';
 import SelectCourier from '../actions/SelectCourier';
 import OrderHistory from '../history';
 import ShoppingOrdersTable from './table';

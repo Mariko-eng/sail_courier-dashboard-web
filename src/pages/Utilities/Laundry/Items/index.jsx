@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AddCircle } from '@mui/icons-material';
 import { Grid, Button, Card, CardMedia, CardContent, CardActions, Typography } from '@mui/material';
-import SideNav from '../../../../components/sidenav/SideNav';
+import SideNav from '../../../../components/SideNav';
 import MainCard from '../../../../ui-component/cards/MainCard';
 import { capitalize } from '../../../../utils/app-functions';
 import LaundryItemsNew from './new';

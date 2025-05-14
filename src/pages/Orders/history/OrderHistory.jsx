@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, TextField, Typography } from '@mui/material'
 import React, { useState, useCallback } from 'react'
-import SideNav from '../../../components/sidenav/SideNav'
+import SideNav from '../../../components/SideNav'
 import { LoadingButton } from '@mui/lab'
 import { add_order_history, fetch_order_history } from '../../../services/order_history'
 import { prettyDate } from '../../../utils/app-functions'

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTheme } from '@mui/material/styles';
 import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import AnimateButton from '../../../ui-component/extended/AnimateButton';
-import { add_courier_user } from '../../../services/couriers';
+import AnimateButton from '../../../../ui-component/extended/AnimateButton';
+import { add_courier_user } from '../../../../services/couriers';
 
 const CouriersNew = ({onRefresh}) => {
   const theme = useTheme();
@@ -36,11 +36,8 @@ const CouriersNew = ({onRefresh}) => {
 
         const response = await add_courier_user(data)
 
-        console.log("response", response)
-
         onRefresh()
 
-        // console.log(data);
         // // If successful, reset the form
         resetForm()
         setStatus({ success: true });

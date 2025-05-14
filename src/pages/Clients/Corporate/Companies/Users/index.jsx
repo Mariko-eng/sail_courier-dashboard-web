@@ -12,7 +12,7 @@ import MainCard from '../../../../../ui-component/cards/MainCard';
 import ClientsCorporateTable from './../../../Corporate/Users/table';
 import CorporateNew from './../../../Corporate/Users/new';
 
-import SideNav from '../../../../../components/sidenav/SideNav';
+import SideNav from '../../../../../components/SideNav';
 
 
 const CorporateCompanyUserAccountsList = () => {

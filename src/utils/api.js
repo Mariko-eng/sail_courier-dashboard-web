@@ -26,9 +26,6 @@ API.interceptors.request.use(
       // Check if user is authenticated and get the token
       const user = await checkAuthState(); // Wait until Firebase restores the user state
 
-      // console.log("checkAuthState")
-      // console.log("user", user)
-
       if (user) {
         const userToken = await user.getIdToken(true); // Get a fresh token
 
@@ -58,30 +55,10 @@ API.interceptors.request.use(
 API.interceptors.response.use(
   (response) => {
     // If the response is successful, simply return it
-    console.log(response)
+    // console.log(response)
     return response;
   },
   async (error) => {
-    const originalRequest = error.config;
-
-    // if (error.response && error.response.status === 401) {
-    //   try {
-    //     console.log("Not Authorized");
-
-    //     const newAccessToken = await refreshAccessToken(); // Get a new token
-
-    //     // console.log("newAccessToken" , newAccessToken);
-
-    //     API.defaults.headers.Authorization = `Bearer ${newAccessToken}`; // Update the new token to be used for all future requests across the app
-    //     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`; // Update the current request header with new token
-    //     return API(originalRequest); // Retry the original request
-    //   } catch (err) {
-    //     console.error('Failed to refresh token:', err);
-    //     // Optionally, handle logout or redirection here
-    //     // window.location.reload(); // or redirect to login
-    //   }
-    // }
-
     return Promise.reject(error); // If it's not a 401 or another error occurs
   }
 );

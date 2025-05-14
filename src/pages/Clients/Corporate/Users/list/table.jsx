@@ -12,11 +12,8 @@ import { IconButton, TextField, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Menu, MenuItem, Chip } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
-import { prettyDate } from '../../../../utils/app-functions';
-import { useDispatch } from 'react-redux';
-import { activateClient } from '../../store/reducers/extra_reducers';
-import { deactivateClient } from '../../store/reducers/extra_reducers';
-import { deleteClient } from '../../store/reducers/extra_reducers';
+import { prettyDate } from '../../../../../utils/app-functions';
+
 
 const columns = [
     { id: 'index', label: 'Index', minWidth: 70 },
@@ -36,7 +33,7 @@ const columns = [
 
 function processData(dataList, query) {
     let newData = dataList.map((item, i) => {
-        const user = item.user.userprofile;
+        const user_profile = item.user.userprofile;
         const company = item.corporate_company;
 
         const account_type = item.corporate_account_type === "standard" ? "Standard" : "ADMIN";
@@ -47,9 +44,9 @@ function processData(dataList, query) {
             index: i + 1,
             ...item,
             account_type,
-            username: user.username,
-            phone: user.phone,
-            email: item.email,
+            username: user_profile.username,
+            phone: user_profile.phone,
+            email: item.user.email,
             companyName,
             companyAddress,
             isActive: item.is_active,
@@ -67,27 +64,30 @@ function processData(dataList, query) {
     );
 }
 
-export default function ClientsCorporateTable({ clients }) {
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
+export default function ClientsCorporateTable({
+    clients,
+    totalCount,
+    currentPageSize,
+    setCurrentPageSize,
+    currentPageNo,
+    setCurrentPageNo,
+}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [selectedRow, setSelectedRow] = React.useState(null);
     const [searchQuery, setSearchQuery] = React.useState('');
 
-    const handleSearchChange = (event) => {
-        setSearchQuery(event.target.value);
-    };
-
-    const dispatch = useDispatch();
-
     const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+        setCurrentPageNo(newPage + 1); // +1 because TablePagination is 0-indexed
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
+        setCurrentPageSize(parseInt(event.target.value, 10));
+        setCurrentPageNo(1);
+    };
+
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+        setCurrentPageNo(1);
     };
 
     const handleClick = (event, row) => {
@@ -105,21 +105,21 @@ export default function ClientsCorporateTable({ clients }) {
             if (action === "Activate") {
                 var result = confirm('You want to activate this client? ' + selectedRow.username);
                 if (result === true) {
-                    dispatch(activateClient(selectedRow.id));
+                    // Continue
                 }
             }
 
             if (action === "Deactivate") {
                 var result = confirm('You want to deactivate this client? ' + selectedRow.username);
                 if (result === true) {
-                    dispatch(deactivateClient(selectedRow.id));
+                    // Continue
                 }
             }
 
             if (action === "Delete") {
                 var result = confirm('You want to delete this client? ' + selectedRow.username);
                 if (result === true) {
-                    dispatch(deleteClient(selectedRow.id));
+                    // Continue
                 }
             }
 
@@ -175,7 +175,7 @@ export default function ClientsCorporateTable({ clients }) {
 
                         <TableBody>
                             {rows
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                 
                                 .map((row, index) => {
                                     return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
@@ -188,14 +188,14 @@ export default function ClientsCorporateTable({ clients }) {
                                                                 <MoreVertIcon />
                                                             </IconButton>
                                                             : column.id === 'isActive' ? <div>
-                                                                {value === true ? <Chip label="YES" color="success" variant="outlined" /> : 
-                                                                <Chip label="NO" color="error" variant="outlined" />
+                                                                {value === true ? <Chip label="YES" color="success" variant="outlined" /> :
+                                                                    <Chip label="NO" color="error" variant="outlined" />
                                                                 }
                                                             </div>
-                                                            : column.format ? (column.format(value)) :
-                                                                (
-                                                                    value
-                                                                )}
+                                                                : column.format ? (column.format(value)) :
+                                                                    (
+                                                                        value
+                                                                    )}
                                                     </TableCell>
                                                 );
                                             })}
@@ -207,11 +207,11 @@ export default function ClientsCorporateTable({ clients }) {
                 </TableContainer>
 
                 <TablePagination
-                    rowsPerPageOptions={[10, 25, 100]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
+                    rowsPerPageOptions={[50, 100, 150]}
+                    count={totalCount} // from API: count
+                    rowsPerPage={currentPageSize}
+                    page={currentPageNo - 1}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
@@ -238,10 +238,10 @@ ClientsCorporateTable.propTypes = {
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             user: PropTypes.shape({
+                email: PropTypes.string.isRequired,
                 userprofile: PropTypes.shape({
                     username: PropTypes.string.isRequired,
                     phone: PropTypes.string.isRequired,
-                    email: PropTypes.string.isRequired,
                 }).isRequired,
             }).isRequired,
             corporate_company: PropTypes.shape({
@@ -253,4 +253,9 @@ ClientsCorporateTable.propTypes = {
             created_at: PropTypes.string.isRequired,
         })
     ).isRequired,
+    totalCount: PropTypes.number.isRequired,
+    currentPageSize: PropTypes.number.isRequired,
+    setCurrentPageSize: PropTypes.func.isRequired,
+    currentPageNo: PropTypes.number.isRequired,
+    setCurrentPageNo: PropTypes.func.isRequired,
 };

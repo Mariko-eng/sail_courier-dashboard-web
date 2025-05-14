@@ -5,7 +5,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { capitalize } from '../../../../utils/app-functions';
 import MainCard from '../../../../ui-component/cards/MainCard';
-import SideNav from '../../../../components/sidenav/SideNav';
+import SideNav from '../../../../components/SideNav';
 import ShoppingCategoriesNew from './new';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchShoppingCategories, deleteShoppingCategory } from './store';

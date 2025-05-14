@@ -161,7 +161,7 @@ export default function WarehousesTable({ warehouses }) {
 
                         <TableBody>
                             {rows
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                 
                                 .map((row, index) => {
                                     return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
