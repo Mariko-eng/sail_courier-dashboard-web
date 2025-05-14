@@ -9,7 +9,7 @@ import { API } from '../../../../../utils/api';
 import { formatError } from '../../../../../utils/axios-error';
 import UiLoadingOverlay from '../../../../../components/overlay';
 import MainCard from '../../../../../ui-component/cards/MainCard';
-import ClientsCorporateTable from './../../../Corporate/Users/table';
+import ClientsCorporateTable from './../../../Corporate/Users/list/table';
 import CorporateNew from './../../../Corporate/Users/new';
 
 import SideNav from '../../../../../components/SideNav';

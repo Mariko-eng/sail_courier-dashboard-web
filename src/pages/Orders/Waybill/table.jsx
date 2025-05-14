@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,8 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import PropTypes from 'prop-types';
-import { Chip, IconButton, TextField, InputAdornment, Card } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Chip, IconButton } from '@mui/material';
 import { Menu, MenuItem } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -19,10 +17,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
 import { capitalize, prettyDate } from '../../../utils/app-functions';
 import AlertConfrimationDialog from '../../../components/dailog/confirmDialog';
-import { useDispatch, useSelector } from 'react-redux';
-import { cancelOrder, deleteOrder } from '../store/reducers/reducers';
-import RightDrawer from '../../../components/drawers/RightDrawer';
-import OrderHistory from '../history';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import SideNav from '../../../components/SideNav';
 import SelectCourier from '../actions/SelectCourier';
@@ -108,7 +103,6 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
   const [message, setMessage] = React.useState('Are You Sure that you want To Continue?');
 
   const navigate = useNavigate();
-  const dispatch = useDispatch()
 
   const store = useSelector(store => store.auth)
 
@@ -319,43 +313,37 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
             handleCloseMenuActions();
             if (actionType === 'approve') {
               handleCloseDialog();
-              dispatch(approveOrder({ id: selectedRow.id }));
+              // Make API Call
             }
             if (actionType === 'assign_courier') {
               handleCloseDialog();
-              dispatch(
-                assignCourierToRegularOrder({
-                  id: selectedRow.id,
-                  courierId: selectedCourier.id,
-                  courierName: selectedCourier.firstName,
-                  courierPhone: selectedCourier.phone
-                })
-              );
+              // Make API Call
+
               closeSidebar();
             }
             if (actionType === 'confirm_pickup') {
               handleCloseDialog();
-              dispatch(confirmRegularOrderPickUp({ id: selectedRow.id }));
+              // Make API Call
             }
             if (actionType === 'confirm_delivery') {
               handleCloseDialog();
-              dispatch(confirmOrderdelivery({ id: selectedRow.id }));
+              // Make API Call
             }
             if (actionType === 'reject') {
               handleCloseDialog();
-              dispatch(rejectOrder({ id: selectedRow.id }));
+              // Make API Call
             }
             if (actionType === 'cancel') {
               handleCloseDialog();
-              dispatch(cancelOrder({ id: selectedRow.id }));
+              // Make API Call
             }
             if (actionType === 're_publish') {
               handleCloseDialog();
-              dispatch(approveOrder({ id: selectedRow.id }));
+              // Make API Call
             }
             if (actionType === 'delete_order') {
               handleCloseDialog();
-              dispatch(deleteOrder({ id: selectedRow.id }));
+              // Make API Call
             }
           }}
         />
@@ -371,7 +359,9 @@ export default function WaybillOrdersTable({ orders, rowsPerPage, setRowsPerPage
             }}
           />
         ) : (
-          <OrderHistory order={selectedRow} />
+          <>
+           {/* <OrderHistory order={selectedRow} /> */}
+          </>
         )}
       </SideNav>
     </>

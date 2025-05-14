@@ -14,9 +14,6 @@ const RegularOrdersDetail = Loadable(lazy(() => import('../../pages/Orders/Regul
 const WaybillOrdersList = Loadable(lazy(() => import('../../pages/Orders/Waybill')));
 const WaybillOrdersEdit = Loadable(lazy(() => import('../../pages/Orders/Waybill/edit')));
 
-const LaundryOrdersList = Loadable(lazy(() => import('../../pages/Orders/Laundry')));
-const ShoppingOrdersList = Loadable(lazy(() => import('../../pages/Orders/Shopping')));
-
 // Clients - Corporate Accounts
 const CorporateCompaniesList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/list')));
 const CorporateCompanyUserAccountsList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Users')));
@@ -24,10 +21,10 @@ const CorporateCompanyWarehousesList = Loadable(lazy(() => import('../../pages/C
 const CorporateCompanyOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders')));
 const CorporateCompanyRegularOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders/Regular')));
 const CorporateCompanyWaybillOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders/Waybill')));
-const ClientsCorporate = Loadable(lazy(() => import('../../pages/Clients/Corporate/Users/list')));
 
-// Clients - Personal Accounts
+// Clients
 const ClientsPersonal = Loadable(lazy(() => import('../../pages/Clients/Personal')));
+const ClientsCorporate = Loadable(lazy(() => import('../../pages/Clients/Corporate/Users/list')));
 
 // Utilities - Laundry
 const LaundryCategories = Loadable(lazy(() => import('../../pages/Utilities/Laundry/Categories')));
@@ -73,16 +70,7 @@ export const AppRoutes = [
     meta: { isPrivate: true },
     element: <WaybillOrdersEdit />
   },
-  {
-    path: 'orders/laundry',
-    meta: { isPrivate: true },
-    element: <LaundryOrdersList />
-  },
-  {
-    path: 'orders/shopping',
-    meta: { isPrivate: true },
-    element: <ShoppingOrdersList />
-  },
+
   // Utilities - Laundry
   {
     path: 'laundry/categories',

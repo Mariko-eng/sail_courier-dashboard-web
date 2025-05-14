@@ -8,7 +8,7 @@ import { API } from '../../../../../../utils/api';
 import { formatError } from '../../../../../../utils/axios-error';
 import UiLoadingOverlay from '../../../../../../components/overlay';
 import MainCard from '../../../../../../ui-component/cards/MainCard';
-import OrdersTable from './../../../../../Orders/Regular/table';
+import OrdersTable from './../../../../../Orders/Regular/list/table';
 
 // Utility function to format date in YYYY-MM-DD
 const formatDate = (date) => {
