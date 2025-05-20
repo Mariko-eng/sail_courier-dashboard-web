@@ -17,7 +17,7 @@ const ClientsCorporate = () => {
   const [clients, setClients] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPageNo, setCurrentPageNo] = useState(1);
-  const [currentPageSize, setCurrentPageSize] = useState(50);
+  const [currentPageSize, setCurrentPageSize] = useState(50); 
 
   const openSidebar = () => {
     setShowSidebar(true);

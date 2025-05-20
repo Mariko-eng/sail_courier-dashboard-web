@@ -14,6 +14,8 @@ export const fetch_regular_orders = async (queryString) => {
   try {
     const url = `${backendUrl}/api/main/order-items-regular/?${queryString}`
 
+    console.log("Request Url : " , url)
+
     const response = await API.get(url);
 
     // console.log("response.data", response.data)

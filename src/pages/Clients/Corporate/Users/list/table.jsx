@@ -174,9 +174,7 @@ export default function ClientsCorporateTable({
                         </TableHead>
 
                         <TableBody>
-                            {rows
-                                 
-                                .map((row, index) => {
+                            {rows.map((row, index) => {
                                     return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                                             {columns.map((column) => {

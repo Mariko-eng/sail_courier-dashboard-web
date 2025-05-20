@@ -13,7 +13,7 @@ const formatDate = (date) => {
   const day = `${date.getDate()}`.padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
- 
+
 const RegularOrdersList = () => {
   const today = new Date();
   const lastWeek = new Date(today);
@@ -24,7 +24,7 @@ const RegularOrdersList = () => {
   const [startDate, setStartDate] = useState(formatDate(lastWeek));
   const [endDate, setEndDate] = useState(formatDate(today));
   const [loading, setLoading] = useState(false);
- 
+
   const [orders, setOrders] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPageNo, setCurrentPageNo] = useState(1);
@@ -91,17 +91,22 @@ const RegularOrdersList = () => {
   };
 
   const fetchData = useCallback(async () => {
+    // Format as "YYYY-MM-DD"
+    const startDateStr = new Date(startDate).toISOString().split("T")[0];
+    // Format as "YYYY-MM-DD"
+    const endDateStr = new Date(endDate).toISOString().split("T")[0];
+
     const queryParams = new URLSearchParams({
       page: currentPageNo.toString(),
       page_size: currentPageSize.toString(),
-      startDate: new Date(startDate).toISOString(),
-      endDate: new Date(endDate).toISOString(),
+      startDate: startDateStr,
+      endDate: endDateStr,
       status,
     });
 
     try {
       setLoading(true);
-      const {count, results } = await fetch_regular_orders(queryParams.toString());
+      const { count, results } = await fetch_regular_orders(queryParams.toString());
       setTotalCount(count);
       setOrders(results);
     } catch (error) {
@@ -109,9 +114,9 @@ const RegularOrdersList = () => {
     } finally {
       setLoading(false);
     }
-  }, 
-  [currentPageNo, currentPageSize, status, startDate, endDate]
-);
+  },
+    [currentPageNo, currentPageSize, status, startDate, endDate]
+  );
 
   useEffect(() => {
     fetchData();
