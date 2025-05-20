@@ -138,8 +138,11 @@ const RegularOrdersList = () => {
               <MenuItem value="all">All</MenuItem>
               <MenuItem value="pending">Pending</MenuItem>
               <MenuItem value="approved">Approved</MenuItem>
-              <MenuItem value="pickedUp">PickedUp</MenuItem>
+              <MenuItem value="assigned">Assigned</MenuItem>
+              <MenuItem value="picked_up">PickedUp</MenuItem>
               <MenuItem value="delivered">Delivered</MenuItem>
+              <MenuItem value="cancelled">Cancelled</MenuItem>
+              <MenuItem value="rejected">Rejected</MenuItem>
             </Select>
           </FormControl>
 
