@@ -6,7 +6,7 @@ import { confirm_regular_order_delivery } from '../../../services/orders';
 import SideNav from '../../../components/SideNav';
 
 
-const ConfirmRegularOrderDeliveryBtn = ({ order, onRefresh }) => {
+const ConfirmQuickSendOrderDeliveryBtn = ({ order, onRefresh }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [couriers, setCouriers] = useState([]);
@@ -112,4 +112,4 @@ const ConfirmRegularOrderDeliveryBtn = ({ order, onRefresh }) => {
     );
 };
 
-export default ConfirmRegularOrderDeliveryBtn;
+export default ConfirmQuickSendOrderDeliveryBtn;

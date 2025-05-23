@@ -22,10 +22,10 @@ import RegularOrderActionsMenuButton from './actions';
 import ViewOrderHistoryBtn from '../../history/OrderHistory';
 import AssignCourierToOrderBtn from '../../actions/AssignCourier';
 import { fetch_regular_order_detail } from '../../../../services/orders';
-import ConfirmRegularOrderDeliveryBtn from '../../actions/ConfirmDelivery';
+import ConfirmQuickSendOrderDeliveryBtn from '../../actions/ConfirmDelivery';
 
 
-const RegularOrdersDetail = () => {
+const QuickSendOrdersDetail = () => {
     const { id } = useParams();
 
     const store = useSelector(store => store.auth);
@@ -116,7 +116,7 @@ const RegularOrdersDetail = () => {
                         )}
                         {!["pending", "delivered", "cancelled", "rejected"].includes(orderDetails.status) && (
                             <Grid xs={4}>
-                                <ConfirmRegularOrderDeliveryBtn order={orderDetails} onRefresh={handleRefresh} />
+                                <ConfirmQuickSendOrderDeliveryBtn order={orderDetails} onRefresh={handleRefresh} />
                             </Grid>
                         )}
                         <Grid xs={4}>
@@ -419,4 +419,4 @@ const RegularOrdersDetail = () => {
     );
 };
 
-export default RegularOrdersDetail
+export default QuickSendOrdersDetail

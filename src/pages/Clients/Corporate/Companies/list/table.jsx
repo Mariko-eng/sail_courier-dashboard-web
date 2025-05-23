@@ -155,8 +155,8 @@ export default function CorporateCompanniesTable({
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                 <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/user-accounts/`)}>User Accounts</MenuItem>
                 <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/warehouses`)}>Warehouses</MenuItem>
-                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/orders-regular`)}>Orders: Regular</MenuItem>
-                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/orders-waybill`)}>Orders: Waybill</MenuItem>
+                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/orders-quick-send`)}>QuickSend Orders</MenuItem>
+                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/orders-waybill`)}>Waybill Orders</MenuItem>
                 <MenuItem onClick={() => handleAction('Delete')}>Delete Company</MenuItem>
             </Menu>
         </>

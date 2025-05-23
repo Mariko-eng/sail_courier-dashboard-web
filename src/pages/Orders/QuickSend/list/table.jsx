@@ -26,7 +26,7 @@ const columns = [
 // Transform nested structure into flat table row
 function processData(dataList, query) {
   const newData = dataList.map(order => {
-    const core = order.regular_order?.order || {};
+    const core = order.QuickSend_order?.order || {};
     const createdAt = core.created_at || order.created_at;
     const isFullyPaid = parseFloat(order.amount_paid || 0) >= parseFloat(order.total_charges || 0);
 
@@ -55,7 +55,7 @@ function processData(dataList, query) {
 }
 
 // Table component
-export default function RegularOrdersTable({
+export default function QuickSendOrdersTable({
   orders,
   totalCount,
   currentPageSize,
@@ -90,7 +90,7 @@ export default function RegularOrdersTable({
   };
 
   const handleClick = (event, row) => {
-    navigate(`/orders/regular/detail/${row.id}`);
+    navigate(`/orders/quick-send/detail/${row.id}`);
   };
 
   return (
@@ -207,7 +207,7 @@ const renderStatusChip = (value) => {
   }
 };
 
-RegularOrdersTable.propTypes = {
+QuickSendOrdersTable.propTypes = {
   orders: PropTypes.array.isRequired,
   totalCount: PropTypes.number.isRequired,
   currentPageSize: PropTypes.number.isRequired,

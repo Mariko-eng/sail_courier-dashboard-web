@@ -134,7 +134,6 @@ const CorporateCompaniesNew = ({ onRefresh }) => {
                     companyForm20ImageFormat,
                     companyForm20ImageBase64,
                   };
-                  setSubmitting(true);
 
                   setSubmitting(true);
 

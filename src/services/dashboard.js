@@ -7,12 +7,12 @@ if (import.meta.env.VITE_ENV === "STAGING") {
   backendUrl = import.meta.env.VITE_BACKEND_STAGING_URL;
 } else if (import.meta.env.VITE_ENV === "PROD") {
   backendUrl = import.meta.env.VITE_BACKEND_PROD_URL;
-}
+} 
 
 
-export const fetch_dashboard_analytics = async (queryString) => {
+export const fetch_dashboard_analytics = async () => {
   try {
-    const url = `${backendUrl}/api/main/dashboard-analytics/?${queryString}`
+    const url = `${backendUrl}/api/main/dashboard-analytics/`
 
     const response = await API.get(url);
 

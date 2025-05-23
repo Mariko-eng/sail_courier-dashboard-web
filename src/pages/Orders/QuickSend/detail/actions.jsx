@@ -41,7 +41,7 @@ const StyledMenu = styled((props) => (
     },
 }));
 
-const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
+const QuickSendOrderActionsMenuButton = ({ order, onRefresh }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [isAlertDialogOpen, setIsAlertDialogOpen] = React.useState(false);
     const [actionType, setActionType] = React.useState(null);
@@ -190,4 +190,4 @@ const RegularOrderActionsMenuButton = ({ order, onRefresh }) => {
     );
 };
 
-export default RegularOrderActionsMenuButton;
+export default QuickSendOrderActionsMenuButton;

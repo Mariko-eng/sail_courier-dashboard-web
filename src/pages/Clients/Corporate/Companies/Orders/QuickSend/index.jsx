@@ -4,11 +4,10 @@ import { useParams } from 'react-router-dom';
 // ** Store & Actions
 import { Box, FormControl, InputLabel, MenuItem, Card, Select, TextField } from '@mui/material';
 
-import { API } from '../../../../../../utils/api';
-import { formatError } from '../../../../../../utils/axios-error';
 import UiLoadingOverlay from '../../../../../../components/overlay';
 import MainCard from '../../../../../../ui-component/cards/MainCard';
-import OrdersTable from './../../../../../Orders/Regular/list/table';
+import OrdersTable from './../../../../../Orders/QuickSend/list/table';
+import { fetch_regular_orders } from '../../../../../../services/orders';
 
 // Utility function to format date in YYYY-MM-DD
 const formatDate = (date) => {
@@ -18,7 +17,7 @@ const formatDate = (date) => {
     return `${year}-${month}-${day}`;
 };
 
-const CorporateCompanyRegularOrdersList = () => {
+const CorporateCompanyQuickSendOrdersList = () => {
     const { id } = useParams();
 
     const today = new Date();
@@ -29,9 +28,12 @@ const CorporateCompanyRegularOrdersList = () => {
     const [timePeriod, setTimePeriod] = useState('last7days');
     const [startDate, setStartDate] = useState(formatDate(start_date));
     const [endDate, setEndDate] = useState(formatDate(today));
-    const [rowsPerPage, setRowsPerPage] = useState(50);
-    const [orders, setOrderData] = useState([]);
+
     const [loading, setLoading] = useState(false);
+    const [orders, setOrders] = useState([]);
+    const [totalCount, setTotalCount] = useState(0);
+    const [currentPageNo, setCurrentPageNo] = useState(1);
+    const [currentPageSize, setCurrentPageSize] = useState(50);
 
     // Function to handle filter changes
     const handleFilter = (event) => {
@@ -90,23 +92,33 @@ const CorporateCompanyRegularOrdersList = () => {
 
     // Memoize fetchData function to prevent unnecessary rerenders
     const fetchData = useCallback(async () => {
-        const queryParams = new URLSearchParams();
-        queryParams.append('companyId', id);
-        queryParams.append('limit', rowsPerPage);
-        if (status !== 'all') queryParams.append('status', status);
-        if (startDate) queryParams.append('startDate', new Date(startDate).toISOString());
-        if (endDate) queryParams.append('endDate', new Date(endDate).toISOString());
+        // Format as "YYYY-MM-DD"
+        const startDateStr = new Date(startDate).toISOString().split("T")[0];
+        // Format as "YYYY-MM-DD"
+        const endDateStr = new Date(endDate).toISOString().split("T")[0];
+
+        const queryParams = new URLSearchParams({
+            company_id: id,
+            page: currentPageNo.toString(),
+            page_size: currentPageSize.toString(),
+            startDate: startDateStr,
+            endDate: endDateStr,
+            status,
+        });
 
         try {
             setLoading(true);
-            const results = await fetchOrders(queryParams.toString());
+            const { count, results } = await fetch_regular_orders(queryParams.toString());
             setLoading(false);
-            setOrderData(results.entries);
+            setTotalCount(count);
+            setOrders(results);
         } catch (error) {
             setLoading(false);
             console.error('Error fetching data: ', error);
         }
-    }, [id,rowsPerPage, status, startDate, endDate]);
+    },
+        [currentPageNo, currentPageSize, status, startDate, endDate]
+    );
 
     useEffect(() => {
         fetchData();
@@ -114,7 +126,7 @@ const CorporateCompanyRegularOrdersList = () => {
 
     return (
         <UiLoadingOverlay loading={loading}>
-            <MainCard title="Regular Orders"            >
+            <MainCard title="Quick Send Orders"            >
                 <Card sx={{ overflow: 'hidden' }}>
                     <Box px={'10px'} py={'20px'} display={'flex'} justifyContent={'space-between'}>
                         <FormControl style={{ minWidth: 150 }}>
@@ -180,7 +192,14 @@ const CorporateCompanyRegularOrdersList = () => {
                         </Box>
                     </Box>
                     <div style={{ overflowX: 'auto' }}>
-                        <OrdersTable orders={orders} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage} />
+                        <OrdersTable
+                            orders={orders}
+                            totalCount={totalCount}
+                            currentPageSize={currentPageSize}
+                            setCurrentPageSize={setCurrentPageSize}
+                            currentPageNo={currentPageNo}
+                            setCurrentPageNo={setCurrentPageNo}
+                        />
                     </div>
                 </Card>
             </MainCard>
@@ -189,20 +208,6 @@ const CorporateCompanyRegularOrdersList = () => {
 };
 
 
-export default CorporateCompanyRegularOrdersList;
+export default CorporateCompanyQuickSendOrdersList;
 
 
-const fetchOrders = async (query) => {
-    try {
-        const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/regular?${query}&env=${env}`;
-
-        const response = await API.get(url);
-
-        return response.data;
-    } catch (error) {
-        const customAxiosError = formatError(error);
-        // console.log(customAxiosError);
-        throw customAxiosError;
-    }
-};

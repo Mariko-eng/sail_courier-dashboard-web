@@ -43,7 +43,7 @@ API.interceptors.request.use(
       window.location.href = '/login'; // Redirect to login page if token fetch fails
     }
     
-    // console.log(config)
+    console.log(config)
     return config;
   },
   function (error) {
@@ -55,7 +55,7 @@ API.interceptors.request.use(
 API.interceptors.response.use(
   (response) => {
     // If the response is successful, simply return it
-    // console.log(response)
+    console.log(response)
     return response;
   },
   async (error) => {

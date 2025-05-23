@@ -142,3 +142,61 @@ export const add_client_corporate = async (data) => {
   }
 };
 
+export const fetch_corporate_company_delivery_points = async (company_id, queryString)  => {
+  try {
+    let url = `${backendUrl}/api/main/delivery-points/?company=${company_id}&location_type=warehouse` 
+
+    if (queryString) {
+      url += `&${queryString}`; // Safely append query parameters like page, search, etc.
+    }
+
+    const response = await API.get(url);
+
+    // console.log("response.data", response.data)
+
+    return response.data;
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    // console.log(customAxiosError);
+    throw customAxiosError;
+  }
+};
+
+
+export const add_corporate_company_delivery_point = async (data) => {
+  try {
+    const url = `${backendUrl}/api/main/delivery-points/`;
+
+    const requestData = {
+      company: data.company,
+      name: data.name,
+      google_place_id: data.google_place_id,
+      google_place_name: data.google_place_name,
+      google_place_lat: data.google_place_lat,
+      google_place_lng: data.google_place_lng,
+      location_type: "warehouse",
+      contact_person_name: data.contact_person_name,
+      contact_person_phone: data.contact_person_phone,
+      contact_person_email: data.contact_person_email,
+      
+      country: "uganda",
+      district: data.district,
+      village: data.village,
+      region: '',
+      city: '',
+      county: '',
+
+    };
+
+    const response = await API.post(url, requestData);
+
+    // console.log("response.data", response.data)
+
+    return response.data;
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    // console.log(customAxiosError);
+    throw customAxiosError;
+  }
+};
+

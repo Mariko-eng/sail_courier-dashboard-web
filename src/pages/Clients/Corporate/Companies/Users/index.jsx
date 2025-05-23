@@ -13,86 +13,86 @@ import ClientsCorporateTable from './../../../Corporate/Users/list/table';
 import CorporateNew from './../../../Corporate/Users/new';
 
 import SideNav from '../../../../../components/SideNav';
+import { fetch_corporate_company_user_accounts } from '../../../../../services/clients';
 
 
 const CorporateCompanyUserAccountsList = () => {
-    const { id } = useParams();
-    const [results, setResults] = useState([]);
-    const [loading, setLoading] = useState(false);
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
 
-      const [showSidebar, setShowSidebar] = useState(false);
-    
-      const openSidebar = () => {
-        setShowSidebar(true);
-      };
-    
-      const closeSidebar = () => {
-        setShowSidebar(false);
-      };
+  const [clients, setClients] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPageNo, setCurrentPageNo] = useState(1);
+  const [currentPageSize, setCurrentPageSize] = useState(50);
+
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  const openSidebar = () => {
+    setShowSidebar(true);
+  };
+
+  const closeSidebar = () => {
+    setShowSidebar(false);
+  };
 
 
-    // Memoize fetchData function to prevent unnecessary rerenders
-    const fetchData = useCallback(async () => {
-        const queryParams = new URLSearchParams();
-        queryParams.append('companyId', id);
-        try {
-            setLoading(true);
-            const results = await getData(queryParams.toString());
-            setLoading(false);
-            setResults(results);
-        } catch (error) {
-            setLoading(false);
-            console.error('Error fetching data: ', error);
-        }
-    }, [id]);
+  // Memoize fetchData function to prevent unnecessary rerenders
+  const fetchData = useCallback(async () => {
+    const queryParams = new URLSearchParams({
+      page: currentPageNo.toString(),
+      page_size: currentPageSize.toString(),
+    });
+    try {
+      setLoading(true);
+      const { count, results } = await fetch_corporate_company_user_accounts(id, queryParams.toString());
+      setLoading(false);
+      setTotalCount(count);
+      setClients(results);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error fetching data: ', error);
+    }
+  }, [id]);
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-    return (
-        <>
-          <UiLoadingOverlay loading={loading}>
-            <MainCard
-              title="Corporate User Accounts"
-              secondary={
-                <Button variant="outlined" startIcon={<AddCircle />} onClick={openSidebar}>
-                  New
-                </Button>
-              }
-            >
-              <Card sx={{ overflow: 'hidden' }}>
-                <div style={{ overflowX: 'auto' }}>
-                <ClientsCorporateTable clients={results} />
-                </div>
-              </Card>
-            </MainCard>
-          </UiLoadingOverlay>
-    
-          <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
-            <CorporateNew />
-          </SideNav>
-        </>
-      );
+  return (
+    <>
+      <UiLoadingOverlay loading={loading}>
+        <MainCard
+          title="Corporate User Accounts"
+          secondary={
+            <Button variant="outlined" startIcon={<AddCircle />} onClick={openSidebar}>
+              New
+            </Button>
+          }
+        >
+          <Card sx={{ overflow: 'hidden' }}>
+            <div style={{ overflowX: 'auto' }}>
+              <ClientsCorporateTable
+                clients={clients}
+                totalCount={totalCount}
+                currentPageSize={currentPageSize}
+                setCurrentPageSize={setCurrentPageSize}
+                currentPageNo={currentPageNo}
+                setCurrentPageNo={setCurrentPageNo}
+              />
+            </div>
+          </Card>
+        </MainCard>
+      </UiLoadingOverlay>
+
+      <SideNav showSidebar={showSidebar} closeSidebar={closeSidebar}>
+        <CorporateNew />
+      </SideNav>
+    </>
+  );
 };
 
 
 export default CorporateCompanyUserAccountsList;
 
 
-const getData = async (query) => {
-    try {
-        const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/users/clients/corporate/?${query}&env=${env}`;
 
-        const response = await API.get(url);
-
-        // console.log(response)
-
-        return response.data;
-    } catch (error) {
-        const customAxiosError = formatError(error);
-        // console.log(customAxiosError);
-        throw customAxiosError;
-    }
-};

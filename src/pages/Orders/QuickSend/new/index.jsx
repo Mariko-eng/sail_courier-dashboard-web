@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles';
 import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, MenuItem } from '@mui/material';
 
 
-const RegularOrdersNew = () => {
+const QuickSendOrdersNew = () => {
   const [addressOrigin, setAddressOrigin] = useState('');
   const [addressOriginPlaceId, setAddressOriginPlaceId] = useState('');
   const [originCordinates, setOriginCordinates] = useState({});
@@ -399,4 +399,4 @@ const RegularOrdersNew = () => {
   );
 };
 
-export default RegularOrdersNew
+export default QuickSendOrdersNew

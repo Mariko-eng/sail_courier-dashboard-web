@@ -8,7 +8,7 @@ if (import.meta.env.VITE_ENV === "STAGING") {
     backendUrl = import.meta.env.VITE_BACKEND_STAGING_URL;
 } else if (import.meta.env.VITE_ENV === "PROD") {
     backendUrl = import.meta.env.VITE_BACKEND_PROD_URL;
-}
+} 
 
 export const fetch_order_history = async (data) => {
     try {

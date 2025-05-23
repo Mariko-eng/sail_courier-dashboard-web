@@ -194,17 +194,3 @@ const CorporateCompanyWaybillOrdersList = () => {
 export default CorporateCompanyWaybillOrdersList;
 
 
-const fetchWaybillOrders = async (query) => {
-    try {
-        const env = import.meta.env.VITE_ENV === "DEV" ? 'dev' : 'prod';
-        const url = `/main/orders/waybill?${query}&env=${env}`;
-
-        const response = await API.get(url);
-
-        return response.data;
-    } catch (error) {
-        const customAxiosError = formatError(error);
-        // console.log(customAxiosError);
-        throw customAxiosError;
-    }
-};

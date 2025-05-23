@@ -7,9 +7,9 @@ import Loadable from '../../ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('../../pages/Dashboard')));
 
 // Orders
-const RegularOrdersList = Loadable(lazy(() => import('../../pages/Orders/Regular/list')));
-const RegularOrdersNew = Loadable(lazy(() => import('../../pages/Orders/Regular/new')));
-const RegularOrdersDetail = Loadable(lazy(() => import('../../pages/Orders/Regular/detail')));
+const QuickSendOrdersList = Loadable(lazy(() => import('../../pages/Orders/QuickSend/list')));
+const QuickSendOrdersNew = Loadable(lazy(() => import('../../pages/Orders/QuickSend/new')));
+const QuickSendOrdersDetail = Loadable(lazy(() => import('../../pages/Orders/QuickSend/detail')));
 
 const WaybillOrdersList = Loadable(lazy(() => import('../../pages/Orders/Waybill')));
 const WaybillOrdersEdit = Loadable(lazy(() => import('../../pages/Orders/Waybill/edit')));
@@ -19,7 +19,7 @@ const CorporateCompaniesList = Loadable(lazy(() => import('../../pages/Clients/C
 const CorporateCompanyUserAccountsList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Users')));
 const CorporateCompanyWarehousesList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Warehouses')));
 const CorporateCompanyOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders')));
-const CorporateCompanyRegularOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders/Regular')));
+const CorporateCompanyQuickSendOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders/QuickSend')));
 const CorporateCompanyWaybillOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders/Waybill')));
 
 // Clients
@@ -46,19 +46,19 @@ export const AppRoutes = [
     element: <DashboardDefault />
   }, 
   {
-    path: 'orders/regular',
+    path: 'orders/quick-send',
     meta: { isPrivate: true },
-    element: <RegularOrdersList />
+    element: <QuickSendOrdersList />
   },
   {
-    path: 'orders/regular/detail/:id',
+    path: 'orders/quick-send/detail/:id',
     meta: { isPrivate: true },
-    element: <RegularOrdersDetail />
+    element: <QuickSendOrdersDetail />
   },
   {
-    path: 'orders/regular/new',
+    path: 'orders/quick-send/new',
     meta: { isPrivate: true },
-    element: <RegularOrdersNew />
+    element: <QuickSendOrdersNew />
   },
   {
     path: 'orders/waybill',
@@ -115,9 +115,9 @@ export const AppRoutes = [
     element: <CorporateCompanyWarehousesList />
   },
   {
-    path: 'clients/corporate/companies/:id/orders-regular',
+    path: 'clients/corporate/companies/:id/orders-quick-send',
     meta: { isPrivate: true },
-    element: <CorporateCompanyRegularOrdersList />
+    element: <CorporateCompanyQuickSendOrdersList />
   },
   {
     path: 'clients/corporate/companies/:id/orders-waybill',

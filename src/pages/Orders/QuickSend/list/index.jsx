@@ -4,7 +4,7 @@ import { Box, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/
 import { fetch_regular_orders } from '../../../../services/orders';
 import UiLoadingOverlay from '../../../../components/overlay';
 import MainCard from '../../../../ui-component/cards/MainCard';
-import RegularOrdersTable from './table';
+import QuickSendOrdersTable from './table';
 
 // Utility to format date as YYYY-MM-DD
 const formatDate = (date) => {
@@ -14,7 +14,7 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-const RegularOrdersList = () => {
+const QuickSendOrdersList = () => {
   const today = new Date();
   const lastWeek = new Date(today);
   lastWeek.setDate(today.getDate() - 7);
@@ -23,8 +23,8 @@ const RegularOrdersList = () => {
   const [timePeriod, setTimePeriod] = useState('last7days');
   const [startDate, setStartDate] = useState(formatDate(lastWeek));
   const [endDate, setEndDate] = useState(formatDate(today));
-  const [loading, setLoading] = useState(false);
 
+  const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPageNo, setCurrentPageNo] = useState(1);
@@ -107,6 +107,7 @@ const RegularOrdersList = () => {
     try {
       setLoading(true);
       const { count, results } = await fetch_regular_orders(queryParams.toString());
+      setLoading(false);
       setTotalCount(count);
       setOrders(results);
     } catch (error) {
@@ -124,7 +125,7 @@ const RegularOrdersList = () => {
 
   return (
     <UiLoadingOverlay loading={loading}>
-      <MainCard title="Regular Orders">
+      <MainCard title="QuickSend Orders">
         <Box px={2} py={3} display="flex" justifyContent="space-between" flexWrap="wrap" gap={2}>
           <FormControl style={{ minWidth: 150 }}>
             <InputLabel id="status-label">Order Status</InputLabel>
@@ -190,7 +191,7 @@ const RegularOrdersList = () => {
         </Box>
 
         <Box style={{ overflowX: 'auto' }}>
-          <RegularOrdersTable
+          <QuickSendOrdersTable
             orders={orders}
             totalCount={totalCount}
             currentPageSize={currentPageSize}
@@ -204,4 +205,4 @@ const RegularOrdersList = () => {
   );
 };
 
-export default RegularOrdersList;
+export default QuickSendOrdersList;

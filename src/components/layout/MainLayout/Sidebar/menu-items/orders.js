@@ -18,16 +18,16 @@ const orders = {
   type: 'group',
   children: [
     {
-      id: 'regular',
-      title: 'Regular',
+      id: 'quick-send',
+      title: 'Quick Send',
       type: 'collapse',
       icon: icons.IconTruckDelivery,
       children: [
         {
-          id: 'regular_list',
+          id: 'quick_send_list',
           title: 'List',
           type: 'item',
-          url: '/orders/regular',
+          url: '/orders/quick-send',
           target: false
         },
       ]
