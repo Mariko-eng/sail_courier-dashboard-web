@@ -55,18 +55,24 @@ export default function WaybillOrdersTable({
   setCurrentPageSize,
   currentPageNo,
   setCurrentPageNo,
+  isLoading = false, // Optional: in case loading state is provided
 }) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const rows = processData(orders, searchQuery);
-
-  // Optional: filter on client-side if necessary
-  const filteredOrders = rows.filter(order =>
-    Object.values(order).some(val =>
-      typeof val === 'string' && val.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+  const rows = React.useMemo(
+    () => processData(orders, searchQuery),
+    [orders, searchQuery]
   );
+
+  // const rows = processData(orders, searchQuery);
+
+  // // Optional: filter on client-side if necessary
+  // const filteredOrders = rows.filter(order =>
+  //   Object.values(order).some(val =>
+  //     typeof val === 'string' && val.toLowerCase().includes(searchQuery.toLowerCase())
+  //   )
+  // );
 
   const handleChangePage = (event, newPage) => {
     setCurrentPageNo(newPage + 1); // +1 because TablePagination is 0-indexed
@@ -83,7 +89,7 @@ export default function WaybillOrdersTable({
   };
 
   const handleClick = (event, row) => {
-      navigate(`/orders/waybill/detail/${row.id}`);
+    navigate(`/orders/waybill/detail/${row.id}`);
   };
 
   return (
@@ -116,9 +122,26 @@ export default function WaybillOrdersTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredOrders.map((row) => (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center">
+                  Loading orders...
+                </TableCell>
+              </TableRow>
+            ) : rows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center">
+                  {searchQuery ? 'No matching orders found' : 'No orders available'}
+                </TableCell>
+              </TableRow>
+            ) : (
+              rows.map((row) => (
+                <DataRow key={row.id} row={row} handleClick={handleClick} />
+              ))
+            )}
+            {/* {filteredOrders.map((row) => (
               <DataRow key={row.id} row={row} handleClick={handleClick} />
-            ))}
+            ))} */}
           </TableBody>
         </Table>
       </TableContainer>
@@ -208,4 +231,5 @@ WaybillOrdersTable.propTypes = {
   setCurrentPageSize: PropTypes.func.isRequired,
   currentPageNo: PropTypes.number.isRequired,
   setCurrentPageNo: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
 };

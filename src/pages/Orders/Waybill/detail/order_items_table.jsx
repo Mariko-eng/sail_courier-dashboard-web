@@ -52,54 +52,106 @@ export default function WaybillOrderItemsListTable({ orderDetails, onRefresh }) 
 
                 <TableBody>
                     {orderDetails?.waybillorderitem_set?.map((row) => (
-                        <TableRow
-                            key={row.id}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                            <TableCell component="th" scope="row" sx={{ width: '250px', py: 3 }}>
-                                <Tooltip title={row.item_name} arrow placement="top-start">
-                                    <Typography
-                                        variant="body1"
-                                        fontWeight={600}
-                                        sx={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 1,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            maxWidth: '250px'
-                                        }}
-                                    >
-                                        {row.item_name.length > 30
-                                            ? `${row.item_name.substring(0, 30)}...`
-                                            : row.item_name}
-                                    </Typography>
-                                </Tooltip>
-                                {row.item_description && (
-                                    <Typography variant="body2" color="text.secondary" mt={0.5}>
-                                        {row.item_description.length > 30
-                                            ? `${row.item_description.substring(0, 30)}...`
-                                            : row.item_description}
-                                    </Typography>
-                                )}
-                            </TableCell>
-                            <TableCell align="right">{row.drop_off_point?.name}</TableCell>
-                            <TableCell align="right">{row.parcel_receiver_name}</TableCell>
-                            <TableCell align="right">{row.parcel_receiver_phone}</TableCell>
-                            <TableCell align="right">{row.items_per_package}</TableCell>
-                            <TableCell align="right">{row.no_of_packages}</TableCell>
-                            <TableCell align="right">
-                                <Typography variant="body2" fontWeight={500}>
-                                    {Number(row.total_package_weight).toFixed(2)}
-                                </Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                                <DeleteWaybillOrderItemModal orderItem={row} onRefresh={onRefresh} />
-                            </TableCell>
-                        </TableRow>
+                        <DataRow key={row.id} row={row} onRefresh={onRefresh} />
+                        // <TableRow
+                        //     key={row.id}
+                        //     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        // >
+                        //     <TableCell component="th" scope="row" sx={{ width: '250px', py: 3 }}>
+                        //         <Tooltip title={row.item_name} arrow placement="top-start">
+                        //             <Typography
+                        //                 variant="body1"
+                        //                 fontWeight={600}
+                        //                 sx={{
+                        //                     display: '-webkit-box',
+                        //                     WebkitLineClamp: 1,
+                        //                     WebkitBoxOrient: 'vertical',
+                        //                     overflow: 'hidden',
+                        //                     textOverflow: 'ellipsis',
+                        //                     maxWidth: '250px'
+                        //                 }}
+                        //             >
+                        //                 {row.item_name.length > 30
+                        //                     ? `${row.item_name.substring(0, 30)}...`
+                        //                     : row.item_name}
+                        //             </Typography>
+                        //         </Tooltip>
+                        //         {row.item_description && (
+                        //             <Typography variant="body2" color="text.secondary" mt={0.5}>
+                        //                 {row.item_description.length > 30
+                        //                     ? `${row.item_description.substring(0, 30)}...`
+                        //                     : row.item_description}
+                        //             </Typography>
+                        //         )}
+                        //     </TableCell>
+                        //     <TableCell align="right">{row.drop_off_point?.name}</TableCell>
+                        //     <TableCell align="right">{row.parcel_receiver_name}</TableCell>
+                        //     <TableCell align="right">{row.parcel_receiver_phone}</TableCell>
+                        //     <TableCell align="right">{row.items_per_package}</TableCell>
+                        //     <TableCell align="right">{row.no_of_packages}</TableCell>
+                        //     <TableCell align="right">
+                        //         <Typography variant="body2" fontWeight={500}>
+                        //             {Number(row.total_package_weight).toFixed(2)}
+                        //         </Typography>
+                        //     </TableCell>
+                        //     <TableCell align="right">
+                        //         <DeleteWaybillOrderItemModal orderItem={row} onRefresh={onRefresh} />
+                        //     </TableCell>
+                        // </TableRow>
                     ))}
                 </TableBody>
             </Table>
         </TableContainer>
     );
 }
+
+// Row renderer
+const DataRow = ({ row, onRefresh }) => (
+    <TableRow hover
+        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+    >
+        <TableCell component="th" scope="row" sx={{ width: '250px', py: 3 }}>
+            <Tooltip title={row.item_name} arrow placement="top-start">
+                <Typography
+                    variant="body1"
+                    fontWeight={600}
+                    sx={{
+                        display: '-webkit-box',
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '250px'
+                    }}
+                >
+                    {row.item_name.length > 30
+                        ? `${row.item_name.substring(0, 30)}...`
+                        : row.item_name}
+                </Typography>
+            </Tooltip>
+            {row.item_description && (
+                <Typography variant="body2" color="text.secondary" mt={0.5}>
+                    {row.item_description.length > 30
+                        ? `${row.item_description.substring(0, 30)}...`
+                        : row.item_description}
+                </Typography>
+            )}
+        </TableCell>
+        <TableCell align="right">{row.drop_off_point?.name}</TableCell>
+        <TableCell align="right">{row.parcel_receiver_name}</TableCell>
+        <TableCell align="right">{row.parcel_receiver_phone}</TableCell>
+        <TableCell align="right">{row.items_per_package}</TableCell>
+        <TableCell align="right">{row.no_of_packages}</TableCell>
+        <TableCell align="right">
+            <Typography variant="body2" fontWeight={500}>
+                {Number(row.total_package_weight).toFixed(2)}
+            </Typography>
+        </TableCell>
+        <TableCell align="right">
+            <DownloadWaybillOrderItemPdfButton orderId={row.id} />
+        </TableCell>
+        <TableCell align="right">
+            <DeleteWaybillOrderItemModal orderItem={row} onRefresh={onRefresh} />
+        </TableCell>
+    </TableRow>
+);

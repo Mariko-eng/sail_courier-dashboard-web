@@ -17,7 +17,7 @@ import { fetch_corporate_company_delivery_points } from '../../../../services/cl
 import { add_waybill_order } from '../../../../services/orders';
 
 
-const NewWaybillOrderFormModal = ({companyId}) => {
+const NewWaybillOrderFormModal = ({ companyId }) => {
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
     const [warehouses, setWarehouses] = React.useState([])
@@ -113,6 +113,7 @@ const NewWaybillOrderFormModal = ({companyId}) => {
                                             onBlur={handleBlur}
                                             onChange={handleChange}
                                             label="Warehouse"
+                                            disabled={loading || warehouses.length === 0}
                                             inputProps={{}}
                                         >
                                             {
