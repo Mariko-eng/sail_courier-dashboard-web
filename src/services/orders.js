@@ -276,6 +276,162 @@ export const reorder_regular_order = async (data) => {
 };
 
 
+// waybill orders
+export const fetch_waybill_orders = async (queryString) => {
+  try {
+    const url = `${backendUrl}/api/main/orders-waybill/?${queryString}`
+
+    console.log("Request Url : " , url)
+
+    const response = await API.get(url);
+
+    // console.log("response.data", response.data)
+
+    return response.data;
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    // console.log(customAxiosError);
+    throw customAxiosError;
+  }
+};
+
+export const fetch_waybill_order_detail = async (id) => {
+  try {
+    const url = `${backendUrl}/api/main/orders-waybill/${id}/`
+
+    const response = await API.get(url);
+
+    // console.log("response.data", response.data);
+
+    return response.data;
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    // console.log(customAxiosError);
+    throw error;
+  }
+};
+
+export const add_waybill_order = async (data) => {
+  try {
+
+    const requestData = {
+      waybill_corporate_company: data.waybill_corporate_company,
+      waybill_pick_up_point: data.waybill_pick_up_point,
+      additional_notes: data.additional_notes,
+      scheduled_pickup_datetime: null,
+    }
+
+    const url = `${backendUrl}/api/main/orders-waybill-create/`
+
+    // console.log("requestData" , requestData)
+
+    const response = await API.post(url, requestData);
+
+    console.log(response)
+
+    return {
+      id: response.data.id,
+    };
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+    throw customAxiosError;
+  }
+};
+
+export const edit_waybill_order = async (data) => {
+  try {
+    const order_id = data.id;
+
+    const requestData = {
+      waybill_pick_up_point: data.waybill_pick_up_point,
+      additional_notes: data.additional_notes,
+    }
+
+    // console.log("requestData", requestData)
+
+    const url = `${backendUrl}/api/main/orders-waybill/${order_id}/update/`
+
+    const response = await API.patch(url, requestData);
+
+    // console.log(response)
+
+    return {
+      id: response.data.id,
+    };
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+    throw customAxiosError;
+  }
+};
+
+export const add_waybill_order_items = async (data) => {
+  try {
+    const order_id = data.id;
+
+    const requestData = {
+      order_items: data.order_items,
+    }
+
+    const url = `${backendUrl}/api/main/orders-waybill/${order_id}/items/create/`
+
+    // console.log("requestData" , requestData)
+
+    const response = await API.put(url, requestData);
+
+    return {
+      id: response.data.id,
+    };
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+    throw customAxiosError;
+  }
+};
+
+export const delete_waybill_order = async (data) => {
+  try {
+    const order_id = data.id;
+
+    const url = `${backendUrl}/api/main/orders-waybill/${order_id}/delete/`
+
+    // console.log("requestData" , requestData)
+
+    const response = await API.delete(url, requestData);
+
+    return {
+      id: id,
+    };
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+    throw customAxiosError;
+  }
+};
+
+export const delete_waybill_order_item = async (data) => {
+  try {
+    const order_item_id = data.id;
+
+    const url = `${backendUrl}/api/main/orders-waybill/items/${order_item_id}/delete/`
+
+    // console.log("requestData" , requestData)
+
+    const response = await API.delete(url, requestData);
+
+    return {
+      id: id,
+    };
+  } catch (error) {
+    const customAxiosError = formatError(error);
+    console.log(customAxiosError)
+    throw customAxiosError;
+  }
+};
+
+
+
 const ordersurl = `/main/orders`;
 
 

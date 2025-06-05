@@ -9,39 +9,30 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
 import { capitalize, prettyDate } from '../../../../utils/app-functions';
-import DownloadQuickSendOrderPdfButton from '../../../../components/orders/quick-send/download/pdf';
 
 // Column definitions
 const columns = [
   { id: 'createdAt', label: 'Date', align: 'left', minWidth: 170, format: prettyDate },
-  // { id: 'orderNo', label: 'No', align: 'center', minWidth: 100 },
   { id: 'orderTrackerNo', label: 'Tracker ID', align: 'center', minWidth: 170 },
   { id: 'status', label: 'Status', align: 'center', minWidth: 100 },
-  { id: 'parcelSenderName', label: 'Sender Name', align: 'center', minWidth: 150 },
-  { id: 'parcelSenderPhone', label: 'Sender Phone', align: 'center', minWidth: 150 },
-  // { id: 'totalCharges', label: 'Total Cost', align: 'center', minWidth: 100 },
-  // { id: 'isFullyPaid', label: 'Fully Paid', align: 'center', minWidth: 100 },
-  { id: 'download', label: 'Download', align: 'center', minWidth: 100 },
+  { id: 'noOfItems', label: 'Items', align: 'center', minWidth: 150 },
+  { id: 'companyName', label: 'Company', align: 'center', minWidth: 150 },
+  { id: 'pickUpPointName', label: 'Pickup Point', align: 'center', minWidth: 150 },
   { id: 'action', label: 'Action', align: 'center', minWidth: 100 },
 ];
 
 // Transform nested structure into flat table row
 function processData(dataList, query) {
   const newData = dataList.map(order => {
-    const core = order.QuickSend_order?.order || {};
-    const createdAt = core.created_at || order.created_at;
-    const isFullyPaid = parseFloat(order.amount_paid || 0) >= parseFloat(order.total_charges || 0);
-
     return {
       id: order.id,
-      createdAt,
-      orderNo: core.order_no || '',
-      orderTrackerNo: core.order_tracker_no || order.tracker_no,
-      status: order.status || core.status,
-      parcelSenderName: order.parcel_sender_name,
-      parcelSenderPhone: order.parcel_sender_phone,
-      totalCharges: `UGX ${Number(order.total_charges || 0).toLocaleString()}`,
-      isFullyPaid,
+      createdAt: order.created_at,
+      orderNo: order.order_no || '',
+      orderTrackerNo: order.order_tracker_no || order.tracker_no,
+      status: order.status,
+      noOfItems: order?.waybillorderitem_set?.length,
+      companyName: order?.corporate_company?.name,
+      pickUpPointName: order?.pick_up_point?.name,
       action: 'Actions'
     };
   });
@@ -57,11 +48,11 @@ function processData(dataList, query) {
 }
 
 // Table component
-export default function QuickSendOrdersTable({
+export default function WaybillOrdersTable({
   orders,
   totalCount,
   currentPageSize,
-  setCurrentPageSize, 
+  setCurrentPageSize,
   currentPageNo,
   setCurrentPageNo,
 }) {
@@ -92,7 +83,7 @@ export default function QuickSendOrdersTable({
   };
 
   const handleClick = (event, row) => {
-    navigate(`/orders/quick-send/detail/${row.id}`);
+      navigate(`/orders/waybill/detail/${row.id}`);
   };
 
   return (
@@ -151,14 +142,6 @@ const DataRow = ({ row, handleClick }) => (
     {columns.map((column) => {
       const value = row[column.id];
 
-      if (column.id === 'download') {
-        return (
-          <TableCell key={column.id} align={column.align}>
-            <DownloadQuickSendOrderPdfButton orderId={row.id} />
-          </TableCell>
-        );
-      }
-
       if (column.id === 'action') {
         return (
           <TableCell key={column.id} align={column.align}>
@@ -211,13 +194,14 @@ const renderStatusChip = (value) => {
       return <Chip label="Delivered" color="success" />;
     case 'cancelled':
     case 'rejected':
-      return <Chip label={capitalize(value)} color="error" />; 
+      return <Chip label={capitalize(value)} color="error" />;
     default:
       return <Chip label={capitalize(value)} variant="outlined" />;
   }
 };
 
-QuickSendOrdersTable.propTypes = {
+
+WaybillOrdersTable.propTypes = {
   orders: PropTypes.array.isRequired,
   totalCount: PropTypes.number.isRequired,
   currentPageSize: PropTypes.number.isRequired,

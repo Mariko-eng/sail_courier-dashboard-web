@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
+import axios from 'axios';
+import { API } from '../../../utils/api';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { auth } from '../../../config/firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
-import axios from 'axios';
-import { API } from '../../../utils/api';
+import { clearStoredToken, getStoredToken, storeToken } from '../../../utils/auth';
 
 let backendUrl = import.meta.env.VITE_BACKEND_DEV_URL;
 
@@ -118,20 +119,20 @@ export const resetUserPassword = async (email) => {
 
 
 // Function to handle the user authentication state
-export const checkAuthState = () => {
-  return new Promise((resolve, reject) => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        // If the user is authenticated, resolve the promise with the user info
-        resolve(user);
-      } else {
-        // If the user is not authenticated, resolve with null or reject
-        resolve(null);
-      }
-      unsubscribe(); // Unsubscribe after getting the result
-    });
-  });
-};
+// export const checkAuthState = () => {
+//   return new Promise((resolve, reject) => {
+//     const unsubscribe = auth.onAuthStateChanged(user => {
+//       if (user) {
+//         // If the user is authenticated, resolve the promise with the user info
+//         resolve(user);
+//       } else {
+//         // If the user is not authenticated, resolve with null or reject
+//         resolve(null);
+//       }
+//       unsubscribe(); // Unsubscribe after getting the result
+//     });
+//   });
+// };
 
 
 export const CheckIfUserIsAdmin = async (email) => {
@@ -162,5 +163,40 @@ export const CheckIfUserIsAdmin = async (email) => {
     throw new Error("User is not an admin");
     // throw error;
   }
-
 } 
+
+export const checkAuthState = async () => {
+  try {
+    // First check if we have a valid stored token
+    const storedToken = getStoredToken();
+    
+    if (storedToken && storedToken.expiresAt > Date.now()) {
+      // Return a mock user object with the stored token
+      return {
+        getIdToken: async () => storedToken.token
+      };
+    }
+    
+    // If no valid token, get fresh from Firebase
+    const user = await new Promise((resolve) => {
+      const unsubscribe = auth.onAuthStateChanged(user => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
+    
+    if (user) {
+      // Get fresh token and store it
+      const token = await user.getIdToken();
+      const decodedToken = await user.getIdTokenResult();
+      storeToken(token, decodedToken.claims.exp - decodedToken.claims.iat);
+      return user;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error checking auth state:', error);
+    clearStoredToken();
+    return null;
+  }
+};

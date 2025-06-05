@@ -13,7 +13,7 @@ import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, Me
 import LoadingButton from '@mui/lab/LoadingButton';
 import AnimateButton from '../../../../../ui-component/extended/AnimateButton';
 
-import { add_client_corporate, fetch_corporate_companies } from '../../../../../services/clients';
+import { add_corporate_company_user_account, fetch_corporate_companies } from '../../../../../services/clients';
 
 const ClientsCorporateNew = ({ onRefresh }) => {
   const theme = useTheme();
@@ -87,7 +87,7 @@ const ClientsCorporateNew = ({ onRefresh }) => {
                     password: values.password
                   };
 
-                  const response = await add_client_corporate(data)
+                  const response = await add_corporate_company_user_account(data)
 
                   onRefresh()
 

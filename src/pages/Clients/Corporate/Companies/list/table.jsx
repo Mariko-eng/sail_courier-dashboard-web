@@ -144,7 +144,7 @@ export default function CorporateCompanniesTable({
                 </TableContainer>
                 <TablePagination
                     component="div"
-                    rowsPerPageOptions={[50, 100, 150]}
+                    rowsPerPageOptions={[50, 100, 150, 999]}
                     count={totalCount} // from API: count
                     rowsPerPage={currentPageSize}
                     page={currentPageNo - 1}
@@ -155,8 +155,10 @@ export default function CorporateCompanniesTable({
             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                 <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/user-accounts/`)}>User Accounts</MenuItem>
                 <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/warehouses`)}>Warehouses</MenuItem>
-                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/orders-quick-send`)}>QuickSend Orders</MenuItem>
-                <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/orders-waybill`)}>Waybill Orders</MenuItem>
+                <MenuItem onClick={() => navigate(`/orders/quick-send/?company=${selectedRow?.id}`)}>QuickSend Orders</MenuItem>
+                {/* <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/orders-quick-send`)}>QuickSend Orders</MenuItem> */}
+                <MenuItem onClick={() => navigate(`/orders/waybill/?company=${selectedRow?.id}`)}>Waybill Orders</MenuItem>
+                {/* <MenuItem onClick={() => navigate(`/clients/corporate/companies/${selectedRow?.id}/orders-waybill`)}>Waybill Orders</MenuItem> */}
                 <MenuItem onClick={() => handleAction('Delete')}>Delete Company</MenuItem>
             </Menu>
         </>

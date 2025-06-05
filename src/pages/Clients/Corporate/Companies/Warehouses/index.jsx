@@ -14,7 +14,7 @@ import SideNav from '../../../../../components/SideNav';
 
 const CorporateCompanyWarehousesList = () => {
   const { id } = useParams();
-    const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   
   const [loading, setLoading] = useState(false);
   const [warehouses, setWarehouses] = useState([]);

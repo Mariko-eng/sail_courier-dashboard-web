@@ -193,7 +193,7 @@ export default function WarehousesTable({
                 </TableContainer>
                 <TablePagination
                     component="div"
-                    rowsPerPageOptions={[50, 100, 150]}
+                    rowsPerPageOptions={[50, 100, 150, 999]}
                     count={totalCount} // from API: count
                     rowsPerPage={currentPageSize}
                     page={currentPageNo - 1}

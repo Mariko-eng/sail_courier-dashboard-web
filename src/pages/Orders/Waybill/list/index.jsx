@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
 
 // ** Store & Actions
 import { Box, FormControl, InputLabel, MenuItem, Card, Select, TextField } from '@mui/material';
 
-import { API } from '../../../../../../utils/api';
-import { formatError } from '../../../../../../utils/axios-error';
-import UiLoadingOverlay from '../../../../../../components/overlay';
-import MainCard from '../../../../../../ui-component/cards/MainCard';
-import WaybillOrdersTable from './../../../../../Orders/Waybill/table';
+import UiLoadingOverlay from '../../../../components/overlay';
+import MainCard from '../../../../ui-component/cards/MainCard';
+
+import { fetch_waybill_orders } from '../../../../services/orders';
+import WaybillOrdersTable from '../../../../components/orders/waybill/tables/orders_table';
+import { useSearchParams } from 'react-router-dom';
+import NewWaybillOrderFormModal from '../new';
+
 
 // Utility function to format date in YYYY-MM-DD
 const formatDate = (date) => {
@@ -18,20 +20,28 @@ const formatDate = (date) => {
     return `${year}-${month}-${day}`;
 };
 
-const CorporateCompanyWaybillOrdersList = () => {
-    const { id } = useParams();
-
+const WaybillOrdersList = () => {
     const today = new Date();
     const now = new Date();
     const start_date = new Date(now.setDate(now.getDate() - 7));
+
+    const [searchParams] = useSearchParams();
+    // console.log("searchParams", searchParams)
+
+    const company = searchParams.get('company')
+
+    console.log("company", company)
 
     const [status, setStatus] = useState('all');
     const [timePeriod, setTimePeriod] = useState('last7days');
     const [startDate, setStartDate] = useState(formatDate(start_date));
     const [endDate, setEndDate] = useState(formatDate(today));
-    const [rowsPerPage, setRowsPerPage] = useState(50);
-    const [orders, setOrderData] = useState([]);
+
     const [loading, setLoading] = useState(false);
+    const [orders, setOrders] = useState([]);
+    const [totalCount, setTotalCount] = useState(0);
+    const [currentPageNo, setCurrentPageNo] = useState(1);
+    const [currentPageSize, setCurrentPageSize] = useState(50);
 
     // Function to handle filter changes
     const handleFilter = (event) => {
@@ -90,23 +100,36 @@ const CorporateCompanyWaybillOrdersList = () => {
 
     // Memoize fetchData function to prevent unnecessary rerenders
     const fetchData = useCallback(async () => {
-        const queryParams = new URLSearchParams();
-        queryParams.append('companyId', id);
-        queryParams.append('limit', rowsPerPage);
-        if (status !== 'all') queryParams.append('status', status);
-        if (startDate) queryParams.append('startDate', new Date(startDate).toISOString());
-        if (endDate) queryParams.append('endDate', new Date(endDate).toISOString());
+        // Format as "YYYY-MM-DD"
+        const startDateStr = new Date(startDate).toISOString().split("T")[0];
+        // Format as "YYYY-MM-DD"
+        const endDateStr = new Date(endDate).toISOString().split("T")[0];
+
+        const queryParams = new URLSearchParams({
+            startDate: startDateStr,
+            endDate: endDateStr,
+            page: currentPageNo.toString(),
+            page_size: currentPageSize.toString(),
+            status: status,
+        });
+
+        // Add extra params dynamically
+        if (company) {
+            queryParams.set("corporate_company", company);
+        }
 
         try {
             setLoading(true);
-            const results = await fetchWaybillOrders(queryParams.toString());
+            const { count, results } = await fetch_waybill_orders(queryParams.toString());
             setLoading(false);
-            setOrderData(results.entries);
+            setTotalCount(count);
+            setOrders(results);
         } catch (error) {
-            setLoading(false);
             console.error('Error fetching data: ', error);
+        } finally {
+            setLoading(false);
         }
-    }, [rowsPerPage, status, startDate, endDate]);
+    }, [currentPageNo, currentPageSize, status, startDate, endDate]);
 
     useEffect(() => {
         fetchData();
@@ -114,8 +137,9 @@ const CorporateCompanyWaybillOrdersList = () => {
 
     return (
         <UiLoadingOverlay loading={loading}>
-            <MainCard title="Waybill Orders"
-            // secondary={<NewWaybillOrderFormModal />}
+            <MainCard title="Waybill Orders" secondary={
+                company ? (
+                    <NewWaybillOrderFormModal companyId={company} />) : <></>}
             >
                 <Card sx={{ overflow: 'hidden' }}>
                     <Box px={'10px'} py={'20px'} display={'flex'} justifyContent={'space-between'}>
@@ -131,8 +155,11 @@ const CorporateCompanyWaybillOrdersList = () => {
                                 <MenuItem value="all">All</MenuItem>
                                 <MenuItem value="pending">Pending</MenuItem>
                                 <MenuItem value="approved">Approved</MenuItem>
-                                <MenuItem value="pickedUp">PickedUp</MenuItem>
+                                <MenuItem value="assigned">Assigned</MenuItem>
+                                <MenuItem value="picked_up">PickedUp</MenuItem>
                                 <MenuItem value="delivered">Delivered</MenuItem>
+                                <MenuItem value="cancelled">Cancelled</MenuItem>
+                                <MenuItem value="rejected">Rejected</MenuItem>
                             </Select>
                         </FormControl>
 
@@ -182,7 +209,13 @@ const CorporateCompanyWaybillOrdersList = () => {
                         </Box>
                     </Box>
                     <div style={{ overflowX: 'auto' }}>
-                        <WaybillOrdersTable orders={orders} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage} />
+                        <WaybillOrdersTable
+                            orders={orders}
+                            totalCount={totalCount}
+                            currentPageSize={currentPageSize}
+                            setCurrentPageSize={setCurrentPageSize}
+                            currentPageNo={currentPageNo}
+                            setCurrentPageNo={setCurrentPageNo}/>
                     </div>
                 </Card>
             </MainCard>
@@ -191,6 +224,6 @@ const CorporateCompanyWaybillOrdersList = () => {
 };
 
 
-export default CorporateCompanyWaybillOrdersList;
+export default WaybillOrdersList;
 
 

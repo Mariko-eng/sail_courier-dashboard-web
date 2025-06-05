@@ -8,19 +8,16 @@ const DashboardDefault = Loadable(lazy(() => import('../../pages/Dashboard')));
 
 // Orders
 const QuickSendOrdersList = Loadable(lazy(() => import('../../pages/Orders/QuickSend/list')));
-const QuickSendOrdersNew = Loadable(lazy(() => import('../../pages/Orders/QuickSend/new')));
 const QuickSendOrdersDetail = Loadable(lazy(() => import('../../pages/Orders/QuickSend/detail')));
+const QuickSendOrdersNew = Loadable(lazy(() => import('../../pages/Orders/QuickSend/new')));
 
-const WaybillOrdersList = Loadable(lazy(() => import('../../pages/Orders/Waybill')));
-const WaybillOrdersEdit = Loadable(lazy(() => import('../../pages/Orders/Waybill/edit')));
+const WaybillOrdersList = Loadable(lazy(() => import('../../pages/Orders/Waybill/list')));
+const WaybillOrdersDetail = Loadable(lazy(() => import('../../pages/Orders/Waybill/detail')));
 
 // Clients - Corporate Accounts
 const CorporateCompaniesList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/list')));
 const CorporateCompanyUserAccountsList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Users')));
 const CorporateCompanyWarehousesList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Warehouses')));
-const CorporateCompanyOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders')));
-const CorporateCompanyQuickSendOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders/QuickSend')));
-const CorporateCompanyWaybillOrdersList = Loadable(lazy(() => import('../../pages/Clients/Corporate/Companies/Orders/Waybill')));
 
 // Clients
 const ClientsPersonal = Loadable(lazy(() => import('../../pages/Clients/Personal')));
@@ -66,9 +63,9 @@ export const AppRoutes = [
     element: <WaybillOrdersList />
   },
   {
-    path: 'orders/waybill/edit/:id',
+    path: 'orders/waybill/detail/:id',
     meta: { isPrivate: true },
-    element: <WaybillOrdersEdit />
+    element: <WaybillOrdersDetail />
   },
 
   // Utilities - Laundry
@@ -113,21 +110,6 @@ export const AppRoutes = [
     path: 'clients/corporate/companies/:id/warehouses',
     meta: { isPrivate: true },
     element: <CorporateCompanyWarehousesList />
-  },
-  {
-    path: 'clients/corporate/companies/:id/orders-quick-send',
-    meta: { isPrivate: true },
-    element: <CorporateCompanyQuickSendOrdersList />
-  },
-  {
-    path: 'clients/corporate/companies/:id/orders-waybill',
-    meta: { isPrivate: true },
-    element: <CorporateCompanyWaybillOrdersList />
-  },
-  {
-    path: 'clients/corporate/companies/:id/orders',
-    meta: { isPrivate: true },
-    element: <CorporateCompanyOrdersList />
   },
   {
     path: 'clients/corporate',

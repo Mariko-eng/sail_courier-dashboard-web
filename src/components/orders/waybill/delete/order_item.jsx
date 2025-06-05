@@ -1,17 +1,16 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { Box, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import AnimateButton from '../../../../ui-component/extended/AnimateButton';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useSelector } from 'react-redux';
 
-// third party
-import { Formik } from 'formik';
-import { formatError } from '../../../../utils/axios-error';
-import { updateWaybillOrderItems } from './order_items_form';
+import AnimateButton from '../../../../ui-component/extended/AnimateButton';
+import { delete_waybill_order_item } from '../../../../services/orders';
+
 
 const style = {
     position: 'absolute',
@@ -25,7 +24,7 @@ const style = {
     p: 4,
 };
 
-const DeleteWaybillOrderModal = ({ orderDetails, orderItem, onRefresh }) => {
+const DeleteWaybillOrderItemModal = ({ orderItem, onRefresh }) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -40,21 +39,8 @@ const DeleteWaybillOrderModal = ({ orderDetails, orderItem, onRefresh }) => {
         try {
             setLoading(true);
 
-            // Filter out the deleted item
-            const updatedOrderItems = orderDetails.orderItems.filter(item => item.id !== orderItem.id);
-
-            // Now update the orderDetails with the new orderItems list
-            const data = {
-                company: loggedInUser.company,
-                warehouseId: orderDetails.warehouseId,
-                additionalNotes: orderDetails.additionalNotes,
-                orderItems: updatedOrderItems,
-            };
-
-            // console.log("Updated data for deleting item:", data);
-
             // Call the API to update the waybill order items
-            await updateWaybillOrderItems(orderDetails, data);
+            await delete_waybill_order_item(orderItem);
 
             // Close the modal and refresh the parent component
             handleClose();
@@ -115,4 +101,4 @@ const DeleteWaybillOrderModal = ({ orderDetails, orderItem, onRefresh }) => {
     );
 };
 
-export default DeleteWaybillOrderModal;
+export default DeleteWaybillOrderItemModal;

@@ -5,6 +5,7 @@ import { fetch_regular_orders } from '../../../../services/orders';
 import UiLoadingOverlay from '../../../../components/overlay';
 import MainCard from '../../../../ui-component/cards/MainCard';
 import QuickSendOrdersTable from './table';
+import { useSearchParams } from 'react-router-dom';
 
 // Utility to format date as YYYY-MM-DD
 const formatDate = (date) => {
@@ -18,6 +19,13 @@ const QuickSendOrdersList = () => {
   const today = new Date();
   const lastWeek = new Date(today);
   lastWeek.setDate(today.getDate() - 7);
+
+  const [searchParams] = useSearchParams();
+  // console.log("searchParams", searchParams)
+
+  const company = searchParams.get('company')
+
+  console.log("company", company)
 
   const [status, setStatus] = useState('all');
   const [timePeriod, setTimePeriod] = useState('last7days');
@@ -103,6 +111,11 @@ const QuickSendOrdersList = () => {
       endDate: endDateStr,
       status,
     });
+
+    // Add extra params dynamically
+    if (company) {
+      queryParams.set("corporate_company", company);
+    }
 
     try {
       setLoading(true);

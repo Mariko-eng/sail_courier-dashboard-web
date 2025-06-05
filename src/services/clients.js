@@ -1,4 +1,3 @@
-import { auth } from '../config/firebase';
 import { API } from '../utils/api';
 import { formatError } from '../utils/axios-error';
 
@@ -117,7 +116,7 @@ export const add_corporate_company = async (data) => {
 };
 
 
-export const add_client_corporate = async (data) => {
+export const add_corporate_company_user_account = async (data) => {
   try {
     const url = `${backendUrl}/api/accounts/clients-corporate/create/`
 
@@ -141,6 +140,7 @@ export const add_client_corporate = async (data) => {
     throw customAxiosError;
   }
 };
+
 
 export const fetch_corporate_company_delivery_points = async (company_id, queryString)  => {
   try {
@@ -180,12 +180,10 @@ export const add_corporate_company_delivery_point = async (data) => {
       contact_person_email: data.contact_person_email,
       
       country: "uganda",
-      district: data.district,
-      village: data.village,
-      region: '',
       city: '',
+      district: data.district,
       county: '',
-
+      village: data.village,
     };
 
     const response = await API.post(url, requestData);

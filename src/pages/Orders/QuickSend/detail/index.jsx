@@ -1,5 +1,5 @@
 // CustomerForm to edit customer details
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
 
@@ -9,20 +9,14 @@ import { red } from '@mui/material/colors';
 import { Typography, Card, CardContent } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 
-import LoadingButton from '@mui/lab/LoadingButton';
-import AnimateButton from '../../../../ui-component/extended/AnimateButton';
-
 // third party
-import { API } from '../../../../utils/api';
-import { formatError } from '../../../../utils/axios-error';
-import { auth } from '../../../../config/firebase';
-import { formatNumberWithCommas, prettyDate } from '../../../../utils/app-functions';
 import { useSelector } from 'react-redux';
 import RegularOrderActionsMenuButton from './actions';
 import ViewOrderHistoryBtn from '../../history/OrderHistory';
 import AssignCourierToOrderBtn from '../../actions/AssignCourier';
 import { fetch_regular_order_detail } from '../../../../services/orders';
 import ConfirmQuickSendOrderDeliveryBtn from '../../actions/ConfirmDelivery';
+import DownloadQuickSendOrderPdfButton from '../../../../components/orders/quick-send/download/pdf';
 
 
 const QuickSendOrdersDetail = () => {
@@ -161,10 +155,10 @@ const QuickSendOrdersDetail = () => {
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Order Tracker Number:</Typography>
                                 <Typography variant="body2">{orderDetails.regular_order?.order?.order_tracker_no || 'Not Available'}</Typography>
                             </Grid>
-                            <Grid xs={12}>
+                            {/* <Grid xs={12}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Order Type</Typography>
                                 <Typography variant="body2">{orderDetails.regular_order?.order?.order_type?.toUpperCase() || 'Not Available'}</Typography>
-                            </Grid>
+                            </Grid> */}
                             <Grid xs={12}>
                                 <Typography variant="body1" sx={{ fontWeight: 'bold' }}>ORDER STATUS</Typography>
                                 <Chip label={orderDetails?.status.toUpperCase()}
@@ -197,7 +191,7 @@ const QuickSendOrdersDetail = () => {
 
                             <Typography variant="body1" sx={{ mt: 2 }}>Parcel Weight:</Typography>
                             <Typography variant="body2" sx={{ color: '#00796B' }}>
-                                {orderDetails?.parcel_weight || 'Not Available'} kg
+                                {Number(orderDetails?.parcel_weight).toFixed(2)} kg
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>Parcel Risk:</Typography>
@@ -306,14 +300,14 @@ const QuickSendOrdersDetail = () => {
                                 Total Charges:
                             </Typography>
                             <Typography variant="body2" sx={{ color: '#00796B' }}>
-                                {orderDetails?.total_charges ? orderDetails.total_charges : 'Not Available'}
+                                {Number(orderDetails?.total_charges).toFixed(2)}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 2 }}>
                                 Amount Paid:
                             </Typography>
                             <Typography variant="body2" sx={{ color: '#00796B' }}>
-                                {orderDetails?.amount_paid ? orderDetails.amount_paid : 'Not Available'}
+                                {Number(orderDetails?.amount_paid).toFixed(2)}
                             </Typography>
                         </Box>
                     </CardContent>
@@ -413,6 +407,10 @@ const QuickSendOrdersDetail = () => {
                         </>
                     )
                 }
+
+                <Box my={4} display={"flex"} justifyContent={"space-between"}>
+                    <DownloadQuickSendOrderPdfButton orderId={id} />
+                </Box>
 
             </Box>
         </>

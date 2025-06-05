@@ -33,22 +33,21 @@ const orders = {
       ]
     },
 
-
-    // {
-    //   id: 'waybill',
-    //   title: 'Waybill',
-    //   type: 'collapse',
-    //   icon: icons.IconTruckDelivery,
-    //   children: [
-    //     {
-    //       id: 'waybill_list',
-    //       title: 'List',
-    //       type: 'item',
-    //       url: '/orders/waybill',
-    //       target: false
-    //     },
-    //   ]
-    // },
+    {
+      id: 'waybill',
+      title: 'Waybill',
+      type: 'collapse',
+      icon: icons.IconTruckDelivery,
+      children: [
+        {
+          id: 'waybill_list',
+          title: 'List',
+          type: 'item',
+          url: '/orders/waybill',
+          target: false
+        },
+      ]
+    },
 
 
 
