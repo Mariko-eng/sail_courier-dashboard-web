@@ -19,6 +19,8 @@ const columns = [
   { id: 'status', label: 'Status', align: 'center', minWidth: 100 },
   { id: 'parcelSenderName', label: 'Sender Name', align: 'center', minWidth: 150 },
   { id: 'parcelSenderPhone', label: 'Sender Phone', align: 'center', minWidth: 150 },
+  { id: 'parcelReceiverName', label: 'Receiver Name', align: 'center', minWidth: 150 },
+  { id: 'parcelReceiverPhone', label: 'Receiver Phone', align: 'center', minWidth: 150 },
   // { id: 'totalCharges', label: 'Total Cost', align: 'center', minWidth: 100 },
   // { id: 'isFullyPaid', label: 'Fully Paid', align: 'center', minWidth: 100 },
   { id: 'download', label: 'Download', align: 'center', minWidth: 100 },
@@ -27,21 +29,25 @@ const columns = [
 
 // Transform nested structure into flat table row
 function processData(dataList, query) {
-  const newData = dataList.map(order => {
-    const core = order.QuickSend_order?.order || {};
-    const createdAt = core.created_at || order.created_at;
-    const isFullyPaid = parseFloat(order.amount_paid || 0) >= parseFloat(order.total_charges || 0);
+  if (!dataList) return [];
+
+  const newData = dataList.map(order_item => {
+    const core = order_item.regular_order?.order || {};
+    const createdAt = core.created_at || order_item.created_at;
+    // const isFullyPaid = parseFloat(order.amount_paid || 0) >= parseFloat(order.total_charges || 0);
 
     return {
-      id: order.id,
+      id: order_item.id,
       createdAt,
       orderNo: core.order_no || '',
-      orderTrackerNo: core.order_tracker_no || order.tracker_no,
-      status: order.status || core.status,
-      parcelSenderName: order.parcel_sender_name,
-      parcelSenderPhone: order.parcel_sender_phone,
-      totalCharges: `UGX ${Number(order.total_charges || 0).toLocaleString()}`,
-      isFullyPaid,
+      orderTrackerNo: core.order_tracker_no || order_item.tracker_no,
+      status: order_item.status || core.status,
+      parcelSenderName: order_item.parcel_sender_name,
+      parcelSenderPhone: order_item.parcel_sender_phone,
+      parcelReceiverName: order_item.parcel_receiver_name,
+      parcelReceiverPhone: order_item.parcel_receiver_phone,
+      // totalCharges: `UGX ${Number(order_item.total_charges || 0).toLocaleString()}`,
+      // isFullyPaid,
       action: 'Actions'
     };
   });
@@ -65,6 +71,7 @@ export default function QuickSendOrdersTable({
   currentPageNo,
   setCurrentPageNo,
 }) {
+  // console.log("orders" , orders)
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState('');
 
