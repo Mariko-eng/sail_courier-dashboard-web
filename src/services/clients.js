@@ -122,7 +122,7 @@ export const add_corporate_company_user_account = async (data) => {
 
     const requestData = {
       company_id: data.company_id,
-      account_type: data.corporate_account_type,
+      account_type: data.account_type,
       username: data.username,
       phone : data.phone,
       email : data.email,

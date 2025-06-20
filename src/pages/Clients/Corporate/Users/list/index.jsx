@@ -37,10 +37,10 @@ const ClientsCorporate = () => {
       
       setLoading(true);
       const { count, results } = await fetch_clients_corporate(queryParams.toString());
+      
       setLoading(false);
       setTotalCount(count);
       setClients(results);
-      // setOrderData(results.entries);
     } catch (error) {
       setLoading(false);
       console.error('Error fetching data: ', error);

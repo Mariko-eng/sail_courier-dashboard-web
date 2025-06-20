@@ -1,8 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
-import useScriptRef from '../../../../../utils/hooks/useScriptRef';
-
 // third party
 import * as Yup from 'yup';
 import { Formik, Field } from 'formik';
@@ -11,13 +9,12 @@ import { Formik, Field } from 'formik';
 import { useTheme } from '@mui/material/styles';
 import { Box, FormControl, FormHelperText, InputLabel, OutlinedInput, Select, MenuItem } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import AnimateButton from '../../../../../ui-component/extended/AnimateButton';
 
+import AnimateButton from '../../../../../ui-component/extended/AnimateButton';
 import { add_corporate_company_user_account, fetch_corporate_companies } from '../../../../../services/clients';
 
 const ClientsCorporateNew = ({ onRefresh }) => {
   const theme = useTheme();
-  const scriptedRef = useScriptRef();
 
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState([]);
@@ -75,33 +72,32 @@ const ClientsCorporateNew = ({ onRefresh }) => {
             })}
             onSubmit={async (values, { setErrors, setStatus, setSubmitting, resetForm }) => {
               try {
-                if (scriptedRef.current) {
-                  setSubmitting(true);
+                setSubmitting(true);
 
-                  const company_obj = companies.find((itm) => itm.id == values.company);
-                  const data = {
-                    company_id: company_obj.id,
-                    username: values.username,
-                    phone: values.phone,
-                    email: values.email,
-                    password: values.password
-                  };
+                const company_id = values.company
 
-                  const response = await add_corporate_company_user_account(data)
+                const data = {
+                  company_id: company_id,
+                  account_type: values.corporate_account_type,
+                  username: values.username,
+                  phone: values.phone,
+                  email: values.email,
+                  password: values.password
+                };
 
-                  onRefresh()
+                const response = await add_corporate_company_user_account(data)
 
-                  setStatus({ success: true });
-                  setSubmitting(false);
-                  resetForm();
-                }
+                onRefresh()
+
+                setStatus({ success: true });
+                setSubmitting(false);
+                resetForm();
+
               } catch (err) {
                 console.error(err);
-                if (scriptedRef.current) {
-                  setStatus({ success: false });
-                  setErrors({ submit: err.message });
-                  setSubmitting(false);
-                }
+                setStatus({ success: false });
+                setErrors({ submit: err.message });
+                setSubmitting(false);
               }
             }}
           >
